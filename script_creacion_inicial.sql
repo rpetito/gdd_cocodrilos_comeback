@@ -359,6 +359,11 @@ BEGIN
 		admin_password
 	) VALUES (0, 'admin', HASHBYTES('SHA2_256', CONVERT(char(100),'w23e')))
 
+	INSERT INTO COCODRILOS_COMEBACK.ROL_USUARIO(
+		id_usuario,
+		id_rol
+	) VALUES (0, 1)
+
 
 END
 GO
