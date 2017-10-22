@@ -146,6 +146,17 @@
     <Compile Include="AbmSucursal\ModificarSucursal.Designer.cs">
       <DependentUpon>ModificarSucursal.cs</DependentUpon>
     </Compile>
+    <Compile Include="BaseDeDatos.cs" />
+    <Compile Include="GD2C2017DataSet.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GD2C2017DataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="GD2C2017DataSetTest.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GD2C2017DataSetTest.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Logeo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -229,6 +240,28 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="GD2C2017DataSet.xsc">
+      <DependentUpon>GD2C2017DataSet.xsd</DependentUpon>
+    </None>
+    <None Include="GD2C2017DataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>GD2C2017DataSet.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="GD2C2017DataSet.xss">
+      <DependentUpon>GD2C2017DataSet.xsd</DependentUpon>
+    </None>
+    <None Include="GD2C2017DataSetTest.xsc">
+      <DependentUpon>GD2C2017DataSetTest.xsd</DependentUpon>
+    </None>
+    <None Include="GD2C2017DataSetTest.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>GD2C2017DataSetTest.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="GD2C2017DataSetTest.xss">
+      <DependentUpon>GD2C2017DataSetTest.xsd</DependentUpon>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
