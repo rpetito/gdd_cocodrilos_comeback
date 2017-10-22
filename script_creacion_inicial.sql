@@ -19,9 +19,16 @@ GO
 --###########################################################################
 
 
+
 --###########################################################################
 	-------------------------------TABLAS---------------------------------
 --###########################################################################
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.REGISTRO_PAGO') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.DEVOLUCION_FACTURA') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.FACTURA') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.FACTURA
@@ -53,6 +60,9 @@ DROP TABLE COCODRILOS_COMEBACK.FUNCIONALIDAD
 IF OBJECT_ID('COCODRILOS_COMEBACK.USUARIO') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.USUARIO
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION_PAGO') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.RENDICION_PAGO
+
 IF OBJECT_ID('COCODRILOS_COMEBACK.EMPRESA') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.EMPRESA
 
@@ -61,6 +71,12 @@ DROP TABLE COCODRILOS_COMEBACK.RUBRO
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.SUCURSAL') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.SUCURSAL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MEDIO_PAGO') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.MEDIO_PAGO
+
+
+
 
 
 --###########################################################################
@@ -116,7 +132,7 @@ GO
 
 --###########################################################################
 --###########################################################################
-----------------------------CREACION DE TABLAS--------------------------------
+----------------------------CREACION DE TABLAS-------------------------------
 --###########################################################################
 --###########################################################################
 
@@ -238,6 +254,43 @@ CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 	cantidad		numeric(18,0),
 	PRIMARY KEY (item_id, num_factura)
 )
+
+
+CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
+	rendicion_id	int IDENTITY(1,1) PRIMARY KEY,
+	cant_facturas	int,
+	fecha_rendicion	datetime,
+	importe_neto	numeric(18,2),
+	importe_bruto	numeric(18,2),
+	porcentaje_comision	numeric(3,2),
+	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA
+)
+
+
+CREATE TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA(
+	fact_numero			numeric(18,0) PRIMARY KEY FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.FACTURA,
+	usuario_aceptante	numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.USUARIO,
+	tipo_devolucion		nvarchar(50) NOT NULL
+)
+
+
+CREATE TABLE COCODRILOS_COMEBACK.MEDIO_PAGO(
+	id			int IDENTITY(1,1) PRIMARY KEY,
+	descripcion	nvarchar(50)
+)
+
+
+CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
+	pago_id			int IDENTITY(1,1) PRIMARY KEY,
+	fact_numero		numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.FACTURA,
+	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
+	medio_pago_id	int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.MEDIO_PAGO,
+	fecha_vto		datetime,
+	importe_pago	numeric(20,2),
+	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL
+)
+
 
 GO
 
@@ -370,3 +423,28 @@ GO
 
 EXEC('COCODRILOS_COMEBACK.CARGA_DATOS_INICIALES')
 GO
+
+
+
+
+--###########################################################################
+--###########################################################################
+---------------------------------MIGRACION-----------------------------------
+--###########################################################################
+--###########################################################################
+
+
+
+
+
+
+
+
+--###########################################################################
+--###########################################################################
+------------------------------FUNCIONALIDADES--------------------------------
+--###########################################################################
+--###########################################################################
+
+
+--DEVUELVE CANTIDAD DE INTENTOS DE LOGGIN FALLIDOS PARA UN USUARIO DADO
