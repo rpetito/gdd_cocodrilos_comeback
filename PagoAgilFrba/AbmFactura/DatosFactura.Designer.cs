@@ -32,7 +32,7 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.CancelarButton = new System.Windows.Forms.Button();
             this.TotalTB = new System.Windows.Forms.TextBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.ItemsFacturaGV = new System.Windows.Forms.DataGridView();
             this.FacturaGB = new System.Windows.Forms.GroupBox();
             this.VencimientoDP = new System.Windows.Forms.DateTimePicker();
             this.AltaDP = new System.Windows.Forms.DateTimePicker();
@@ -47,14 +47,16 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.EstadoCB = new System.Windows.Forms.ComboBox();
+            this.Estado = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemsFacturaGV)).BeginInit();
             this.FacturaGB.SuspendLayout();
             this.SuspendLayout();
             // 
             // ModificarButton
             // 
             this.ModificarButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ModificarButton.Location = new System.Drawing.Point(362, 444);
+            this.ModificarButton.Location = new System.Drawing.Point(362, 500);
             this.ModificarButton.Name = "ModificarButton";
             this.ModificarButton.Size = new System.Drawing.Size(75, 23);
             this.ModificarButton.TabIndex = 21;
@@ -63,16 +65,17 @@
             // 
             // LimpiarButton
             // 
-            this.LimpiarButton.Location = new System.Drawing.Point(187, 444);
+            this.LimpiarButton.Location = new System.Drawing.Point(187, 500);
             this.LimpiarButton.Name = "LimpiarButton";
             this.LimpiarButton.Size = new System.Drawing.Size(75, 23);
             this.LimpiarButton.TabIndex = 20;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // CancelarButton
             // 
-            this.CancelarButton.Location = new System.Drawing.Point(12, 444);
+            this.CancelarButton.Location = new System.Drawing.Point(12, 500);
             this.CancelarButton.Name = "CancelarButton";
             this.CancelarButton.Size = new System.Drawing.Size(75, 23);
             this.CancelarButton.TabIndex = 19;
@@ -87,13 +90,13 @@
             this.TotalTB.Size = new System.Drawing.Size(100, 20);
             this.TotalTB.TabIndex = 18;
             // 
-            // dataGridView1
+            // ItemsFacturaGV
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 210);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(425, 150);
-            this.dataGridView1.TabIndex = 17;
+            this.ItemsFacturaGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ItemsFacturaGV.Location = new System.Drawing.Point(12, 210);
+            this.ItemsFacturaGV.Name = "ItemsFacturaGV";
+            this.ItemsFacturaGV.Size = new System.Drawing.Size(425, 150);
+            this.ItemsFacturaGV.TabIndex = 17;
             // 
             // FacturaGB
             // 
@@ -229,21 +232,40 @@
             this.label7.TabIndex = 15;
             this.label7.Text = "Total:";
             // 
-            // ModificarFactura
+            // EstadoCB
+            // 
+            this.EstadoCB.FormattingEnabled = true;
+            this.EstadoCB.Location = new System.Drawing.Point(187, 425);
+            this.EstadoCB.Name = "EstadoCB";
+            this.EstadoCB.Size = new System.Drawing.Size(108, 21);
+            this.EstadoCB.TabIndex = 22;
+            // 
+            // Estado
+            // 
+            this.Estado.AutoSize = true;
+            this.Estado.Location = new System.Drawing.Point(138, 428);
+            this.Estado.Name = "Estado";
+            this.Estado.Size = new System.Drawing.Size(43, 13);
+            this.Estado.TabIndex = 23;
+            this.Estado.Text = "Estado:";
+            // 
+            // DatosFactura
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 479);
+            this.ClientSize = new System.Drawing.Size(449, 534);
+            this.Controls.Add(this.Estado);
+            this.Controls.Add(this.EstadoCB);
             this.Controls.Add(this.ModificarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.TotalTB);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.ItemsFacturaGV);
             this.Controls.Add(this.FacturaGB);
             this.Controls.Add(this.label7);
-            this.Name = "ModificarFactura";
+            this.Name = "DatosFactura";
             this.Text = "ModificarFactura";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ItemsFacturaGV)).EndInit();
             this.FacturaGB.ResumeLayout(false);
             this.FacturaGB.PerformLayout();
             this.ResumeLayout(false);
@@ -257,7 +279,7 @@
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.TextBox TotalTB;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView ItemsFacturaGV;
         private System.Windows.Forms.GroupBox FacturaGB;
         private System.Windows.Forms.DateTimePicker VencimientoDP;
         private System.Windows.Forms.DateTimePicker AltaDP;
@@ -272,6 +294,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label7;
-
+        private System.Windows.Forms.ComboBox EstadoCB;
+        private System.Windows.Forms.Label Estado;
     }
 }

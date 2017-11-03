@@ -32,6 +32,8 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.CancelarButton = new System.Windows.Forms.Button();
             this.ClienteGB = new System.Windows.Forms.GroupBox();
+            this.EstadoCB = new System.Windows.Forms.ComboBox();
+            this.Estado = new System.Windows.Forms.Label();
             this.DomicilioGB = new System.Windows.Forms.GroupBox();
             this.PisoTB = new System.Windows.Forms.TextBox();
             this.LocalidadTB = new System.Windows.Forms.TextBox();
@@ -55,8 +57,6 @@
             this.Dni = new System.Windows.Forms.Label();
             this.FecNac = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
-            this.EstadoCB = new System.Windows.Forms.ComboBox();
-            this.Estado = new System.Windows.Forms.Label();
             this.ClienteGB.SuspendLayout();
             this.DomicilioGB.SuspendLayout();
             this.SuspendLayout();
@@ -79,6 +79,7 @@
             this.LimpiarButton.TabIndex = 6;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // CancelarButton
             // 
@@ -88,6 +89,7 @@
             this.CancelarButton.TabIndex = 5;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // ClienteGB
             // 
@@ -112,6 +114,23 @@
             this.ClienteGB.TabIndex = 4;
             this.ClienteGB.TabStop = false;
             this.ClienteGB.Text = "Cliente";
+            // 
+            // EstadoCB
+            // 
+            this.EstadoCB.FormattingEnabled = true;
+            this.EstadoCB.Location = new System.Drawing.Point(175, 234);
+            this.EstadoCB.Name = "EstadoCB";
+            this.EstadoCB.Size = new System.Drawing.Size(100, 21);
+            this.EstadoCB.TabIndex = 8;
+            // 
+            // Estado
+            // 
+            this.Estado.AutoSize = true;
+            this.Estado.Location = new System.Drawing.Point(126, 237);
+            this.Estado.Name = "Estado";
+            this.Estado.Size = new System.Drawing.Size(43, 13);
+            this.Estado.TabIndex = 9;
+            this.Estado.Text = "Estado:";
             // 
             // DomicilioGB
             // 
@@ -307,23 +326,6 @@
             this.Nombre.Size = new System.Drawing.Size(47, 13);
             this.Nombre.TabIndex = 1;
             this.Nombre.Text = "Nombre:";
-            // 
-            // EstadoCB
-            // 
-            this.EstadoCB.FormattingEnabled = true;
-            this.EstadoCB.Location = new System.Drawing.Point(175, 234);
-            this.EstadoCB.Name = "EstadoCB";
-            this.EstadoCB.Size = new System.Drawing.Size(100, 21);
-            this.EstadoCB.TabIndex = 8;
-            // 
-            // Estado
-            // 
-            this.Estado.AutoSize = true;
-            this.Estado.Location = new System.Drawing.Point(126, 237);
-            this.Estado.Name = "Estado";
-            this.Estado.Size = new System.Drawing.Size(43, 13);
-            this.Estado.TabIndex = 9;
-            this.Estado.Text = "Estado:";
             // 
             // DatosCliente
             // 

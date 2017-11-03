@@ -32,7 +32,7 @@
             this.CodigoPostal = new System.Windows.Forms.Label();
             this.Direccion = new System.Windows.Forms.Label();
             this.NombreTB = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.DireccionTB = new System.Windows.Forms.TextBox();
             this.CodigoPostalTB = new System.Windows.Forms.TextBox();
             this.SucursalGB = new System.Windows.Forms.GroupBox();
             this.CancelarButton = new System.Windows.Forms.Button();
@@ -75,12 +75,12 @@
             this.NombreTB.Size = new System.Drawing.Size(100, 20);
             this.NombreTB.TabIndex = 3;
             // 
-            // textBox2
+            // DireccionTB
             // 
-            this.textBox2.Location = new System.Drawing.Point(105, 63);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 4;
+            this.DireccionTB.Location = new System.Drawing.Point(105, 63);
+            this.DireccionTB.Name = "DireccionTB";
+            this.DireccionTB.Size = new System.Drawing.Size(100, 20);
+            this.DireccionTB.TabIndex = 4;
             // 
             // CodigoPostalTB
             // 
@@ -94,7 +94,7 @@
             this.SucursalGB.Controls.Add(this.Direccion);
             this.SucursalGB.Controls.Add(this.Nombre);
             this.SucursalGB.Controls.Add(this.CodigoPostal);
-            this.SucursalGB.Controls.Add(this.textBox2);
+            this.SucursalGB.Controls.Add(this.DireccionTB);
             this.SucursalGB.Controls.Add(this.CodigoPostalTB);
             this.SucursalGB.Controls.Add(this.NombreTB);
             this.SucursalGB.Location = new System.Drawing.Point(12, 12);
@@ -112,6 +112,7 @@
             this.CancelarButton.TabIndex = 7;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // LimpiarButton
             // 
@@ -121,6 +122,7 @@
             this.LimpiarButton.TabIndex = 8;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // CrearButton
             // 
@@ -155,7 +157,7 @@
         private System.Windows.Forms.Label CodigoPostal;
         private System.Windows.Forms.Label Direccion;
         private System.Windows.Forms.TextBox NombreTB;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox DireccionTB;
         private System.Windows.Forms.TextBox CodigoPostalTB;
         private System.Windows.Forms.GroupBox SucursalGB;
         private System.Windows.Forms.Button CancelarButton;

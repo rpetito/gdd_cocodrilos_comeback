@@ -16,5 +16,23 @@ namespace PagoAgilFrba.AbmFactura
         {
             InitializeComponent();
         }
+
+        private void Alta_Click(object sender, EventArgs e)
+        {
+            AltaFactura alta = new AltaFactura();
+            alta.Show();
+        }
+
+        private void Baja_Click(object sender, EventArgs e)
+        {
+            BajaFactura baja = new BajaFactura();
+            baja.Show();
+        }
+
+        private void Modificacion_Click(object sender, EventArgs e)
+        {
+            ModificarFactura mod = new ModificarFactura();
+            mod.Show();
+        }
     }
 }

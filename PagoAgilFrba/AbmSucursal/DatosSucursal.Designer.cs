@@ -35,16 +35,18 @@
             this.Direccion = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
             this.CodigoPostal = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.DireccionTB = new System.Windows.Forms.TextBox();
             this.CodigoPostalTB = new System.Windows.Forms.TextBox();
             this.NombreTB = new System.Windows.Forms.TextBox();
+            this.Estado = new System.Windows.Forms.Label();
+            this.EstadoCB = new System.Windows.Forms.ComboBox();
             this.SucursalGB.SuspendLayout();
             this.SuspendLayout();
             // 
             // ModificarButton
             // 
             this.ModificarButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ModificarButton.Location = new System.Drawing.Point(179, 193);
+            this.ModificarButton.Location = new System.Drawing.Point(179, 234);
             this.ModificarButton.Name = "ModificarButton";
             this.ModificarButton.Size = new System.Drawing.Size(75, 23);
             this.ModificarButton.TabIndex = 13;
@@ -53,28 +55,30 @@
             // 
             // LimpiarButton
             // 
-            this.LimpiarButton.Location = new System.Drawing.Point(95, 193);
+            this.LimpiarButton.Location = new System.Drawing.Point(95, 234);
             this.LimpiarButton.Name = "LimpiarButton";
             this.LimpiarButton.Size = new System.Drawing.Size(75, 23);
             this.LimpiarButton.TabIndex = 12;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // CancelarButton
             // 
-            this.CancelarButton.Location = new System.Drawing.Point(12, 193);
+            this.CancelarButton.Location = new System.Drawing.Point(12, 234);
             this.CancelarButton.Name = "CancelarButton";
             this.CancelarButton.Size = new System.Drawing.Size(75, 23);
             this.CancelarButton.TabIndex = 11;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // SucursalGB
             // 
             this.SucursalGB.Controls.Add(this.Direccion);
             this.SucursalGB.Controls.Add(this.Nombre);
             this.SucursalGB.Controls.Add(this.CodigoPostal);
-            this.SucursalGB.Controls.Add(this.textBox2);
+            this.SucursalGB.Controls.Add(this.DireccionTB);
             this.SucursalGB.Controls.Add(this.CodigoPostalTB);
             this.SucursalGB.Controls.Add(this.NombreTB);
             this.SucursalGB.Location = new System.Drawing.Point(12, 13);
@@ -111,12 +115,12 @@
             this.CodigoPostal.TabIndex = 1;
             this.CodigoPostal.Text = "Código Postal:";
             // 
-            // textBox2
+            // DireccionTB
             // 
-            this.textBox2.Location = new System.Drawing.Point(105, 63);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 4;
+            this.DireccionTB.Location = new System.Drawing.Point(105, 63);
+            this.DireccionTB.Name = "DireccionTB";
+            this.DireccionTB.Size = new System.Drawing.Size(100, 20);
+            this.DireccionTB.TabIndex = 4;
             // 
             // CodigoPostalTB
             // 
@@ -132,11 +136,30 @@
             this.NombreTB.Size = new System.Drawing.Size(100, 20);
             this.NombreTB.TabIndex = 3;
             // 
+            // Estado
+            // 
+            this.Estado.AutoSize = true;
+            this.Estado.Location = new System.Drawing.Point(36, 167);
+            this.Estado.Name = "Estado";
+            this.Estado.Size = new System.Drawing.Size(43, 13);
+            this.Estado.TabIndex = 14;
+            this.Estado.Text = "Estado:";
+            // 
+            // EstadoCB
+            // 
+            this.EstadoCB.FormattingEnabled = true;
+            this.EstadoCB.Location = new System.Drawing.Point(117, 164);
+            this.EstadoCB.Name = "EstadoCB";
+            this.EstadoCB.Size = new System.Drawing.Size(100, 21);
+            this.EstadoCB.TabIndex = 15;
+            // 
             // DatosSucursal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(266, 228);
+            this.ClientSize = new System.Drawing.Size(266, 267);
+            this.Controls.Add(this.EstadoCB);
+            this.Controls.Add(this.Estado);
             this.Controls.Add(this.ModificarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.CancelarButton);
@@ -146,6 +169,7 @@
             this.SucursalGB.ResumeLayout(false);
             this.SucursalGB.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -158,8 +182,10 @@
         private System.Windows.Forms.Label Direccion;
         private System.Windows.Forms.Label Nombre;
         private System.Windows.Forms.Label CodigoPostal;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox DireccionTB;
         private System.Windows.Forms.TextBox CodigoPostalTB;
         private System.Windows.Forms.TextBox NombreTB;
+        private System.Windows.Forms.Label Estado;
+        private System.Windows.Forms.ComboBox EstadoCB;
     }
 }

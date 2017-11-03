@@ -32,12 +32,13 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.BajaEmpresaGV = new System.Windows.Forms.DataGridView();
             this.FiltroGB = new System.Windows.Forms.GroupBox();
+            this.RubroCB = new System.Windows.Forms.ComboBox();
             this.CuitTB = new System.Windows.Forms.TextBox();
             this.NombreTB = new System.Windows.Forms.TextBox();
             this.Cuit = new System.Windows.Forms.Label();
             this.Rubro = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
-            this.RubroCB = new System.Windows.Forms.ComboBox();
+            this.CancelarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.BajaEmpresaGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
@@ -60,6 +61,7 @@
             this.LimpiarButton.TabIndex = 8;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // BajaEmpresaGV
             // 
@@ -83,6 +85,14 @@
             this.FiltroGB.TabIndex = 7;
             this.FiltroGB.TabStop = false;
             this.FiltroGB.Text = "Filtro";
+            // 
+            // RubroCB
+            // 
+            this.RubroCB.FormattingEnabled = true;
+            this.RubroCB.Location = new System.Drawing.Point(255, 25);
+            this.RubroCB.Name = "RubroCB";
+            this.RubroCB.Size = new System.Drawing.Size(100, 21);
+            this.RubroCB.TabIndex = 6;
             // 
             // CuitTB
             // 
@@ -125,19 +135,22 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
-            // RubroCB
+            // CancelarButton
             // 
-            this.RubroCB.FormattingEnabled = true;
-            this.RubroCB.Location = new System.Drawing.Point(255, 25);
-            this.RubroCB.Name = "RubroCB";
-            this.RubroCB.Size = new System.Drawing.Size(100, 21);
-            this.RubroCB.TabIndex = 6;
+            this.CancelarButton.Location = new System.Drawing.Point(12, 377);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 11;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // BajaEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 386);
+            this.ClientSize = new System.Drawing.Size(424, 406);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.BajaEmpresaGV);
@@ -163,5 +176,6 @@
         private System.Windows.Forms.Label Rubro;
         private System.Windows.Forms.Label Nombre;
         private System.Windows.Forms.ComboBox RubroCB;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }

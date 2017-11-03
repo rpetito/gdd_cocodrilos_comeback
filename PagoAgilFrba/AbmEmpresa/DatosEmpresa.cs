@@ -14,7 +14,22 @@ namespace PagoAgilFrba.AbmEmpresa
     {
         public DatosEmpresa()
         {
+            EstadoCB.Items.Add("Habilitado");
+            EstadoCB.Items.Add("Deshabilitado");
             InitializeComponent();
+        }
+
+        private void LimpiarButton_Click(object sender, EventArgs e)
+        {
+            NombreTB.Clear();
+            CuitTB.Clear();
+            DireccionTB.Clear();
+            RubroCB.ResetText();
+        }
+
+        private void CancelarButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

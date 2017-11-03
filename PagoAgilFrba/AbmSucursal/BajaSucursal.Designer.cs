@@ -32,12 +32,13 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.BajaSucursalGV = new System.Windows.Forms.DataGridView();
             this.FiltroGB = new System.Windows.Forms.GroupBox();
+            this.DireccionTB = new System.Windows.Forms.TextBox();
             this.CodigoPostalTB = new System.Windows.Forms.TextBox();
             this.NombreTB = new System.Windows.Forms.TextBox();
             this.CodigoPostal = new System.Windows.Forms.Label();
             this.Direccion = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
-            this.DireccionTB = new System.Windows.Forms.TextBox();
+            this.CancelarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.BajaSucursalGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
@@ -60,6 +61,7 @@
             this.LimpiarButton.TabIndex = 12;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // BajaSucursalGV
             // 
@@ -83,6 +85,13 @@
             this.FiltroGB.TabIndex = 11;
             this.FiltroGB.TabStop = false;
             this.FiltroGB.Text = "Filtro";
+            // 
+            // DireccionTB
+            // 
+            this.DireccionTB.Location = new System.Drawing.Point(83, 71);
+            this.DireccionTB.Name = "DireccionTB";
+            this.DireccionTB.Size = new System.Drawing.Size(100, 20);
+            this.DireccionTB.TabIndex = 6;
             // 
             // CodigoPostalTB
             // 
@@ -125,18 +134,22 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
-            // DireccionTB
+            // CancelarButton
             // 
-            this.DireccionTB.Location = new System.Drawing.Point(83, 71);
-            this.DireccionTB.Name = "DireccionTB";
-            this.DireccionTB.Size = new System.Drawing.Size(100, 20);
-            this.DireccionTB.TabIndex = 6;
+            this.CancelarButton.Location = new System.Drawing.Point(12, 377);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 15;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // BajaSucursal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 386);
+            this.ClientSize = new System.Drawing.Size(424, 406);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.BajaSucursalGV);
@@ -162,5 +175,6 @@
         private System.Windows.Forms.Label CodigoPostal;
         private System.Windows.Forms.Label Direccion;
         private System.Windows.Forms.Label Nombre;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }

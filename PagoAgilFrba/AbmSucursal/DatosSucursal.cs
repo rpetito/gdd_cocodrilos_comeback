@@ -14,7 +14,22 @@ namespace PagoAgilFrba.AbmSucursal
     {
         public DatosSucursal()
         {
+            EstadoCB.Items.Add("Habilitado");
+            EstadoCB.Items.Add("Deshabilitado");
             InitializeComponent();
+        }
+
+        private void LimpiarButton_Click(object sender, EventArgs e)
+        {
+            NombreTB.Clear();
+            DireccionTB.Clear();
+            CodigoPostalTB.Clear();
+            EstadoCB.ResetText();
+        }
+
+        private void CancelarButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

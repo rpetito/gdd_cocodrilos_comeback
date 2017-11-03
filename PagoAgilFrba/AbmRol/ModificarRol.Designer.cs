@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             this.FiltroGB = new System.Windows.Forms.GroupBox();
-            this.Nombre = new System.Windows.Forms.Label();
             this.NombreTB = new System.Windows.Forms.TextBox();
+            this.Nombre = new System.Windows.Forms.Label();
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.FiltratButton = new System.Windows.Forms.Button();
             this.ModificarRolGV = new System.Windows.Forms.DataGridView();
+            this.CancelarButton = new System.Windows.Forms.Button();
             this.FiltroGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ModificarRolGV)).BeginInit();
             this.SuspendLayout();
@@ -49,6 +50,13 @@
             this.FiltroGB.TabStop = false;
             this.FiltroGB.Text = "Filtro";
             // 
+            // NombreTB
+            // 
+            this.NombreTB.Location = new System.Drawing.Point(81, 29);
+            this.NombreTB.Name = "NombreTB";
+            this.NombreTB.Size = new System.Drawing.Size(100, 20);
+            this.NombreTB.TabIndex = 1;
+            // 
             // Nombre
             // 
             this.Nombre.AutoSize = true;
@@ -58,13 +66,6 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
-            // NombreTB
-            // 
-            this.NombreTB.Location = new System.Drawing.Point(81, 29);
-            this.NombreTB.Name = "NombreTB";
-            this.NombreTB.Size = new System.Drawing.Size(100, 20);
-            this.NombreTB.TabIndex = 1;
-            // 
             // LimpiarButton
             // 
             this.LimpiarButton.Location = new System.Drawing.Point(12, 95);
@@ -73,6 +74,7 @@
             this.LimpiarButton.TabIndex = 1;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // FiltratButton
             // 
@@ -92,11 +94,22 @@
             this.ModificarRolGV.Size = new System.Drawing.Size(260, 183);
             this.ModificarRolGV.TabIndex = 3;
             // 
+            // CancelarButton
+            // 
+            this.CancelarButton.Location = new System.Drawing.Point(12, 319);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 4;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
+            // 
             // ModificarRol
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 325);
+            this.ClientSize = new System.Drawing.Size(284, 345);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.ModificarRolGV);
             this.Controls.Add(this.FiltratButton);
             this.Controls.Add(this.LimpiarButton);
@@ -118,5 +131,6 @@
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button FiltratButton;
         private System.Windows.Forms.DataGridView ModificarRolGV;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }

@@ -8,19 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PagoAgilFrba.AbmRol
+namespace PagoAgilFrba.AbmFactura
 {
-    public partial class AltaRol : Form
+    public partial class BajaFactura : Form
     {
-        public AltaRol()
+        public BajaFactura()
         {
             InitializeComponent();
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
         {
-            NombreTB.Clear();
-            FuncionalidadesGV.Rows.Clear();
+            ClienteTB.Clear();
+            EmpresaTB.Clear();
+            FacturaTB.Clear();
+            BajaFacturaGV.Rows.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)

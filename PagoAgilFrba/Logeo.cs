@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,15 @@ namespace PagoAgilFrba
         public Logeo()
         {
             InitializeComponent();
+            //SqlConnection Conexion = BaseDeDatos.ObternerConexion();
+            //SqlCommand cmd = new SqlCommand();
+            ContraseniaTB.PasswordChar = '*';
+        }
+
+        private void Ingresar_Click(object sender, EventArgs e)
+        {
+            Menu menu = new PagoAgilFrba.Menu();
+            menu.Show();
         }
     }
 }

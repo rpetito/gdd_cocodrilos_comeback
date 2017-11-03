@@ -14,7 +14,20 @@ namespace PagoAgilFrba.AbmRol
     {
         public DatosRol()
         {
+            EstadoCB.Items.Add("Habilitado");
+            EstadoCB.Items.Add("Deshabilitado");
             InitializeComponent();
+        }
+
+        private void LimpiarButton_Click(object sender, EventArgs e)
+        {
+            NombreTB.Clear();
+            FuncionalidadesGV.Rows.Clear();
+        }
+
+        private void CancelarButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }

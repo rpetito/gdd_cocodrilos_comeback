@@ -30,7 +30,7 @@
         {
             this.FiltrarButton = new System.Windows.Forms.Button();
             this.LimpiarButton = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.ModificarGV = new System.Windows.Forms.DataGridView();
             this.FiltroGB = new System.Windows.Forms.GroupBox();
             this.DniTB = new System.Windows.Forms.TextBox();
             this.ApellidoTB = new System.Windows.Forms.TextBox();
@@ -38,7 +38,8 @@
             this.Dni = new System.Windows.Forms.Label();
             this.Apellido = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.CancelarButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.ModificarGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,14 +61,15 @@
             this.LimpiarButton.TabIndex = 8;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
-            // dataGridView1
+            // ModificarGV
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 172);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(400, 199);
-            this.dataGridView1.TabIndex = 10;
+            this.ModificarGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ModificarGV.Location = new System.Drawing.Point(12, 172);
+            this.ModificarGV.Name = "ModificarGV";
+            this.ModificarGV.Size = new System.Drawing.Size(400, 199);
+            this.ModificarGV.TabIndex = 10;
             // 
             // FiltroGB
             // 
@@ -132,18 +134,29 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
+            // CancelarButton
+            // 
+            this.CancelarButton.Location = new System.Drawing.Point(12, 377);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 11;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
+            // 
             // ModificarCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 386);
+            this.ClientSize = new System.Drawing.Size(424, 406);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.ModificarGV);
             this.Controls.Add(this.FiltroGB);
             this.Name = "ModificarCliente";
             this.Text = "ModificarCliente";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ModificarGV)).EndInit();
             this.FiltroGB.ResumeLayout(false);
             this.FiltroGB.PerformLayout();
             this.ResumeLayout(false);
@@ -154,7 +167,7 @@
 
         private System.Windows.Forms.Button FiltrarButton;
         private System.Windows.Forms.Button LimpiarButton;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView ModificarGV;
         private System.Windows.Forms.GroupBox FiltroGB;
         private System.Windows.Forms.TextBox DniTB;
         private System.Windows.Forms.TextBox ApellidoTB;
@@ -162,5 +175,6 @@
         private System.Windows.Forms.Label Dni;
         private System.Windows.Forms.Label Apellido;
         private System.Windows.Forms.Label Nombre;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }

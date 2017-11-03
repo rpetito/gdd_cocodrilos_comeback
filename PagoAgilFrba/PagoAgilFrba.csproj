@@ -116,11 +116,11 @@
     <Compile Include="AbmFactura\AltaFactura.Designer.cs">
       <DependentUpon>AltaFactura.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmFactura\EliminarFactura.cs">
+    <Compile Include="AbmFactura\BajaFactura.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmFactura\EliminarFactura.Designer.cs">
-      <DependentUpon>EliminarFactura.cs</DependentUpon>
+    <Compile Include="AbmFactura\BajaFactura.Designer.cs">
+      <DependentUpon>BajaFactura.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmFactura\ModificarFactura.cs">
       <SubType>Form</SubType>
@@ -152,11 +152,11 @@
     <Compile Include="AbmRol\DatosRol.Designer.cs">
       <DependentUpon>DatosRol.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmRol\EliminarRol.cs">
+    <Compile Include="AbmRol\BajaRol.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbmRol\EliminarRol.Designer.cs">
-      <DependentUpon>EliminarRol.cs</DependentUpon>
+    <Compile Include="AbmRol\BajaRol.Designer.cs">
+      <DependentUpon>BajaRol.cs</DependentUpon>
     </Compile>
     <Compile Include="AbmRol\ModificarRol.cs">
       <SubType>Form</SubType>
@@ -195,6 +195,12 @@
       <DependentUpon>ModificarSucursal.cs</DependentUpon>
     </Compile>
     <Compile Include="BaseDeDatos.cs" />
+    <Compile Include="Menu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Menu.Designer.cs">
+      <DependentUpon>Menu.cs</DependentUpon>
+    </Compile>
     <Compile Include="GD2C2017DataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -267,8 +273,8 @@
     <EmbeddedResource Include="AbmFactura\AltaFactura.resx">
       <DependentUpon>AltaFactura.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AbmFactura\EliminarFactura.resx">
-      <DependentUpon>EliminarFactura.cs</DependentUpon>
+    <EmbeddedResource Include="AbmFactura\BajaFactura.resx">
+      <DependentUpon>BajaFactura.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmFactura\ModificarFactura.resx">
       <DependentUpon>ModificarFactura.cs</DependentUpon>
@@ -285,8 +291,8 @@
     <EmbeddedResource Include="AbmRol\DatosRol.resx">
       <DependentUpon>DatosRol.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AbmRol\EliminarRol.resx">
-      <DependentUpon>EliminarRol.cs</DependentUpon>
+    <EmbeddedResource Include="AbmRol\BajaRol.resx">
+      <DependentUpon>BajaRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmRol\ModificarRol.resx">
       <DependentUpon>ModificarRol.cs</DependentUpon>
@@ -308,6 +314,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Logeo.resx">
       <DependentUpon>Logeo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.resx">
+      <DependentUpon>Menu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

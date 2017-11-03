@@ -1,6 +1,6 @@
 ﻿namespace PagoAgilFrba.AbmRol
 {
-    partial class EliminarRol
+    partial class BajaRol
     {
         /// <summary>
         /// Required designer variable.
@@ -34,6 +34,7 @@
             this.FiltroGB = new System.Windows.Forms.GroupBox();
             this.NombreTB = new System.Windows.Forms.TextBox();
             this.Nombre = new System.Windows.Forms.Label();
+            this.CancelarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.EliminarRolGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
@@ -64,6 +65,7 @@
             this.LimpiarButton.TabIndex = 5;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // FiltroGB
             // 
@@ -92,17 +94,28 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
-            // EliminarRol
+            // CancelarButton
+            // 
+            this.CancelarButton.Location = new System.Drawing.Point(12, 319);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 8;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
+            // 
+            // BajaRol
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 325);
+            this.ClientSize = new System.Drawing.Size(284, 345);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.EliminarRolGV);
             this.Controls.Add(this.FiltratButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.FiltroGB);
-            this.Name = "EliminarRol";
-            this.Text = "EliminarRol";
+            this.Name = "BajaRol";
+            this.Text = "BajaRol";
             ((System.ComponentModel.ISupportInitialize)(this.EliminarRolGV)).EndInit();
             this.FiltroGB.ResumeLayout(false);
             this.FiltroGB.PerformLayout();
@@ -118,5 +131,6 @@
         private System.Windows.Forms.GroupBox FiltroGB;
         private System.Windows.Forms.TextBox NombreTB;
         private System.Windows.Forms.Label Nombre;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }

@@ -76,6 +76,7 @@
             this.Ingresar.TabIndex = 4;
             this.Ingresar.Text = "Ingresar";
             this.Ingresar.UseVisualStyleBackColor = true;
+            this.Ingresar.Click += new System.EventHandler(this.Ingresar_Click);
             // 
             // Logeo
             // 

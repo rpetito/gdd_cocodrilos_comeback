@@ -16,5 +16,18 @@ namespace PagoAgilFrba.AbmEmpresa
         {
             InitializeComponent();
         }
+
+        private void LimpiarButton_Click(object sender, EventArgs e)
+        {
+            NombreTB.Clear();
+            RubroCB.ResetText();
+            CuitTB.Clear();
+            ModificarEmpresaGV.Rows.Clear();
+        }
+
+        private void CancelarButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

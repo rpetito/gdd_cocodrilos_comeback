@@ -1,6 +1,6 @@
 ﻿namespace PagoAgilFrba.AbmFactura
 {
-    partial class EliminarFactura
+    partial class BajaFactura
     {
         /// <summary>
         /// Required designer variable.
@@ -41,6 +41,7 @@
             this.ClienteTB = new System.Windows.Forms.TextBox();
             this.Empresa = new System.Windows.Forms.Label();
             this.Cliente = new System.Windows.Forms.Label();
+            this.CancelarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.BajaFacturaGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
@@ -63,6 +64,7 @@
             this.LimpiarButton.TabIndex = 20;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // BajaFacturaGV
             // 
@@ -168,17 +170,28 @@
             this.Cliente.TabIndex = 0;
             this.Cliente.Text = "Cliente:";
             // 
-            // EliminarFactura
+            // CancelarButton
+            // 
+            this.CancelarButton.Location = new System.Drawing.Point(12, 411);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 23;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
+            // 
+            // BajaFactura
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 419);
+            this.ClientSize = new System.Drawing.Size(424, 439);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.BajaFacturaGV);
             this.Controls.Add(this.FiltroGB);
-            this.Name = "EliminarFactura";
-            this.Text = "EliminarFactura";
+            this.Name = "BajaFactura";
+            this.Text = "BajaFactura";
             ((System.ComponentModel.ISupportInitialize)(this.BajaFacturaGV)).EndInit();
             this.FiltroGB.ResumeLayout(false);
             this.FiltroGB.PerformLayout();
@@ -201,5 +214,6 @@
         private System.Windows.Forms.TextBox ClienteTB;
         private System.Windows.Forms.Label Empresa;
         private System.Windows.Forms.Label Cliente;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }

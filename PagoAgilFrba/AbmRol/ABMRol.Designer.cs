@@ -41,6 +41,7 @@
             this.Modificacion.TabIndex = 11;
             this.Modificacion.Text = "Modificación";
             this.Modificacion.UseVisualStyleBackColor = true;
+            this.Modificacion.Click += new System.EventHandler(this.Modificacion_Click);
             // 
             // Baja
             // 
@@ -50,6 +51,7 @@
             this.Baja.TabIndex = 10;
             this.Baja.Text = "Baja";
             this.Baja.UseVisualStyleBackColor = true;
+            this.Baja.Click += new System.EventHandler(this.Baja_Click);
             // 
             // Alta
             // 
@@ -59,6 +61,7 @@
             this.Alta.TabIndex = 9;
             this.Alta.Text = "Alta";
             this.Alta.UseVisualStyleBackColor = true;
+            this.Alta.Click += new System.EventHandler(this.Alta_Click);
             // 
             // ABMRol
             // 

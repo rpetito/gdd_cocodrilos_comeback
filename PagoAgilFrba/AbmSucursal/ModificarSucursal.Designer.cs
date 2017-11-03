@@ -38,6 +38,7 @@
             this.CodigoPostal = new System.Windows.Forms.Label();
             this.Direccion = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
+            this.CancelarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ModificarSucursalGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
@@ -60,6 +61,7 @@
             this.LimpiarButton.TabIndex = 16;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // ModificarSucursalGV
             // 
@@ -132,11 +134,22 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
+            // CancelarButton
+            // 
+            this.CancelarButton.Location = new System.Drawing.Point(12, 377);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 19;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
+            // 
             // ModificarSucursal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 386);
+            this.ClientSize = new System.Drawing.Size(424, 406);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.ModificarSucursalGV);
@@ -162,5 +175,6 @@
         private System.Windows.Forms.Label CodigoPostal;
         private System.Windows.Forms.Label Direccion;
         private System.Windows.Forms.Label Nombre;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }

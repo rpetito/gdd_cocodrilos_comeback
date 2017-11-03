@@ -94,6 +94,7 @@
             this.CancelarButton.TabIndex = 1;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // LimpiarButton
             // 
@@ -103,6 +104,7 @@
             this.LimpiarButton.TabIndex = 2;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // CrearButton
             // 

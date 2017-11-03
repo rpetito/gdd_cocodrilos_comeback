@@ -36,6 +36,8 @@
             this.NombreTB = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
+            this.EstadoCB = new System.Windows.Forms.ComboBox();
+            this.Estado = new System.Windows.Forms.Label();
             this.RolGb.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FuncionalidadesGV)).BeginInit();
             this.SuspendLayout();
@@ -43,7 +45,7 @@
             // CrearButton
             // 
             this.CrearButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CrearButton.Location = new System.Drawing.Point(302, 298);
+            this.CrearButton.Location = new System.Drawing.Point(302, 349);
             this.CrearButton.Name = "CrearButton";
             this.CrearButton.Size = new System.Drawing.Size(75, 23);
             this.CrearButton.TabIndex = 7;
@@ -52,21 +54,23 @@
             // 
             // LimpiarButton
             // 
-            this.LimpiarButton.Location = new System.Drawing.Point(157, 298);
+            this.LimpiarButton.Location = new System.Drawing.Point(157, 349);
             this.LimpiarButton.Name = "LimpiarButton";
             this.LimpiarButton.Size = new System.Drawing.Size(75, 23);
             this.LimpiarButton.TabIndex = 6;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // CancelarButton
             // 
-            this.CancelarButton.Location = new System.Drawing.Point(14, 298);
+            this.CancelarButton.Location = new System.Drawing.Point(14, 349);
             this.CancelarButton.Name = "CancelarButton";
             this.CancelarButton.Size = new System.Drawing.Size(75, 23);
             this.CancelarButton.TabIndex = 5;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // RolGb
             // 
@@ -114,11 +118,30 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
+            // EstadoCB
+            // 
+            this.EstadoCB.FormattingEnabled = true;
+            this.EstadoCB.Location = new System.Drawing.Point(157, 290);
+            this.EstadoCB.Name = "EstadoCB";
+            this.EstadoCB.Size = new System.Drawing.Size(121, 21);
+            this.EstadoCB.TabIndex = 8;
+            // 
+            // Estado
+            // 
+            this.Estado.AutoSize = true;
+            this.Estado.Location = new System.Drawing.Point(108, 293);
+            this.Estado.Name = "Estado";
+            this.Estado.Size = new System.Drawing.Size(43, 13);
+            this.Estado.TabIndex = 9;
+            this.Estado.Text = "Estado:";
+            // 
             // DatosRol
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(390, 336);
+            this.ClientSize = new System.Drawing.Size(390, 380);
+            this.Controls.Add(this.Estado);
+            this.Controls.Add(this.EstadoCB);
             this.Controls.Add(this.CrearButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.CancelarButton);
@@ -129,6 +152,7 @@
             this.RolGb.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.FuncionalidadesGV)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -142,5 +166,7 @@
         private System.Windows.Forms.TextBox NombreTB;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label Nombre;
+        private System.Windows.Forms.ComboBox EstadoCB;
+        private System.Windows.Forms.Label Estado;
     }
 }

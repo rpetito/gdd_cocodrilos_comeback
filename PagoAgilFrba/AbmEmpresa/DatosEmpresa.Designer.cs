@@ -32,7 +32,9 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.CancelarButton = new System.Windows.Forms.Button();
             this.EmpresaGB = new System.Windows.Forms.GroupBox();
+            this.EstadoCB = new System.Windows.Forms.ComboBox();
             this.RubroCB = new System.Windows.Forms.ComboBox();
+            this.Estado = new System.Windows.Forms.Label();
             this.CuitTB = new System.Windows.Forms.TextBox();
             this.DireccionTB = new System.Windows.Forms.TextBox();
             this.NombreTB = new System.Windows.Forms.TextBox();
@@ -40,8 +42,6 @@
             this.Dni = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
             this.Direccion = new System.Windows.Forms.Label();
-            this.EstadoCB = new System.Windows.Forms.ComboBox();
-            this.Estado = new System.Windows.Forms.Label();
             this.EmpresaGB.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,6 +63,7 @@
             this.LimpiarButton.TabIndex = 10;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // CancelarButton
             // 
@@ -72,6 +73,7 @@
             this.CancelarButton.TabIndex = 9;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // EmpresaGB
             // 
@@ -92,6 +94,14 @@
             this.EmpresaGB.TabStop = false;
             this.EmpresaGB.Text = "Empresa";
             // 
+            // EstadoCB
+            // 
+            this.EstadoCB.FormattingEnabled = true;
+            this.EstadoCB.Location = new System.Drawing.Point(190, 104);
+            this.EstadoCB.Name = "EstadoCB";
+            this.EstadoCB.Size = new System.Drawing.Size(100, 21);
+            this.EstadoCB.TabIndex = 12;
+            // 
             // RubroCB
             // 
             this.RubroCB.FormattingEnabled = true;
@@ -99,6 +109,15 @@
             this.RubroCB.Name = "RubroCB";
             this.RubroCB.Size = new System.Drawing.Size(100, 21);
             this.RubroCB.TabIndex = 22;
+            // 
+            // Estado
+            // 
+            this.Estado.AutoSize = true;
+            this.Estado.Location = new System.Drawing.Point(141, 107);
+            this.Estado.Name = "Estado";
+            this.Estado.Size = new System.Drawing.Size(43, 13);
+            this.Estado.TabIndex = 13;
+            this.Estado.Text = "Estado:";
             // 
             // CuitTB
             // 
@@ -156,23 +175,6 @@
             this.Direccion.Size = new System.Drawing.Size(55, 13);
             this.Direccion.TabIndex = 0;
             this.Direccion.Text = "Dirección:";
-            // 
-            // EstadoCB
-            // 
-            this.EstadoCB.FormattingEnabled = true;
-            this.EstadoCB.Location = new System.Drawing.Point(190, 104);
-            this.EstadoCB.Name = "EstadoCB";
-            this.EstadoCB.Size = new System.Drawing.Size(100, 21);
-            this.EstadoCB.TabIndex = 12;
-            // 
-            // Estado
-            // 
-            this.Estado.AutoSize = true;
-            this.Estado.Location = new System.Drawing.Point(141, 107);
-            this.Estado.Name = "Estado";
-            this.Estado.Size = new System.Drawing.Size(43, 13);
-            this.Estado.TabIndex = 13;
-            this.Estado.Text = "Estado:";
             // 
             // DatosEmpresa
             // 
