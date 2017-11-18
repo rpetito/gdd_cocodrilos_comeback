@@ -45,6 +45,9 @@ DROP TABLE COCODRILOS_COMEBACK.CLIENTE
 IF OBJECT_ID('COCODRILOS_COMEBACK.ADMINISTRADOR') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.ADMINISTRADOR
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.USUARIO_SUCURSAL') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.USUARIO_SUCURSAL
+
 IF OBJECT_ID('COCODRILOS_COMEBACK.ROL_USUARIO') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.ROL_USUARIO
 
@@ -90,15 +93,21 @@ DROP PROCEDURE COCODRILOS_COMEBACK.CARGA_DATOS_INICIALES
 
 
 
+GO
 --###########################################################################
 	-------------------------------FUNCIONES-----------------------------
 --###########################################################################
+IF OBJECT_ID('COCODRILOS_COMEBACK.ID_SUCURSAL') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.ID_SUCURSAL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.ID_FORMA_PAGO') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.ID_FORMA_PAGO
 
 
 
 
 
-
+GO
 --###########################################################################
 	-------------------------------TRIGGERS------------------------------
 --###########################################################################
@@ -140,14 +149,9 @@ CREATE TABLE COCODRILOS_COMEBACK.USUARIO (
 	dni				numeric(18,0) PRIMARY KEY,
 	nombre			nvarchar(255),
 	apellido		nvarchar(255),
-	fecha_nac		datetime,
+	username		nvarchar(35) NOT NULL UNIQUE,
+	user_password	char(100) NOT NULL,
 	mail			nvarchar(255) UNIQUE,
-	direccion		nvarchar(255),
-	cod_postal		nvarchar(255),
-	telefono		varchar(10),
-	piso			numeric(2,0),
-	localidad		nvarchar(255),
-	dpto			nvarchar(10),
 	login_fallidos	int DEFAULT 0,
 	habilitado		int DEFAULT 1
 )
@@ -157,35 +161,20 @@ CREATE TABLE COCODRILOS_COMEBACK.SUCURSAL (
 	id			int IDENTITY(1,1) PRIMARY KEY,
 	nombre		nvarchar(50),
 	direccion	nvarchar(50),
-	cod_postal	numeric(18,0),
+	cod_postal	numeric(18,0) UNIQUE,
 	habilitado	int DEFAULT 1
-)
-
-
-CREATE TABLE COCODRILOS_COMEBACK.COBRADOR (
-	dni					numeric(18,0) PRIMARY KEY,
-	sucursal			int IDENTITY(1,1),
-	username			nvarchar(35) NOT NULL,
-	cobrador_password	char(100) NOT NULL,
-	habilitado			int DEFAULT 1,
-	FOREIGN KEY (dni) REFERENCES COCODRILOS_COMEBACK.USUARIO,
-	FOREIGN KEY (sucursal) REFERENCES COCODRILOS_COMEBACK.SUCURSAL
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.CLIENTE (
 	dni			numeric(18,0) PRIMARY KEY,
-	habilitado	int DEFAULT 1,
-	FOREIGN KEY (dni) REFERENCES COCODRILOS_COMEBACK.USUARIO
-)
-
-
-CREATE TABLE COCODRILOS_COMEBACK.ADMINISTRADOR (
-	dni				numeric(18,0) PRIMARY KEY,
-	username		nvarchar(35),
-	admin_password	char(100),
-	habilitado		int DEFAULT 1,
-	FOREIGN KEY (dni) REFERENCES COCODRILOS_COMEBACK.USUARIO
+	nombre		nvarchar(255),
+	apellido	nvarchar(255),
+	fecha_nac	datetime,
+	mail		nvarchar(255),
+	direccion	nvarchar(255),
+	cod_postal	nvarchar(255),
+	habilitado	int DEFAULT 1
 )
 
 
@@ -203,6 +192,15 @@ CREATE TABLE COCODRILOS_COMEBACK.ROL_USUARIO (
 	FOREIGN KEY (id_usuario) REFERENCES COCODRILOS_COMEBACK.USUARIO,
 	FOREIGN KEY (id_rol) REFERENCES COCODRILOS_COMEBACK.ROL
 )
+
+
+CREATE TABLE COCODRILOS_COMEBACK.USUARIO_SUCURSAL (
+	user_dni		numeric(18,0),
+	user_rol_id		int,
+	sucursal_id		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL,
+	PRIMARY KEY(user_dni, sucursal_id),
+	FOREIGN KEY(user_dni, user_rol_id) REFERENCES COCODRILOS_COMEBACK.ROL_USUARIO
+) 
 
 
 CREATE TABLE COCODRILOS_COMEBACK.FUNCIONALIDAD (
@@ -242,7 +240,8 @@ CREATE TABLE COCODRILOS_COMEBACK.FACTURA (
 	fecha_emision	datetime,
 	fecha_vto		datetime,
 	total			numeric(18,2),
-	rendida			int DEFAULT 0
+	pagada			bit DEFAULT 0,
+	rendida			bit DEFAULT 0
 )
 
 
@@ -276,12 +275,13 @@ CREATE TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA(
 
 CREATE TABLE COCODRILOS_COMEBACK.MEDIO_PAGO(
 	id			int IDENTITY(1,1) PRIMARY KEY,
-	descripcion	nvarchar(50)
+	descripcion	nvarchar(50) UNIQUE
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
 	pago_id			int IDENTITY(1,1) PRIMARY KEY,
+	fecha_pago		datetime,
 	fact_numero		numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.FACTURA,
 	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
 	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
@@ -293,6 +293,41 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
 
 
 GO
+
+
+--###########################################################################
+---------------------------CREACION DE FUNCIONES-----------------------------
+--###########################################################################
+
+-----------------------------------------------------------------------------
+--DEVUELVE EL ID DE LA SUCURSAL A PARTIR DE SU CODIGO POSTAL
+-----------------------------------------------------------------------------
+CREATE FUNCTION COCODRILOS_COMEBACK.ID_SUCURSAL(@codPos numeric(18,0))
+RETURNS int
+AS
+BEGIN
+	RETURN	(SELECT s.id
+			FROM COCODRILOS_COMEBACK.SUCURSAL s
+			WHERE s.cod_postal = @codPos)
+END
+GO
+
+
+------------------------------------------------------------------------------
+--DEVUELVE EL ID DEL MEDIO DE PAGO A PARTIR DE SU DESCRIPCION
+------------------------------------------------------------------------------
+CREATE FUNCTION COCODRILOS_COMEBACK.ID_FORMA_PAGO(@descripcion nvarchar(255))
+RETURNS INT
+AS
+BEGIN
+	RETURN (SELECT p.id
+			FROM COCODRILOS_COMEBACK.MEDIO_PAGO p
+			WHERE p.descripcion = @descripcion)
+END
+GO
+
+
+
 
 
 --###########################################################################
@@ -403,14 +438,18 @@ BEGIN
 	--USUARIO ADMIN
 	INSERT INTO COCODRILOS_COMEBACK.USUARIO(
 		dni,
-		nombre
-	) VALUES (0, 'Administrador General')
+		nombre,
+		username,
+		user_password
+	) VALUES (0, 'Administrador General', 'admin', HASHBYTES('SHA2_256', CONVERT(char(100),'w23e')))
 
+	/*
 	INSERT INTO COCODRILOS_COMEBACK.ADMINISTRADOR(
 		dni,
 		username,
 		admin_password
 	) VALUES (0, 'admin', HASHBYTES('SHA2_256', CONVERT(char(100),'w23e')))
+	*/
 
 	INSERT INTO COCODRILOS_COMEBACK.ROL_USUARIO(
 		id_usuario,
@@ -433,10 +472,152 @@ GO
 --###########################################################################
 --###########################################################################
 
+----------------------------------------------------------------------------
+--------------------------------CLIENTE-------------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.CLIENTE (
+	dni,
+	apellido,
+	nombre,
+	fecha_nac,
+	mail,
+	direccion,
+	cod_postal
+)	SELECT  DISTINCT(m.[Cliente-Dni]), 
+			m.[Cliente-Apellido],
+			m.[Cliente-Nombre],
+			m.[Cliente-Fecha_Nac],
+			m.Cliente_Mail,
+			m.Cliente_Direccion,
+			m.Cliente_Codigo_Postal
+			FROM gd_esquema.Maestra m
+			ORDER BY m.[Cliente-Dni]
 
 
+----------------------------------------------------------------------------
+---------------------------------RUBRO--------------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.RUBRO (
+	id,
+	descripcion
+)	SELECT	DISTINCT(m.Empresa_Rubro),
+			m.Rubro_Descripcion
+	FROM gd_esquema.Maestra m
+	WHERE m.Empresa_Rubro IS NOT NULL
 
 
+----------------------------------------------------------------------------
+--------------------------------EMPRESA-------------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.EMPRESA (
+	cuit,
+	nombre,
+	direccion,
+	rubro
+)	SELECT	DISTINCT(m.Empresa_Cuit),
+			m.Empresa_Nombre,
+			m.Empresa_Direccion,
+			m.Empresa_Rubro
+	FROM gd_esquema.Maestra m
+
+
+----------------------------------------------------------------------------
+----------------------------MEDIOS DE PAGO----------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.MEDIO_PAGO (
+	descripcion
+)	SELECT DISTINCT(m.FormaPagoDescripcion) 
+	FROM gd_esquema.Maestra m 
+	WHERE m.FormaPagoDescripcion IS NOT NULL
+
+
+----------------------------------------------------------------------------
+-------------------------------SUCURSAL-------------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.SUCURSAL (
+	nombre,
+	direccion,
+	cod_postal
+)	SELECT	DISTINCT(m.Sucursal_Nombre),
+			m.Sucursal_Dirección,
+			m.Sucursal_Codigo_Postal
+	FROM gd_esquema.Maestra m
+	WHERE m.Sucursal_Nombre IS NOT NULL
+
+
+----------------------------------------------------------------------------
+-------------------------------FACTURA--------------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.FACTURA (
+	numero,
+	cliente,
+	empresa,
+	fecha_emision,
+	fecha_vto,
+	total,
+	pagada,
+	rendida
+)	SELECT	m.Nro_Factura,
+			m.[Cliente-Dni],
+			m.Empresa_Cuit,
+			m.Factura_Fecha,
+			m.Factura_Fecha_Vencimiento,
+			m.Factura_Total,
+			CASE WHEN (	SELECT count(*)
+						FROM gd_esquema.Maestra m2 
+						WHERE m.Nro_Factura = m2.Nro_Factura AND m2.Pago_nro IS NOT NULL 
+						GROUP BY m2.Nro_Factura) > 0 
+				THEN 1 ELSE 0 END,
+			CASE WHEN (	SELECT count(*) 
+						FROM gd_esquema.Maestra m2 
+						WHERE m.Nro_Factura = m2.Nro_Factura AND m2.Rendicion_Nro IS NOT NULL 
+						GROUP BY m2.Nro_Factura) > 0 
+				THEN 1 ELSE 0 END
+	FROM	gd_esquema.Maestra m
+	GROUP BY	Nro_Factura, 
+				[Cliente-Dni], 
+				Empresa_Cuit,
+				Factura_Fecha, 
+				Factura_Fecha_Vencimiento, 
+				Factura_Total
+	ORDER BY Nro_Factura
+
+
+----------------------------------------------------------------------------
+--------------------------REGISTRO DE PAGOS---------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO (
+	fact_numero,
+	fecha_pago,
+	empresa,
+	cliente,
+	medio_pago_id,
+	fecha_vto,
+	importe_pago,
+	sucursal
+)	SELECT	Nro_Factura,
+			Pago_Fecha,
+			Empresa_Cuit,
+			[Cliente-Dni],
+			COCODRILOS_COMEBACK.ID_FORMA_PAGO(FormaPagoDescripcion),
+			Factura_Fecha_Vencimiento,
+			Factura_Total,
+			COCODRILOS_COMEBACK.ID_SUCURSAL(Sucursal_Codigo_Postal)
+	 FROM	gd_esquema.Maestra
+	 WHERE	Nro_Factura IS NOT NULL AND
+			Pago_Fecha IS NOT NULL AND
+			Empresa_Cuit IS NOT NULL AND
+			[Cliente-Dni] IS NOT NULL AND
+			FormaPagoDescripcion IS NOT NULL AND
+			Factura_Fecha_Vencimiento IS NOT NULL AND
+			Factura_Total IS NOT NULL AND
+			Sucursal_Codigo_Postal IS NOT NULL AND
+			Nro_Factura IN (SELECT f.numero
+							FROM COCODRILOS_COMEBACK.FACTURA f
+							WHERE f.pagada = 1)
+	 GROUP BY	Nro_Factura, Pago_Fecha, Empresa_Cuit, 
+				[Cliente-Dni], FormaPagoDescripcion, Factura_Fecha_Vencimiento, 
+				Factura_Total, Sucursal_Codigo_Postal
 
 
 
