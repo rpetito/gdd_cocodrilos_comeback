@@ -51,5 +51,23 @@ namespace PagoAgilFrba
             PagoAgilFrba.AbmSucursal.ABMSucursal sucursal = new AbmSucursal.ABMSucursal();
             sucursal.Show();
         }
+
+        private void ListadoEstadistico_Click(object sender, EventArgs e)
+        {
+            PagoAgilFrba.ListadoEstadistico.ListadoEstadistico menu = new ListadoEstadistico.ListadoEstadistico();
+            menu.Show();
+        }
+
+        private void Rendicion_Click(object sender, EventArgs e)
+        {
+            PagoAgilFrba.Rendicion.Rendicion rendicion = new Rendicion.Rendicion();
+            rendicion.Show();
+        }
+
+        private void RegistroPago_Click(object sender, EventArgs e)
+        {
+            PagoAgilFrba.RegistroPago.RegistroPago registro = new RegistroPago.RegistroPago();
+            registro.Show();
+        }
     }
 }
