@@ -16,5 +16,23 @@ namespace PagoAgilFrba.AbmSucursal
         {
             InitializeComponent();
         }
+
+        private void Alta_Click(object sender, EventArgs e)
+        {
+            AltaSucursal alta = new AltaSucursal();
+            alta.Show();
+        }
+
+        private void Baja_Click(object sender, EventArgs e)
+        {
+            BajaSucursal baja = new BajaSucursal();
+            baja.Show();
+        }
+
+        private void Modificacion_Click(object sender, EventArgs e)
+        {
+            ModificarSucursal mod = new ModificarSucursal();
+            mod.Show();
+        }
     }
 }

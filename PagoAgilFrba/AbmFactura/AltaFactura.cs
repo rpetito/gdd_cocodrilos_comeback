@@ -16,5 +16,21 @@ namespace PagoAgilFrba.AbmFactura
         {
             InitializeComponent();
         }
+
+        private void LimpiarButton_Click(object sender, EventArgs e)
+        {
+            ClienteTB.Clear();
+            EmpresaTB.Clear();
+            FacturaTB.Clear();
+            AltaDP.ResetText();
+            VencimientoDP.ResetText();
+            ItemsFacturaGV.Rows.Clear();
+            TotalTB.Clear();
+        }
+
+        private void CancelarButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

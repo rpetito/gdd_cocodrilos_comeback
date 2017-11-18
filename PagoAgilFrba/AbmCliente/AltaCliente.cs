@@ -16,5 +16,25 @@ namespace PagoAgilFrba.AbmCliente
         {
             InitializeComponent();
         }
+
+        private void LimpiarButton_Click(object sender, EventArgs e)
+        {
+            NombreTB.Clear();
+            DniTB.Clear();
+            MailTB.Clear();
+            ApellidoTB.Clear();
+            TelefonoTB.Clear();
+            FecNacDP.ResetText();
+            DireccionTB.Clear();
+            LocalidadTB.Clear();
+            PisoTB.Clear();
+            DepartamentoTB.Clear();
+            CodigoPostalTB.Clear();
+        }
+
+        private void CancelarButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

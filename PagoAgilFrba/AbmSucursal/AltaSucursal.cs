@@ -16,5 +16,17 @@ namespace PagoAgilFrba.AbmSucursal
         {
             InitializeComponent();
         }
+
+        private void LimpiarButton_Click(object sender, EventArgs e)
+        {
+            NombreTB.Clear();
+            DireccionTB.Clear();
+            CodigoPostalTB.Clear();
+        }
+
+        private void CancelarButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
     }
 }

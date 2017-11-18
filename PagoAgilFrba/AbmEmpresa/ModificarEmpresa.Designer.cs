@@ -30,7 +30,7 @@
         {
             this.FiltrarButton = new System.Windows.Forms.Button();
             this.LimpiarButton = new System.Windows.Forms.Button();
-            this.BajaEmpresaGV = new System.Windows.Forms.DataGridView();
+            this.ModificarEmpresaGV = new System.Windows.Forms.DataGridView();
             this.FiltroGB = new System.Windows.Forms.GroupBox();
             this.RubroCB = new System.Windows.Forms.ComboBox();
             this.CuitTB = new System.Windows.Forms.TextBox();
@@ -38,7 +38,8 @@
             this.Cuit = new System.Windows.Forms.Label();
             this.Rubro = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.BajaEmpresaGV)).BeginInit();
+            this.CancelarButton = new System.Windows.Forms.Button();
+            ((System.ComponentModel.ISupportInitialize)(this.ModificarEmpresaGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,14 +61,15 @@
             this.LimpiarButton.TabIndex = 12;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
-            // BajaEmpresaGV
+            // ModificarEmpresaGV
             // 
-            this.BajaEmpresaGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.BajaEmpresaGV.Location = new System.Drawing.Point(12, 172);
-            this.BajaEmpresaGV.Name = "BajaEmpresaGV";
-            this.BajaEmpresaGV.Size = new System.Drawing.Size(400, 199);
-            this.BajaEmpresaGV.TabIndex = 14;
+            this.ModificarEmpresaGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.ModificarEmpresaGV.Location = new System.Drawing.Point(12, 172);
+            this.ModificarEmpresaGV.Name = "ModificarEmpresaGV";
+            this.ModificarEmpresaGV.Size = new System.Drawing.Size(400, 199);
+            this.ModificarEmpresaGV.TabIndex = 14;
             // 
             // FiltroGB
             // 
@@ -133,18 +135,29 @@
             this.Nombre.TabIndex = 0;
             this.Nombre.Text = "Nombre:";
             // 
+            // CancelarButton
+            // 
+            this.CancelarButton.Location = new System.Drawing.Point(12, 377);
+            this.CancelarButton.Name = "CancelarButton";
+            this.CancelarButton.Size = new System.Drawing.Size(75, 23);
+            this.CancelarButton.TabIndex = 15;
+            this.CancelarButton.Text = "Cancelar";
+            this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
+            // 
             // ModificarEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(424, 386);
+            this.ClientSize = new System.Drawing.Size(424, 406);
+            this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
-            this.Controls.Add(this.BajaEmpresaGV);
+            this.Controls.Add(this.ModificarEmpresaGV);
             this.Controls.Add(this.FiltroGB);
             this.Name = "ModificarEmpresa";
             this.Text = "ModificarEmpresa";
-            ((System.ComponentModel.ISupportInitialize)(this.BajaEmpresaGV)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ModificarEmpresaGV)).EndInit();
             this.FiltroGB.ResumeLayout(false);
             this.FiltroGB.PerformLayout();
             this.ResumeLayout(false);
@@ -155,7 +168,7 @@
 
         private System.Windows.Forms.Button FiltrarButton;
         private System.Windows.Forms.Button LimpiarButton;
-        private System.Windows.Forms.DataGridView BajaEmpresaGV;
+        private System.Windows.Forms.DataGridView ModificarEmpresaGV;
         private System.Windows.Forms.GroupBox FiltroGB;
         private System.Windows.Forms.ComboBox RubroCB;
         private System.Windows.Forms.TextBox CuitTB;
@@ -163,5 +176,6 @@
         private System.Windows.Forms.Label Cuit;
         private System.Windows.Forms.Label Rubro;
         private System.Windows.Forms.Label Nombre;
+        private System.Windows.Forms.Button CancelarButton;
     }
 }
