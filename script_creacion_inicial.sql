@@ -182,6 +182,9 @@ CREATE TABLE COCODRILOS_COMEBACK.CLIENTE (
 	fecha_nac	datetime,
 	mail		nvarchar(255),
 	direccion	nvarchar(255),
+	piso		int DEFAULT 0,
+	dpto		nvarchar(10) DEFAULT '-',
+	localidad	nvarchar(50) DEFAULT '-',
 	cod_postal	nvarchar(255),
 	habilitado	int DEFAULT 1
 )
@@ -261,7 +264,7 @@ CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 	item_id			int IDENTITY(1,1),
 	fact_numero		numeric(18,0),
 	fact_empresa	nvarchar(50),
-	precio_unitario	numeric(18,2),
+	precio_unitario	numeric(18,5),
 	cantidad		numeric(18,0),
 	PRIMARY KEY (item_id, fact_numero, fact_empresa),
 	FOREIGN KEY (fact_numero, fact_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
@@ -716,6 +719,57 @@ INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO (
 	ORDER BY m.Rendicion_Nro
 
 
+----------------------------------------------------------------------------
+----------------------------ITEM FACTURA------------------------------------
+----------------------------------------------------------------------------
+DECLARE @fact_numero	numeric(18,0)
+DECLARE @fact_total		numeric(18,2)		
+DECLARE @item_monto		numeric(18,2)
+DECLARE @item_cant		numeric(18,0)
+DECLARE @fact_empresa	nvarchar(50)
+DECLARE @sum_monto_act	numeric(18,2)
+DECLARE @fact_numero_act	numeric(18,0)
+
+DECLARE c_items CURSOR FOR 
+	SELECT TOP 500 m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
+	FROM gd_esquema.Maestra m
+	ORDER BY m.Nro_Factura
+
+OPEN c_items
+FETCH NEXT FROM c_items INTO @fact_numero, @fact_total, @item_monto, @item_cant, @fact_empresa
+
+SET @fact_numero_act = @fact_numero
+
+WHILE(@@FETCH_STATUS = 0)
+	BEGIN
+		SET @sum_monto_act = 0
+		WHILE(@@FETCH_STATUS = 0 AND @fact_numero_act = @fact_numero)
+			BEGIN
+				WHILE(@@FETCH_STATUS = 0 AND @sum_monto_act < @fact_total)
+					BEGIN
+						SET @sum_monto_act = @sum_monto_act + ISNULL(@item_monto, 0)
+						INSERT INTO COCODRILOS_COMEBACK.ITEM_FACTURA (
+							fact_numero,
+							fact_empresa,
+							precio_unitario,
+							cantidad
+						) VALUES (
+							@fact_numero,
+							@fact_empresa,
+							(@item_monto / @item_cant),
+							@item_cant
+						)
+						FETCH NEXT FROM c_items INTO @fact_numero, @fact_total, @item_monto, @item_cant, @fact_empresa
+					END
+				FETCH NEXT FROM c_items INTO @fact_numero, @fact_total, @item_monto, @item_cant, @fact_empresa
+			END
+		SET @fact_numero_act = @fact_numero
+	END
+
+CLOSE c_items
+DEALLOCATE c_items
+
+
 
 
 GO
@@ -802,4 +856,3 @@ BEGIN
 
 END
 GO
-
