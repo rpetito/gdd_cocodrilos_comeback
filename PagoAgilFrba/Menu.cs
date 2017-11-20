@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,60 +15,67 @@ namespace PagoAgilFrba
     {
         public Menu()
         {
-            InitializeComponent();
+            GetFunctionalities();
+        }
+
+        private void GetFunctionalities()
+        {
+
+            SqlConnection Conexion = BaseDeDatos.ObternerConexion();
+            SqlCommand getFunctionalities = new SqlCommand();
+            SqlDataReader result;
+
+            using (getFunctionalities = new SqlCommand("COCODRILOS_COMEBACK.", Conexion))
+            {
+
+                getFunctionalities.CommandType = CommandType.StoredProcedure;
+                getFunctionalities.Parameters.Add("@rol", SqlDbType.Int);
+                getFunctionalities.Parameters["@rol"].Value = Usuario.getInstance().getRolSeleccionado().getID();
+
+            }
+
+            result = getFunctionalities.ExecuteReader();
+
+            FlowLayoutPanel panel = new FlowLayoutPanel();
+            panel.FlowDirection = FlowDirection.LeftToRight;
+            panel.AutoScroll = true;
+            panel.WrapContents = true;
+            panel.Width = 500;
+            panel.Height = 500;
+            this.Controls.Add(panel);
+
+            while (result.Read())
+            {
+
+                if (result.VisibleFieldCount == 2)
+                {
+
+                    Button button = new Button();
+
+                    button.Tag = result.GetInt32(0);
+                    button.Text = result.GetString(1);
+                    button.Width = 250;
+                    button.Click += button_Click;
+
+                    panel.Controls.Add(button);
+
+                }
+                else
+                {
+                    MessageBox.Show("Error", "Algo ha ocurrido, por favor vuelve a intentarlo.");
+                }
+            }
+        }
+
+        void button_Click(object sender, EventArgs e)
+        {
+            Form view = MenuController.getViewForFunctionality(Convert.ToInt32(((Button)sender).Tag));
+            view.ShowDialog();
         }
 
         private void Menu_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void ClienteButton_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.AbmCliente.ABMCliente cliente = new AbmCliente.ABMCliente();
-            cliente.Show();
-        }
-
-        private void EmpresaButton_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.AbmEmpresa.ABMEmpresa empresa = new AbmEmpresa.ABMEmpresa();
-            empresa.Show();
-        }
-
-        private void FacturaButton_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.AbmFactura.ABMFactura factura = new AbmFactura.ABMFactura();
-            factura.Show();
-        }
-
-        private void RolButton_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.AbmRol.ABMRol rol = new AbmRol.ABMRol();
-            rol.Show();
-        }
-
-        private void SucursalButton_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.AbmSucursal.ABMSucursal sucursal = new AbmSucursal.ABMSucursal();
-            sucursal.Show();
-        }
-
-        private void ListadoEstadistico_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.ListadoEstadistico.ListadoEstadistico menu = new ListadoEstadistico.ListadoEstadistico();
-            menu.Show();
-        }
-
-        private void Rendicion_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.Rendicion.Rendicion rendicion = new Rendicion.Rendicion();
-            rendicion.Show();
-        }
-
-        private void RegistroPago_Click(object sender, EventArgs e)
-        {
-            PagoAgilFrba.RegistroPago.RegistroPago registro = new RegistroPago.RegistroPago();
-            registro.Show();
         }
     }
 }

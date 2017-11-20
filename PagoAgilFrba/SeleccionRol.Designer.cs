@@ -28,47 +28,49 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.rol = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.IngresarButton = new System.Windows.Forms.Button();
+            this.Ingresar = new System.Windows.Forms.Button();
+            this.Rol = new System.Windows.Forms.Label();
+            this.RolCB = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
-            // rol
+            // Ingresar
             // 
-            this.rol.AutoSize = true;
-            this.rol.Location = new System.Drawing.Point(57, 39);
-            this.rol.Name = "rol";
-            this.rol.Size = new System.Drawing.Size(26, 13);
-            this.rol.TabIndex = 0;
-            this.rol.Text = "Rol:";
+            this.Ingresar.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Ingresar.Location = new System.Drawing.Point(107, 104);
+            this.Ingresar.Name = "Ingresar";
+            this.Ingresar.Size = new System.Drawing.Size(75, 23);
+            this.Ingresar.TabIndex = 0;
+            this.Ingresar.Text = "Ingresar";
+            this.Ingresar.UseVisualStyleBackColor = true;
+            this.Ingresar.Click += new System.EventHandler(this.Ingresar_Click);
             // 
-            // comboBox1
+            // Rol
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(89, 36);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 1;
+            this.Rol.AutoSize = true;
+            this.Rol.Location = new System.Drawing.Point(63, 51);
+            this.Rol.Name = "Rol";
+            this.Rol.Size = new System.Drawing.Size(26, 13);
+            this.Rol.TabIndex = 1;
+            this.Rol.Text = "Rol:";
             // 
-            // IngresarButton
+            // RolCB
             // 
-            this.IngresarButton.Location = new System.Drawing.Point(89, 93);
-            this.IngresarButton.Name = "IngresarButton";
-            this.IngresarButton.Size = new System.Drawing.Size(75, 23);
-            this.IngresarButton.TabIndex = 3;
-            this.IngresarButton.Text = "Ingresar";
-            this.IngresarButton.UseVisualStyleBackColor = true;
+            this.RolCB.FormattingEnabled = true;
+            this.RolCB.Location = new System.Drawing.Point(104, 48);
+            this.RolCB.Name = "RolCB";
+            this.RolCB.Size = new System.Drawing.Size(121, 21);
+            this.RolCB.TabIndex = 2;
             // 
-            // SeleccionRol
+            // Roles
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 128);
-            this.Controls.Add(this.IngresarButton);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.rol);
-            this.Name = "SeleccionRol";
-            this.Text = "SeleccionRol";
+            this.ClientSize = new System.Drawing.Size(284, 139);
+            this.Controls.Add(this.RolCB);
+            this.Controls.Add(this.Rol);
+            this.Controls.Add(this.Ingresar);
+            this.Name = "Roles";
+            this.Text = "Rol a Ingresar";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -76,8 +78,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Label rol;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button IngresarButton;
+        private System.Windows.Forms.Button Ingresar;
+        private System.Windows.Forms.Label Rol;
+        private System.Windows.Forms.ComboBox RolCB;
     }
 }
