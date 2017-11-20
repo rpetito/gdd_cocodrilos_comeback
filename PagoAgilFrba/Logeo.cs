@@ -42,7 +42,7 @@ namespace PagoAgilFrba
                     loginUsuario.Parameters["@password"].Value = pContrasenia;
                 }
 
-                result = loginUsuario.ExecuteReader();
+                result = loginUsuario.ExecuteReader();/* al ingresar el username y password bien, no devuelve nada el reader y catchea excepcion*/ 
 
                 Boolean success = true;
 
