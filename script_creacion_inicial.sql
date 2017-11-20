@@ -27,8 +27,14 @@ GO
 IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION_PAGO') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.RENDICION_PAGO
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS
+
 IF OBJECT_ID('COCODRILOS_COMEBACK.REGISTRO_PAGO') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.DEVOLUCION_FACTURA') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA
@@ -285,6 +291,21 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
 )
 
 
+CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS(
+	inconsistencia_id	int IDENTITY(1,1) PRIMARY KEY,
+	rendicion_nro		numeric(18,0),
+	cant_facturas		int,
+	fecha_rendicion		int,
+	importe_bruto		numeric(18,2),
+	importe_neto		numeric(18,2),
+	importe_comision	numeric(18,2),
+	porcentaje_comision	numeric(18,2),
+	fact_numero			numeric(18,0),
+	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
+)
+
+
 CREATE TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA(
 	fact_numero				numeric(18,0),
 	fact_empresa			nvarchar(50),
@@ -303,7 +324,22 @@ CREATE TABLE COCODRILOS_COMEBACK.MEDIO_PAGO(
 
 
 CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
-	pago_id			int IDENTITY(1,1) PRIMARY KEY,
+	pago_id			numeric(18,0) PRIMARY KEY,
+	fecha_pago		datetime,
+	fact_numero		numeric(18,0),
+	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
+	medio_pago_id	int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.MEDIO_PAGO,
+	fecha_vto		datetime,
+	importe_pago	numeric(20,2),
+	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL,
+	FOREIGN KEY(fact_numero, empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA,
+)
+
+
+CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS(
+	incosistencia_id	int IDENTITY(1,1),
+	pago_id			numeric(18,0),
 	fecha_pago		datetime,
 	fact_numero		numeric(18,0),
 	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
@@ -650,6 +686,7 @@ INSERT INTO COCODRILOS_COMEBACK.FACTURA (
 --------------------------REGISTRO DE PAGOS---------------------------------
 ----------------------------------------------------------------------------
 INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO (
+	pago_id,
 	fact_numero,
 	fecha_pago,
 	empresa,
@@ -658,7 +695,8 @@ INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO (
 	fecha_vto,
 	importe_pago,
 	sucursal
-)	SELECT	Nro_Factura,
+)	SELECT	Pago_nro,
+			Nro_Factura,
 			Pago_Fecha,
 			Empresa_Cuit,
 			[Cliente-Dni],
@@ -678,9 +716,39 @@ INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO (
 			Nro_Factura IN (SELECT f.numero
 							FROM COCODRILOS_COMEBACK.FACTURA f
 							WHERE f.pagada = 1)
-	 GROUP BY	Nro_Factura, Pago_Fecha, Empresa_Cuit, 
+	 GROUP BY	Pago_nro, Nro_Factura, Pago_Fecha, Empresa_Cuit, 
 				[Cliente-Dni], FormaPagoDescripcion, Factura_Fecha_Vencimiento, 
 				Factura_Total, Sucursal_Codigo_Postal
+
+
+----------------------------------------------------------------------------
+-------------------REGISTRO DE PAGOS INCOSISTENCIAS-------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS (
+	pago_id,
+	fact_numero,
+	fecha_pago,
+	empresa,
+	cliente,
+	medio_pago_id,
+	fecha_vto,
+	importe_pago,
+	sucursal
+) 	SELECT	Pago_nro,
+			Nro_Factura,
+			Pago_Fecha,
+			Empresa_Cuit,
+			[Cliente-Dni],
+			COCODRILOS_COMEBACK.ID_FORMA_PAGO(FormaPagoDescripcion),
+			Factura_Fecha_Vencimiento,
+			Factura_Total,
+			COCODRILOS_COMEBACK.ID_SUCURSAL(Sucursal_Codigo_Postal)
+	FROM gd_esquema.Maestra
+	WHERE Nro_Factura NOT IN (SELECT f.fact_numero FROM COCODRILOS_COMEBACK.REGISTRO_PAGO f)
+	GROUP BY	Pago_nro, Nro_Factura, Pago_Fecha, Empresa_Cuit, 
+				[Cliente-Dni], FormaPagoDescripcion, Factura_Fecha_Vencimiento, 
+				Factura_Total, Sucursal_Codigo_Postal
+
 
 
 ----------------------------------------------------------------------------
@@ -716,18 +784,47 @@ INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO (
 			m.ItemRendicion_Importe IS NOT NULL AND
 			m.Empresa_Cuit IS NOT NULL
 	GROUP BY m.Rendicion_Nro, MONTH(m.Rendicion_Fecha), m.Empresa_Cuit, m.Nro_Factura
-	ORDER BY m.Rendicion_Nro
+
+
+----------------------------------------------------------------------------
+--------------------RENDICION DE PAGOS INCOSISTENCIAS-----------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS (
+	rendicion_nro,
+	cant_facturas,
+	fact_numero,
+	fecha_rendicion,
+	importe_bruto,
+	importe_neto,
+	importe_comision,
+	porcentaje_comision,
+	rendicion_empresa
+) SELECT	m.Rendicion_Nro,
+			ISNULL(	(SELECT COUNT(DISTINCT(m2.Nro_Factura)) 
+					 FROM gd_esquema.Maestra m2 
+					 WHERE m2.Rendicion_Nro = m.Rendicion_Nro 
+					 GROUP BY m2.Rendicion_Nro), 0),
+					 m.Nro_Factura,
+			(SELECT e.dia_rendicion FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = m.Empresa_Cuit),
+			SUM(ISNULL(m.Factura_Total,0)),
+			SUM(ISNULL(m.Factura_Total,0)) - SUM(ISNULL(m.ItemRendicion_Importe,0)), 
+			SUM(ISNULL(m.ItemRendicion_Importe,0)),
+			(SUM(ISNULL(m.ItemRendicion_Importe,0)) / SUM(ISNULL(m.Factura_Total,1))) * 100,
+			m.Empresa_Cuit Empresa
+	FROM gd_esquema.Maestra m
+	GROUP BY m.Rendicion_Nro, MONTH(m.Rendicion_Fecha), m.Empresa_Cuit, m.Nro_Factura
+	HAVING m.Nro_Factura NOT IN (SELECT r.fact_numero FROM COCODRILOS_COMEBACK.RENDICION_PAGO r)
 
 
 ----------------------------------------------------------------------------
 ----------------------------ITEM FACTURA------------------------------------
 ----------------------------------------------------------------------------
-DECLARE @fact_numero	numeric(18,0)
-DECLARE @fact_total		numeric(18,2)		
-DECLARE @item_monto		numeric(18,2)
-DECLARE @item_cant		numeric(18,0)
-DECLARE @fact_empresa	nvarchar(50)
-DECLARE @sum_monto_act	numeric(18,2)
+DECLARE @fact_numero		numeric(18,0)
+DECLARE @fact_total			numeric(18,2)		
+DECLARE @item_monto			numeric(18,2)
+DECLARE @item_cant			numeric(18,0)
+DECLARE @fact_empresa		nvarchar(50)
+DECLARE @sum_monto_act		numeric(18,2)
 DECLARE @fact_numero_act	numeric(18,0)
 
 DECLARE c_items CURSOR FOR 
