@@ -44,11 +44,10 @@ namespace PagoAgilFrba
 
                 result = loginUsuario.ExecuteReader();/* al ingresar el username y password bien, no devuelve nada el reader y catchea excepcion*/ 
 
-                Boolean success = true;
 
                 while (result.Read())
                 {
-                    if (result.VisibleFieldCount == 3)
+                    if (result.VisibleFieldCount == 3)  //SUCCESS
                     {
                         Usuario.getInstance().setDNI(result.GetDecimal(0));
 
@@ -58,49 +57,44 @@ namespace PagoAgilFrba
 
                         Usuario.getInstance().addRol(rol);
 
+						if(Usuario.getInstance().getRoles().Count == 1) {
+							Usuario.getInstance().setRolSeleccionado(Usuario.getInstance().getRoles()[0]);
+							Menu menu = new Menu();
+							menu.ShowDialog();
+						} else if(Usuario.getInstance().getRoles().Count > 0) {
+							SeleccionRol rolSeleccionado = new SeleccionRol();
+							rolSeleccionado.ShowDialog();
+						} else {
+							MessageBox.Show("El usuario no tiene roles disponibles");
+						}
+
                     }
-                    else
-                    {
+                    else {
                         if (result.GetInt32(0) == 0)
                             MessageBox.Show("Usuario inhabilitado", "hola");
                         else
-                            MessageBox.Show("Usuario o Contraseña incorrecto/s");
-
-                        success = false;
-                    }
+                            MessageBox.Show("Usuario o Contraseña incorrecto/s"); 
+					}
 
 
                 }
 
-                if (success)
-                {
-                    if (Usuario.getInstance().getRoles().Count == 1)
-                    {
-                        Usuario.getInstance().setRolSeleccionado(Usuario.getInstance().getRoles()[0]);
-                        Menu menu = new Menu();
-                        menu.ShowDialog();
-                    }
-                    else if (Usuario.getInstance().getRoles().Count > 0)
-                    {
-                        SeleccionRol rolSeleccionado = new SeleccionRol();
-                        rolSeleccionado.ShowDialog();
-                    }
-                    else
-                    {
-                        MessageBox.Show("El usuario no tiene roles disponibles");
-                    }
-                }
-
-                Conexion.Close();
+				Conexion.Close();
 
             }
 
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 MessageBox.Show(ex.ToString(), "there was an issue!");
-
             }
         
         }
+
+
+
     }
+
+
+
+
+
 }
