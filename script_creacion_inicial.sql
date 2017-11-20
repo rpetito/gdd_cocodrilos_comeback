@@ -24,6 +24,9 @@ GO
 	-------------------------------TABLAS---------------------------------
 --###########################################################################
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION_PAGO') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.RENDICION_PAGO
+
 IF OBJECT_ID('COCODRILOS_COMEBACK.REGISTRO_PAGO') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO
 
@@ -62,9 +65,6 @@ DROP TABLE COCODRILOS_COMEBACK.FUNCIONALIDAD
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.USUARIO') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.USUARIO
-
-IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION_PAGO') IS NOT NULL
-DROP TABLE COCODRILOS_COMEBACK.RENDICION_PAGO
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.EMPRESA') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.EMPRESA
@@ -225,51 +225,61 @@ CREATE TABLE COCODRILOS_COMEBACK.RUBRO (
 
 
 CREATE TABLE COCODRILOS_COMEBACK.EMPRESA (
-	cuit		nvarchar(50) PRIMARY KEY,
-	nombre		nvarchar(255),
-	direccion	nvarchar(255),
-	rubro		numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.RUBRO,
-	habilitado	int DEFAULT 1
+	cuit			nvarchar(50) PRIMARY KEY,
+	nombre			nvarchar(255),
+	direccion		nvarchar(255),
+	dia_rendicion	int DEFAULT 28, 
+	rubro			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.RUBRO,
+	habilitado		int DEFAULT 1
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.FACTURA (
-	numero			numeric(18,0) PRIMARY KEY,
+	numero			numeric(18,0),
 	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
 	empresa			nvarchar(50)  FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
 	fecha_emision	datetime,
 	fecha_vto		datetime,
 	total			numeric(18,2),
 	pagada			bit DEFAULT 0,
-	rendida			bit DEFAULT 0
+	rendida			bit DEFAULT 0,
+	PRIMARY KEY(numero, empresa)
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
-	item_id			int,
-	num_factura		numeric(18,0),
-	descripcion		nvarchar(255),
+	item_id			int IDENTITY(1,1),
+	fact_numero		numeric(18,0),
+	fact_empresa	nvarchar(50),
 	precio_unitario	numeric(18,2),
 	cantidad		numeric(18,0),
-	PRIMARY KEY (item_id, num_factura)
+	PRIMARY KEY (item_id, fact_numero, fact_empresa),
+	FOREIGN KEY (fact_numero, fact_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
-	rendicion_id	int IDENTITY(1,1) PRIMARY KEY,
-	cant_facturas	int,
-	fecha_rendicion	datetime,
-	importe_neto	numeric(18,2),
-	importe_bruto	numeric(18,2),
-	porcentaje_comision	numeric(3,2),
-	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA
+	rendicion_nro		numeric(18,0) PRIMARY KEY,
+	cant_facturas		int,
+	fecha_rendicion		int,
+	importe_bruto		numeric(18,2),
+	importe_neto		numeric(18,2),
+	importe_comision	numeric(18,2),
+	porcentaje_comision	numeric(18,2),
+	fact_numero			numeric(18,0),
+	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA(
-	fact_numero			numeric(18,0) PRIMARY KEY FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.FACTURA,
-	usuario_aceptante	numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.USUARIO,
-	tipo_devolucion		nvarchar(50) NOT NULL
+	fact_numero				numeric(18,0),
+	fact_empresa			nvarchar(50),
+	dev_motivo				nvarchar(250) DEFAULT 'No especifica',
+	dev_usuario_aceptante	numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.USUARIO,
+	dev_tipo_devolucion		nvarchar(50) NOT NULL,
+	PRIMARY KEY(fact_numero, fact_empresa),
+	FOREIGN KEY(fact_numero, fact_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
 
@@ -282,13 +292,14 @@ CREATE TABLE COCODRILOS_COMEBACK.MEDIO_PAGO(
 CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
 	pago_id			int IDENTITY(1,1) PRIMARY KEY,
 	fecha_pago		datetime,
-	fact_numero		numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.FACTURA,
+	fact_numero		numeric(18,0),
 	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
 	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
 	medio_pago_id	int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.MEDIO_PAGO,
 	fecha_vto		datetime,
 	importe_pago	numeric(20,2),
-	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL
+	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL,
+	FOREIGN KEY(fact_numero, empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
 
@@ -618,6 +629,43 @@ INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO (
 	 GROUP BY	Nro_Factura, Pago_Fecha, Empresa_Cuit, 
 				[Cliente-Dni], FormaPagoDescripcion, Factura_Fecha_Vencimiento, 
 				Factura_Total, Sucursal_Codigo_Postal
+
+
+----------------------------------------------------------------------------
+-------------------------RENDICION DE PAGOS---------------------------------
+----------------------------------------------------------------------------
+INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO (
+	rendicion_nro,
+	cant_facturas,
+	fact_numero,
+	fecha_rendicion,
+	importe_bruto,
+	importe_neto,
+	importe_comision,
+	porcentaje_comision,
+	rendicion_empresa
+)	SELECT	m.Rendicion_Nro,
+			(SELECT COUNT(DISTINCT(m2.Nro_Factura)) 
+			 FROM gd_esquema.Maestra m2 
+			 WHERE m2.Rendicion_Nro = m.Rendicion_Nro 
+			 GROUP BY m2.Rendicion_Nro),
+			m.Nro_Factura,
+			(SELECT e.dia_rendicion FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = m.Empresa_Cuit),
+			SUM(m.Factura_Total),
+			SUM(m.Factura_Total) - SUM(m.ItemRendicion_Importe), 
+			SUM(m.ItemRendicion_Importe),
+			(SUM(m.ItemRendicion_Importe) / SUM(m.Factura_Total)) * 100,
+			m.Empresa_Cuit Empresa
+	FROM gd_esquema.Maestra m
+	WHERE	m.Nro_Factura IN (SELECT f.numero FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.rendida = 1) AND
+			m.Rendicion_Nro IS NOT NULL AND
+			m.Factura_Fecha IS NOT NULL AND
+			m.Factura_Total IS NOT NULL AND
+			m.ItemRendicion_Importe IS NOT NULL AND
+			m.Empresa_Cuit IS NOT NULL
+	GROUP BY m.Rendicion_Nro, MONTH(m.Rendicion_Fecha), m.Empresa_Cuit, m.Nro_Factura
+	ORDER BY m.Rendicion_Nro
+
 
 
 
