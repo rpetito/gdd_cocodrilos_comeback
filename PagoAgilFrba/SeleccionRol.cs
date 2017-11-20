@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PagoAgilFrba.RegistroPago
+namespace PagoAgilFrba
 {
-    public partial class Form1 : Form
+    public partial class SeleccionRol : Form
     {
-        public Form1()
+        public SeleccionRol()
         {
             InitializeComponent();
         }

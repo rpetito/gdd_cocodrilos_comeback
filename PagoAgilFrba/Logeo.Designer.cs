@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Usuario = new System.Windows.Forms.Label();
-            this.Contrasenia = new System.Windows.Forms.Label();
+            this.usuario = new System.Windows.Forms.Label();
+            this.contrasenia = new System.Windows.Forms.Label();
             this.UsuarioTB = new System.Windows.Forms.TextBox();
             this.ContraseniaTB = new System.Windows.Forms.TextBox();
             this.Ingresar = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // Usuario
+            // usuario
             // 
-            this.Usuario.AutoSize = true;
-            this.Usuario.Location = new System.Drawing.Point(66, 29);
-            this.Usuario.Name = "Usuario";
-            this.Usuario.Size = new System.Drawing.Size(46, 13);
-            this.Usuario.TabIndex = 0;
-            this.Usuario.Text = "Usuario:";
+            this.usuario.AutoSize = true;
+            this.usuario.Location = new System.Drawing.Point(66, 29);
+            this.usuario.Name = "usuario";
+            this.usuario.Size = new System.Drawing.Size(46, 13);
+            this.usuario.TabIndex = 0;
+            this.usuario.Text = "Usuario:";
             // 
-            // Contrasenia
+            // contrasenia
             // 
-            this.Contrasenia.AutoSize = true;
-            this.Contrasenia.Location = new System.Drawing.Point(48, 59);
-            this.Contrasenia.Name = "Contrasenia";
-            this.Contrasenia.Size = new System.Drawing.Size(64, 13);
-            this.Contrasenia.TabIndex = 1;
-            this.Contrasenia.Text = "Contraseña:";
+            this.contrasenia.AutoSize = true;
+            this.contrasenia.Location = new System.Drawing.Point(48, 59);
+            this.contrasenia.Name = "contrasenia";
+            this.contrasenia.Size = new System.Drawing.Size(64, 13);
+            this.contrasenia.TabIndex = 1;
+            this.contrasenia.Text = "Contraseña:";
             // 
             // UsuarioTB
             // 
@@ -86,8 +86,8 @@
             this.Controls.Add(this.Ingresar);
             this.Controls.Add(this.ContraseniaTB);
             this.Controls.Add(this.UsuarioTB);
-            this.Controls.Add(this.Contrasenia);
-            this.Controls.Add(this.Usuario);
+            this.Controls.Add(this.contrasenia);
+            this.Controls.Add(this.usuario);
             this.Name = "Logeo";
             this.Text = "Logeo";
             this.ResumeLayout(false);
@@ -97,8 +97,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Label Usuario;
-        private System.Windows.Forms.Label Contrasenia;
+        private System.Windows.Forms.Label usuario;
+        private System.Windows.Forms.Label contrasenia;
         private System.Windows.Forms.TextBox UsuarioTB;
         private System.Windows.Forms.TextBox ContraseniaTB;
         private System.Windows.Forms.Button Ingresar;

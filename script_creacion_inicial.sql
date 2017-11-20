@@ -33,11 +33,11 @@ DROP TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO
 IF OBJECT_ID('COCODRILOS_COMEBACK.DEVOLUCION_FACTURA') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA
 
-IF OBJECT_ID('COCODRILOS_COMEBACK.FACTURA') IS NOT NULL
-DROP TABLE COCODRILOS_COMEBACK.FACTURA
-
 IF OBJECT_ID('COCODRILOS_COMEBACK.ITEM_FACTURA') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.ITEM_FACTURA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.FACTURA') IS NOT NULL
+DROP TABLE COCODRILOS_COMEBACK.FACTURA
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.COBRADOR') IS NOT NULL
 DROP TABLE COCODRILOS_COMEBACK.COBRADOR
@@ -89,6 +89,12 @@ DROP TABLE COCODRILOS_COMEBACK.MEDIO_PAGO
 IF OBJECT_ID('COCODRILOS_COMEBACK.CARGA_DATOS_INICIALES') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.CARGA_DATOS_INICIALES
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.INGRESAR_USUARIO') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.INGRESAR_USUARIO
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.INHABILITAR_USUARIO') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.INHABILITAR_USUARIO
+
 
 
 
@@ -102,6 +108,9 @@ DROP FUNCTION COCODRILOS_COMEBACK.ID_SUCURSAL
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.ID_FORMA_PAGO') IS NOT NULL
 DROP FUNCTION COCODRILOS_COMEBACK.ID_FORMA_PAGO
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS
 
 
 
@@ -188,6 +197,7 @@ CREATE TABLE COCODRILOS_COMEBACK.ROL (
 CREATE TABLE COCODRILOS_COMEBACK.ROL_USUARIO (
 	id_usuario		numeric(18,0),
 	id_rol			int,
+	habilitado		int DEFAULT 1,
 	PRIMARY KEY(id_usuario, id_rol),
 	FOREIGN KEY (id_usuario) REFERENCES COCODRILOS_COMEBACK.USUARIO,
 	FOREIGN KEY (id_rol) REFERENCES COCODRILOS_COMEBACK.ROL
@@ -303,13 +313,14 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
 )
 
 
+
+
 GO
-
-
+--###########################################################################
 --###########################################################################
 ---------------------------CREACION DE FUNCIONES-----------------------------
 --###########################################################################
-
+--###########################################################################
 -----------------------------------------------------------------------------
 --DEVUELVE EL ID DE LA SUCURSAL A PARTIR DE SU CODIGO POSTAL
 -----------------------------------------------------------------------------
@@ -338,6 +349,44 @@ END
 GO
 
 
+------------------------------------------------------------------------------
+--DEVUELVE CANTIDAD DE INTENTOS DE LOGGIN FALLIDOS PARA UN USUARIO DADO
+------------------------------------------------------------------------------
+CREATE FUNCTION COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS(@username char(35), @password char(100))
+RETURNS int
+AS
+BEGIN
+
+	RETURN (SELECT u.LOGIN_FALLIDOS
+			FROM COCODRILOS_COMEBACK.USUARIO u
+			WHERE u.USERNAME = @username AND
+				  u.USER_PASSWORD = HASHBYTES('SHA2_256', @password)
+			)
+
+END
+GO 
+
+
+
+
+
+--###########################################################################
+--###########################################################################
+-------------CREACION DE PROCEDURES AUXILIARES (NO FUNCIONALES)--------------
+--###########################################################################
+--###########################################################################
+CREATE PROCEDURE COCODRILOS_COMEBACK.INHABILITAR_USUARIO(@dni numeric(18,0)) 
+AS
+BEGIN
+
+	UPDATE COCODRILOS_COMEBACK.USUARIO
+	SET habilitado = 0
+	WHERE dni = @dni
+
+	SELECT @@ERROR
+
+END
+GO
 
 
 
@@ -669,11 +718,88 @@ INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO (
 
 
 
+GO
 --###########################################################################
 --###########################################################################
 ------------------------------FUNCIONALIDADES--------------------------------
 --###########################################################################
 --###########################################################################
+---------------------------------------------------
+-------------------LOGIN USUARIO-------------------
+---------------------------------------------------
 
+CREATE PROCEDURE COCODRILOS_COMEBACK.INGRESAR_USUARIO (
+	@username char(35),
+	@password char(100)
+) 
+AS
+BEGIN
 
---DEVUELVE CANTIDAD DE INTENTOS DE LOGGIN FALLIDOS PARA UN USUARIO DADO
+	DECLARE @status int = 999;
+	DECLARE @userDNI numeric(18,0);
+
+	IF EXISTS (	
+		SELECT u.USERNAME
+		FROM COCODRILOS_COMEBACK.USUARIO u
+		WHERE u.USERNAME = @username AND u.habilitado = 1
+		) 
+
+		BEGIN
+			IF (SELECT u.USER_PASSWORD
+				FROM COCODRILOS_COMEBACK.USUARIO u
+				WHERE u.USERNAME = @username) = HASHBYTES('SHA2_256', @password)
+					BEGIN
+						IF( COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS(@username, @password) < 3)
+							BEGIN
+								UPDATE COCODRILOS_COMEBACK.USUARIO
+								SET login_fallidos = 0
+								WHERE username = @username
+
+								SET @status = @@ERROR
+							END
+						ELSE
+							BEGIN
+
+								SET @userDNI = (SELECT u.DNI
+											    FROM COCODRILOS_COMEBACK.USUARIO u 
+											    WHERE u.USERNAME = @username 
+													  AND u.USER_PASSWORD = @password
+												)
+								
+								EXEC COCODRILOS_COMEBACK.INHABILITAR_USUARIO @userDNI
+								SET @status = 999   --USUARIO INHABILITADO
+							END
+					END;
+			ELSE
+				BEGIN
+					UPDATE COCODRILOS_COMEBACK.USUARIO 
+					SET LOGIN_FALLIDOS = LOGIN_FALLIDOS + 1
+					WHERE USERNAME = @username
+
+					SET @status = 1001; --CONSTRASEÑA INCORRECTA
+				END;
+		END;
+	ELSE
+		IF EXISTS (	
+			SELECT u.USERNAME
+			FROM COCODRILOS_COMEBACK.USUARIO u
+			WHERE u.USERNAME = @username 
+		)
+			SET @status = 999; --USUARIO INHABILITADO
+		ELSE 
+			SET @status = 1002; --USUARIO NO REGISTRADO
+
+	IF(@status = 0) --USUARIO EXISTE Y DEVUELVE LISTADO DE ROLES HABILITADOS
+		SELECT r.ID_USUARIO, r.ID_ROL, rol.DESCRIPCION
+		FROM COCODRILOS_COMEBACK.ROL_USUARIO r JOIN COCODRILOS_COMEBACK.ROL rol ON r.ID_ROL = rol.ID
+		WHERE r.ID_USUARIO = (SELECT u.DNI
+									FROM COCODRILOS_COMEBACK.USUARIO u 
+									WHERE u.USERNAME = @username
+										  and r.habilitado = 1
+									);
+	ELSE
+		SELECT @status;
+
+END
+GO
+

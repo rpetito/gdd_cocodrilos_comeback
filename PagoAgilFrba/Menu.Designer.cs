@@ -33,6 +33,9 @@
             this.FacturaButton = new System.Windows.Forms.Button();
             this.RolButton = new System.Windows.Forms.Button();
             this.SucursalButton = new System.Windows.Forms.Button();
+            this.ListadoEstadistico = new System.Windows.Forms.Button();
+            this.Rendicion = new System.Windows.Forms.Button();
+            this.RegistroPago = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // ClienteButton
@@ -85,11 +88,44 @@
             this.SucursalButton.UseVisualStyleBackColor = true;
             this.SucursalButton.Click += new System.EventHandler(this.SucursalButton_Click);
             // 
+            // ListadoEstadistico
+            // 
+            this.ListadoEstadistico.Location = new System.Drawing.Point(226, 163);
+            this.ListadoEstadistico.Name = "ListadoEstadistico";
+            this.ListadoEstadistico.Size = new System.Drawing.Size(106, 23);
+            this.ListadoEstadistico.TabIndex = 5;
+            this.ListadoEstadistico.Text = "Listado Estadístico";
+            this.ListadoEstadistico.UseVisualStyleBackColor = true;
+            this.ListadoEstadistico.Click += new System.EventHandler(this.ListadoEstadistico_Click);
+            // 
+            // Rendicion
+            // 
+            this.Rendicion.Location = new System.Drawing.Point(226, 112);
+            this.Rendicion.Name = "Rendicion";
+            this.Rendicion.Size = new System.Drawing.Size(106, 23);
+            this.Rendicion.TabIndex = 6;
+            this.Rendicion.Text = "Rendición";
+            this.Rendicion.UseVisualStyleBackColor = true;
+            this.Rendicion.Click += new System.EventHandler(this.Rendicion_Click);
+            // 
+            // RegistroPago
+            // 
+            this.RegistroPago.Location = new System.Drawing.Point(226, 205);
+            this.RegistroPago.Name = "RegistroPago";
+            this.RegistroPago.Size = new System.Drawing.Size(106, 23);
+            this.RegistroPago.TabIndex = 7;
+            this.RegistroPago.Text = "Registro Pago";
+            this.RegistroPago.UseVisualStyleBackColor = true;
+            this.RegistroPago.Click += new System.EventHandler(this.RegistroPago_Click);
+            // 
             // Menu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(361, 335);
+            this.Controls.Add(this.RegistroPago);
+            this.Controls.Add(this.Rendicion);
+            this.Controls.Add(this.ListadoEstadistico);
             this.Controls.Add(this.SucursalButton);
             this.Controls.Add(this.RolButton);
             this.Controls.Add(this.FacturaButton);
@@ -109,5 +145,8 @@
         private System.Windows.Forms.Button FacturaButton;
         private System.Windows.Forms.Button RolButton;
         private System.Windows.Forms.Button SucursalButton;
+        private System.Windows.Forms.Button ListadoEstadistico;
+        private System.Windows.Forms.Button Rendicion;
+        private System.Windows.Forms.Button RegistroPago;
     }
 }
