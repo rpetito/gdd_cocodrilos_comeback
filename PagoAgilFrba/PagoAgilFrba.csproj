@@ -207,6 +207,9 @@
       <DependentUpon>ModificarSucursal.cs</DependentUpon>
     </Compile>
     <Compile Include="BaseDeDatos.cs" />
+    <Compile Include="Controller\RolController.cs" />
+    <Compile Include="Controller\SQLExecutor.cs" />
+    <Compile Include="Controller\UserController.cs" />
     <Compile Include="Devolucion\Devolucion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -214,6 +217,7 @@
       <DependentUpon>Devolucion.cs</DependentUpon>
     </Compile>
     <Compile Include="MenuController.cs" />
+    <Compile Include="Model\Error.cs" />
     <Compile Include="Rol.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="Menu.cs">
@@ -270,6 +274,8 @@
     <Compile Include="SeleccionRol.Designer.cs">
       <DependentUpon>SeleccionRol.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\SQLExecutorHelper.cs" />
+    <Compile Include="Util\SQLResponse.cs" />
     <EmbeddedResource Include="AbmCliente\ABMCliente.resx">
       <DependentUpon>ABMCliente.cs</DependentUpon>
     </EmbeddedResource>

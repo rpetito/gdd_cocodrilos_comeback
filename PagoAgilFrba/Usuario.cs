@@ -58,5 +58,13 @@ namespace PagoAgilFrba
             return this.roles[index];
         }
 
+		public Boolean hasOnlyOneRol() {
+			return this.roles.Count == 1;
+		}
+
+		public Boolean hasMultipleRoles() {
+			return this.roles.Count > 1;
+		}
+
     }
 }
