@@ -18,15 +18,15 @@ namespace PagoAgilFrba.Controller {
 
 			try {
 				SqlConnection Conexion = BaseDeDatos.ObternerConexion();
-				SqlCommand loginUsuario = new SqlCommand();
+				SqlCommand sqlCommand = new SqlCommand();
 				SqlDataReader result;
 
-				using(loginUsuario = new SqlCommand("COCODRILOS_COMEBACK." + sqlExecutorHelper.getProcedureName(), Conexion)) {
-					loginUsuario.CommandType = CommandType.StoredProcedure;
-					sqlExecutorHelper.addParams(loginUsuario);
+				using(sqlCommand = new SqlCommand("COCODRILOS_COMEBACK." + sqlExecutorHelper.getProcedureName(), Conexion)) {
+					sqlCommand.CommandType = CommandType.StoredProcedure;
+					sqlExecutorHelper.addParams(sqlCommand);
 				}
 
-				result = loginUsuario.ExecuteReader();
+				result = sqlCommand.ExecuteReader();
 
 				while(result.Read()) {
 					sqlExecutorHelper.onReadData(result);

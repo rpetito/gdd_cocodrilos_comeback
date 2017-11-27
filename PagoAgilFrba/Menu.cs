@@ -17,19 +17,22 @@ namespace PagoAgilFrba
     public partial class Menu : Form
     {
         public Menu() {
+
+			FlowLayoutPanel panel = new FlowLayoutPanel();
+			panel.FlowDirection = FlowDirection.LeftToRight;
+			panel.AutoScroll = true;
+			panel.WrapContents = true;
+			panel.Width = 500;
+			panel.Height = 500;
+			this.Controls.Add(panel);
+
 			RolController rolController = new RolController();
 			rolController.getAvailableFunctionalities(
 				new SQLResponse<SqlDataReader>() {
 
 					onSuccess = (SqlDataReader result) => {
 
-						FlowLayoutPanel panel = new FlowLayoutPanel();
-						panel.FlowDirection = FlowDirection.LeftToRight;
-						panel.AutoScroll = true;
-						panel.WrapContents = true;
-						panel.Width = 500;
-						panel.Height = 500;
-						this.Controls.Add(panel);
+						
 
 						// HACER ESTO POR CADA FUNCIONALIDAD QUE VIENE EN result
 						Button button = new Button();
@@ -53,19 +56,19 @@ namespace PagoAgilFrba
 
         
 
-        void button_Click(object sender, EventArgs e)
-        {
+        void button_Click(object sender, EventArgs e) {
             Form view = MenuController.getViewForFunctionality(Convert.ToInt32(((Button)sender).Tag));
             view.ShowDialog();
         }
 
-        private void Menu_Load(object sender, EventArgs e)
-        {
+        private void Menu_Load(object sender, EventArgs e) {
 
         }
 
+			  
 
     }
 
+			   
 
 }

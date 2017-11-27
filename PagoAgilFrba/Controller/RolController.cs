@@ -17,7 +17,7 @@ namespace PagoAgilFrba.Controller {
 			SQLExecutor sqlExecutor = new SQLExecutor();
 			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
 
-				getProcedureName = () => { return "OBTENER_FUNCIONALIDADES"; },
+				getProcedureName = () => { return "FUNCIONALIDADES_ROL"; },
 
 				addParams = (SqlCommand sqlCommand) => {
 					sqlCommand.Parameters.Add("@rol", SqlDbType.Int);
@@ -34,7 +34,9 @@ namespace PagoAgilFrba.Controller {
 
 				onError = (Error error) => {
 					listener.onError(error);
-				}
+				},
+
+				onDataProcessed = () => {}
 
 			});
 		}
