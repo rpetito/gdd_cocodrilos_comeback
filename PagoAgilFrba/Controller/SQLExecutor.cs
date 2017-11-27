@@ -32,7 +32,8 @@ namespace PagoAgilFrba.Controller {
 					sqlExecutorHelper.onReadData(result);
 				}
 				sqlExecutorHelper.onDataProcessed();
-				Conexion.Close();
+                MessageBox.Show("Operación realizada.");
+                Conexion.Close();
 
 			} catch(Exception ex) {
 				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
@@ -44,7 +45,7 @@ namespace PagoAgilFrba.Controller {
 		public void executeScalarRequest(SQLExecutorHelper<Int32> sqlExecutorHelper) {
 			try {
 				SqlConnection Conexion = BaseDeDatos.ObternerConexion();
-				MessageBox.Show("estamos conectados");
+
 				SqlCommand sqlCommand = new SqlCommand();
 				Int32 result;
 
@@ -55,7 +56,8 @@ namespace PagoAgilFrba.Controller {
 
 				result = (Int32) sqlCommand.ExecuteScalar();
 				sqlExecutorHelper.onReadData(result);
-				Conexion.Close();
+                MessageBox.Show("Operación realizada.");
+                Conexion.Close();
 
 			} catch(Exception ex) {
 				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
