@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PagoAgilFrba.Controller;
+using PagoAgilFrba.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using PagoAgilFrba.Controller;
 
 namespace PagoAgilFrba.AbmCliente
 {
@@ -42,20 +43,41 @@ namespace PagoAgilFrba.AbmCliente
         private void CrearButton_Click(object sender, EventArgs e)
         {
             String nombre = NombreTB.Text;
-            String dni = DniTB.Text;
+            Decimal dni = Convert.ToDecimal(DniTB.Text);
             String mail = MailTB.Text;
             String apellido = ApellidoTB.Text;
             String telefono = TelefonoTB.Text;
-            String fecNac = FecNacDP.Text;
+            DateTime fecNac = FecNacDP.Value;
             String direccion = DireccionTB.Text;
             String localidad = LocalidadTB.Text;
-            String piso = PisoTB.Text;
+            int piso = Convert.ToInt32(PisoTB.Text);
             String departamento = DepartamentoTB.Text;
             String codPostal = CodigoPostalTB.Text;
 
             ClienteController clienteController = new ClienteController();
-            clienteController.test(nombre, dni, mail, apellido, telefono, fecNac, direccion, localidad, piso, departamento, codPostal);
+            clienteController.insertNewClient(new Util.SQLResponse<Int32>
+            {
+                onSuccess = (Int32 result) =>
+                {
 
+                },
+                onError = (Error fail) =>
+                {
+
+                }
+
+            },
+            dni,
+            nombre,
+            apellido,
+            fecNac,
+            mail,
+            direccion,
+            telefono,
+            piso,
+            departamento,
+            localidad,
+            codPostal);
         }
     }
 }

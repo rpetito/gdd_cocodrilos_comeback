@@ -18,23 +18,25 @@ namespace PagoAgilFrba.Controller {
 
 			try {
 				SqlConnection Conexion = BaseDeDatos.ObternerConexion();
-				SqlCommand loginUsuario = new SqlCommand();
+				SqlCommand sqlCommand = new SqlCommand();
 				SqlDataReader result;
 
-				using(loginUsuario = new SqlCommand("COCODRILOS_COMEBACK." + sqlExecutorHelper.getProcedureName(), Conexion)) {
-					loginUsuario.CommandType = CommandType.StoredProcedure;
-					sqlExecutorHelper.addParams(loginUsuario);
+				using(sqlCommand = new SqlCommand("COCODRILOS_COMEBACK." + sqlExecutorHelper.getProcedureName(), Conexion)) {
+					sqlCommand.CommandType = CommandType.StoredProcedure;
+					sqlExecutorHelper.addParams(sqlCommand);
 				}
 
-				result = loginUsuario.ExecuteReader();
+				result = sqlCommand.ExecuteReader();
 
 				while(result.Read()) {
 					sqlExecutorHelper.onReadData(result);
 				}
 				sqlExecutorHelper.onDataProcessed();
-				Conexion.Close();
+                MessageBox.Show("Operación realizada.");
+                Conexion.Close();
 
 			} catch(Exception ex) {
+				MessageBox.Show(ex.Message, "Error");
 				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
 			}
 
@@ -44,7 +46,7 @@ namespace PagoAgilFrba.Controller {
 		public void executeScalarRequest(SQLExecutorHelper<Int32> sqlExecutorHelper) {
 			try {
 				SqlConnection Conexion = BaseDeDatos.ObternerConexion();
-				MessageBox.Show("estamos conectados");
+
 				SqlCommand sqlCommand = new SqlCommand();
 				Int32 result;
 
@@ -55,7 +57,8 @@ namespace PagoAgilFrba.Controller {
 
 				result = (Int32) sqlCommand.ExecuteScalar();
 				sqlExecutorHelper.onReadData(result);
-				Conexion.Close();
+                MessageBox.Show("Operación realizada.");
+                Conexion.Close();
 
 			} catch(Exception ex) {
 				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));

@@ -1,4 +1,4 @@
---###########################################################################
+ --###########################################################################
 --###########################################################################
 -- SCRIPT DE MIGRACION Y CREACION DE OBJETOS NECESARIOS
 -- GRUPO: COCODRILOS_COMEBACK
@@ -101,6 +101,22 @@ DROP PROCEDURE COCODRILOS_COMEBACK.INGRESAR_USUARIO
 IF OBJECT_ID('COCODRILOS_COMEBACK.INHABILITAR_USUARIO') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.INHABILITAR_USUARIO
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.FUNCIONALIDADES_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.FUNCIONALIDADES_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_CLIENTE
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_CLIENTE
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE 
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE
+
+
 
 
 
@@ -183,15 +199,16 @@ CREATE TABLE COCODRILOS_COMEBACK.SUCURSAL (
 
 CREATE TABLE COCODRILOS_COMEBACK.CLIENTE (
 	dni			numeric(18,0) PRIMARY KEY,
-	nombre		nvarchar(255),
-	apellido	nvarchar(255),
-	fecha_nac	datetime,
-	mail		nvarchar(255),
-	direccion	nvarchar(255),
+	nombre		nvarchar(255) NOT NULL,
+	apellido	nvarchar(255) NOT NULL,
+	fecha_nac	datetime NOT NULL,
+	mail		nvarchar(255) NOT NULL,
+	direccion	nvarchar(255) NOT NULL,
+	telefono	nvarchar(40) NOT NULL DEFAULT '-',
 	piso		int DEFAULT 0,
 	dpto		nvarchar(10) DEFAULT '-',
 	localidad	nvarchar(50) DEFAULT '-',
-	cod_postal	nvarchar(255),
+	cod_postal	nvarchar(255) NOT NULL,
 	habilitado	int DEFAULT 1
 )
 
@@ -414,9 +431,13 @@ GO
 -------------CREACION DE PROCEDURES AUXILIARES (NO FUNCIONALES)--------------
 --###########################################################################
 --###########################################################################
+
+-----------------------------------------------------------------------------
+-----------------------------INHABILITAR USUARIO-----------------------------
+-----------------------------------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.INHABILITAR_USUARIO(@dni numeric(18,0)) 
 AS
-BEGIN
+BEGIN TRY
 
 	UPDATE COCODRILOS_COMEBACK.USUARIO
 	SET habilitado = 0
@@ -424,8 +445,57 @@ BEGIN
 
 	SELECT @@ERROR
 
-END
+END TRY
+BEGIN CATCH 
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
 GO
+
+
+-----------------------------------------------------------------------------
+---------------------------FUNCIONALIDADES POR ROL---------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.FUNCIONALIDADES_ROL(@rol int)
+AS
+BEGIN TRY
+
+	SELECT f.id, f.descripcion
+	FROM COCODRILOS_COMEBACK.ROL_FUNCIONALIDAD rf JOIN
+		 COCODRILOS_COMEBACK.FUNCIONALIDAD f ON rf.id_funcionalidad = f.id
+	WHERE rf.id_rol = @rol
+
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+-----------------------------------------------------------------------------
+---------------------------FUNCIONALIDADES POR ROL---------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE(@nombre nvarchar(255), @apellido nvarchar(255), @dni numeric(18,0)) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.CLIENTE c
+	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
+			(@apellido IS NULL OR c.apellido = @apellido) AND
+			(@dni IS NULL OR c.dni = @dni)
+
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+
+
+
+
+
 
 
 
@@ -542,13 +612,6 @@ BEGIN
 		user_password
 	) VALUES (0, 'Administrador General', 'admin', HASHBYTES('SHA2_256', CONVERT(char(100),'w23e')))
 
-	/*
-	INSERT INTO COCODRILOS_COMEBACK.ADMINISTRADOR(
-		dni,
-		username,
-		admin_password
-	) VALUES (0, 'admin', HASHBYTES('SHA2_256', CONVERT(char(100),'w23e')))
-	*/
 
 	INSERT INTO COCODRILOS_COMEBACK.ROL_USUARIO(
 		id_usuario,
@@ -828,7 +891,7 @@ DECLARE @sum_monto_act		numeric(18,2)
 DECLARE @fact_numero_act	numeric(18,0)
 
 DECLARE c_items CURSOR FOR 
-	SELECT TOP 500 m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
+	SELECT TOP 10 m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
 	FROM gd_esquema.Maestra m
 	ORDER BY m.Nro_Factura
 
@@ -953,3 +1016,118 @@ BEGIN
 
 END
 GO
+
+
+---------------------------------------------------
+-------------------ABM CLIENTES--------------------
+---------------------------------------------------
+
+	---------------------------------------------------
+	-----------------------ALTA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.ALTA_CLIENTE(
+		@dni		numeric(18,0),
+		@nombre		nvarchar(255),
+		@apellido	nvarchar(255),
+		@fecha_nac	datetime,
+		@mail		nvarchar(255),
+		@direccion	nvarchar(255),
+		@telefono   nvarchar(50),
+		@piso		int,
+		@dpto		nvarchar(10),
+		@localidad	nvarchar(50),
+		@cod_postal	nvarchar(255)
+	) 
+	AS 
+	BEGIN TRY
+
+		INSERT INTO COCODRILOS_COMEBACK.CLIENTE (
+			dni,
+			nombre,
+			apellido,
+			fecha_nac,
+			mail,
+			direccion,
+			telefono,
+			piso,
+			dpto,
+			localidad,
+			cod_postal
+		) VALUES (
+			@dni,
+			@nombre,
+			@apellido,
+			@fecha_nac,
+			@mail,
+			@direccion,
+			@telefono,
+			@piso,
+			@dpto,
+			@localidad,
+			@cod_postal
+		)
+
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-----------------------BAJA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_CLIENTE(@dni numeric(18,0))
+	AS
+	BEGIN TRY
+		DELETE FROM COCODRILOS_COMEBACK.CLIENTE
+		WHERE dni = @dni
+		
+		SELECT @@ROWCOUNT
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE(
+		@dni		numeric(18,0),
+		@nombre		nvarchar(255),
+		@apellido	nvarchar(255),
+		@fecha_nac	datetime,
+		@mail		nvarchar(255),
+		@direccion	nvarchar(255),
+		@telefono	nvarchar(50),
+		@piso		int,
+		@dpto		nvarchar(10),
+		@localidad	nvarchar(50),
+		@cod_postal	nvarchar(255)
+	) 
+	AS
+	BEGIN TRY 
+
+		UPDATE COCODRILOS_COMEBACK.CLIENTE
+		SET 
+			dni = @dni,
+			nombre = @nombre,
+			apellido = @apellido,
+			fecha_nac = @fecha_nac,
+			mail = @mail,
+			direccion = @direccion,
+			telefono = @telefono,
+			piso = @piso,
+			dpto = @dpto,
+			localidad = @localidad,
+			cod_postal = @cod_postal
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
