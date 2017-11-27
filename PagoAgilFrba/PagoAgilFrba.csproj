@@ -207,6 +207,7 @@
       <DependentUpon>ModificarSucursal.cs</DependentUpon>
     </Compile>
     <Compile Include="BaseDeDatos.cs" />
+    <Compile Include="Controller\ClienteController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
     <Compile Include="Controller\UserController.cs" />
