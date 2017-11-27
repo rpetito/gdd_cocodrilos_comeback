@@ -66,14 +66,47 @@ namespace PagoAgilFrba.Controller {
 			}
 		}
 
+        public DataTable executeDataGridViewRequest(SQLExecutorHelper<SqlDataReader> sqlExecutorHelper, DataGridView dataGridView)
+        {
+            DataTable dt = new DataTable();
+            SqlDataAdapter da = new SqlDataAdapter();
 
+            try
+            {
+                SqlConnection Conexion = BaseDeDatos.ObternerConexion();
+                SqlCommand sqlCommand = new SqlCommand();
+                SqlDataReader result;
 
-	 }
+                using (sqlCommand = new SqlCommand("COCODRILOS_COMEBACK." + sqlExecutorHelper.getProcedureName(), Conexion))
+                {
+                    sqlCommand.CommandType = CommandType.StoredProcedure;
+                    sqlExecutorHelper.addParams(sqlCommand);
+                    da.SelectCommand = sqlCommand;
+                    da.Fill(dt);
+                    dataGridView.DataSource = dt;
+                }
 
+                result = sqlCommand.ExecuteReader();
 
-	
+                while (result.Read())
+                {
+                    sqlExecutorHelper.onReadData(result);
+                }
+                sqlExecutorHelper.onDataProcessed();
+                MessageBox.Show("Operación realizada.");
+                Conexion.Close();
+                return dt;
 
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
+                return null;
+            }
 
+        }
 
+    }
 
 }

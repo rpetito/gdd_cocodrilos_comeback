@@ -65,11 +65,11 @@ namespace PagoAgilFrba.Controller
             });
         }
 
-        public void filterClient(SQLResponse<Int32> listener, String nombre, String apellido, Decimal dni)
+        public void filterClient(SQLResponse<SqlDataReader> listener, String nombre, String apellido, Decimal dni, DataGridView dgv)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
                 getProcedureName = () => { return "BUSCAR_CLIENTE"; },
@@ -85,7 +85,7 @@ namespace PagoAgilFrba.Controller
 
 
 
-                onReadData = (Int32 result) => {
+                onReadData = (SqlDataReader result) => {
 
                     listener.onSuccess(result);
 
@@ -95,9 +95,11 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+                onDataProcessed = () => {
+                    
+                }
 
-            });
+            }, dgv);
 
         }
     }
