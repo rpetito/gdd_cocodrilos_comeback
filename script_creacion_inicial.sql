@@ -198,6 +198,7 @@ CREATE TABLE COCODRILOS_COMEBACK.CLIENTE (
 	fecha_nac	datetime NOT NULL,
 	mail		nvarchar(255) NOT NULL,
 	direccion	nvarchar(255) NOT NULL,
+	telefono	nvarchar(40) NOT NULL DEFAULT '-',
 	piso		int DEFAULT 0,
 	dpto		nvarchar(10) DEFAULT '-',
 	localidad	nvarchar(50) DEFAULT '-',
@@ -999,6 +1000,7 @@ GO
 		@fecha_nac	datetime,
 		@mail		nvarchar(255),
 		@direccion	nvarchar(255),
+		@telefono   nvarchar(50),
 		@piso		int,
 		@dpto		nvarchar(10),
 		@localidad	nvarchar(50),
@@ -1014,6 +1016,7 @@ GO
 			fecha_nac,
 			mail,
 			direccion,
+			telefono,
 			piso,
 			dpto,
 			localidad,
@@ -1025,6 +1028,7 @@ GO
 			@fecha_nac,
 			@mail,
 			@direccion,
+			@telefono,
 			@piso,
 			@dpto,
 			@localidad,
@@ -1054,4 +1058,41 @@ GO
 	BEGIN CATCH
 		SELECT @@ERROR
 	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE(
+		@dni		numeric(18,0),
+		@nombre		nvarchar(255),
+		@apellido	nvarchar(255),
+		@fecha_nac	datetime,
+		@mail		nvarchar(255),
+		@direccion	nvarchar(255),
+		@telefono	nvarchar(50),
+		@piso		int,
+		@dpto		nvarchar(10),
+		@localidad	nvarchar(50),
+		@cod_postal	nvarchar(255)
+	) 
+	AS
+	BEGIN
+
+		UPDATE COCODRILOS_COMEBACK.CLIENTE
+		SET 
+			dni = @dni,
+			nombre = @nombre,
+			apellido = @apellido,
+			fecha_nac = @fecha_nac,
+			mail = @mail,
+			direccion = @direccion,
+			telefono = @telefono,
+			piso = @piso,
+			dpto = @dpto,
+			localidad = @localidad,
+			cod_postal = @cod_postal
+
+	END
 	GO
