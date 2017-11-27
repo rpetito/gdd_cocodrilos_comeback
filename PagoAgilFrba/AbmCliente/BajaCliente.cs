@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using PagoAgilFrba.Controller;
 
 namespace PagoAgilFrba.AbmCliente
 {
@@ -28,6 +29,16 @@ namespace PagoAgilFrba.AbmCliente
         private void CancelarButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void FiltrarButton_Click(object sender, EventArgs e)
+        {
+            String nombre = NombreTB.Text;
+            String apellido = ApellidoTB.Text;
+            Decimal dni = Convert.ToDecimal(DniTB.Text);
+
+            ClienteController filtroCliente = new ClienteController();
+            
         }
     }
 }

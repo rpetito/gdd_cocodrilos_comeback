@@ -125,6 +125,7 @@
             this.FiltrarButton.TabIndex = 2;
             this.FiltrarButton.Text = "Filtrar";
             this.FiltrarButton.UseVisualStyleBackColor = true;
+            this.FiltrarButton.Click += new System.EventHandler(this.FiltrarButton_Click);
             // 
             // BajaClienteGV
             // 

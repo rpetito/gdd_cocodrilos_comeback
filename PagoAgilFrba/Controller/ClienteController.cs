@@ -64,5 +64,41 @@ namespace PagoAgilFrba.Controller
 
             });
         }
+
+        public void filterClient(SQLResponse<Int32> listener, String nombre, String apellido, Decimal dni)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            {
+
+                getProcedureName = () => { return "BUSCAR_CLIENTE"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@nombre"].Value = nombre;
+                    sqlCommand.Parameters.Add("@apellido", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@apellido"].Value = apellido;
+                    sqlCommand.Parameters.Add("@dni", SqlDbType.Decimal);
+                    sqlCommand.Parameters["@dni"].Value = dni;
+                },
+
+
+
+                onReadData = (Int32 result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => { }
+
+            });
+
+        }
     }
 }
