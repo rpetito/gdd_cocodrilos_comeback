@@ -32,8 +32,6 @@ namespace PagoAgilFrba
 
 					onSuccess = (SqlDataReader result) => {
 
-						
-
 						// HACER ESTO POR CADA FUNCIONALIDAD QUE VIENE EN result
 						Button button = new Button();
 

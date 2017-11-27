@@ -110,6 +110,12 @@ DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_CLIENTE
 IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_CLIENTE') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_CLIENTE
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE 
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE
+
 
 
 
@@ -431,7 +437,7 @@ GO
 -----------------------------------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.INHABILITAR_USUARIO(@dni numeric(18,0)) 
 AS
-BEGIN
+BEGIN TRY
 
 	UPDATE COCODRILOS_COMEBACK.USUARIO
 	SET habilitado = 0
@@ -439,7 +445,10 @@ BEGIN
 
 	SELECT @@ERROR
 
-END
+END TRY
+BEGIN CATCH 
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
 GO
 
 
@@ -457,9 +466,32 @@ BEGIN TRY
 
 END TRY
 BEGIN CATCH
-	SELECT @@ERROR
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 END CATCH
 GO
+
+
+-----------------------------------------------------------------------------
+---------------------------FUNCIONALIDADES POR ROL---------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE(@nombre nvarchar(255), @apellido nvarchar(255), @dni numeric(18,0)) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.CLIENTE c
+	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
+			(@apellido IS NULL OR c.apellido = @apellido) AND
+			(@dni IS NULL OR c.dni = @dni)
+
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+
 
 
 
@@ -859,7 +891,7 @@ DECLARE @sum_monto_act		numeric(18,2)
 DECLARE @fact_numero_act	numeric(18,0)
 
 DECLARE c_items CURSOR FOR 
-	SELECT m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
+	SELECT TOP 10 m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
 	FROM gd_esquema.Maestra m
 	ORDER BY m.Nro_Factura
 
@@ -1039,7 +1071,7 @@ GO
 
 	END TRY
 	BEGIN CATCH
-		SELECT @@ERROR
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
 
@@ -1056,7 +1088,7 @@ GO
 		SELECT @@ROWCOUNT
 	END TRY
 	BEGIN CATCH
-		SELECT @@ERROR
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
 
@@ -1078,7 +1110,7 @@ GO
 		@cod_postal	nvarchar(255)
 	) 
 	AS
-	BEGIN
+	BEGIN TRY 
 
 		UPDATE COCODRILOS_COMEBACK.CLIENTE
 		SET 
@@ -1094,5 +1126,8 @@ GO
 			localidad = @localidad,
 			cod_postal = @cod_postal
 
-	END
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
 	GO

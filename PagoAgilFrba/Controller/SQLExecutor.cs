@@ -35,6 +35,7 @@ namespace PagoAgilFrba.Controller {
 				Conexion.Close();
 
 			} catch(Exception ex) {
+				MessageBox.Show(ex.Message, "Error");
 				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
 			}
 

@@ -33,7 +33,6 @@ namespace PagoAgilFrba.Controller {
 				},
 
 				onError = (Error error) => {
-					listener.onError(error);
 				},
 
 				onDataProcessed = () => {}
