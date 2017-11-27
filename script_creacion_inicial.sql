@@ -858,7 +858,7 @@ DECLARE @sum_monto_act		numeric(18,2)
 DECLARE @fact_numero_act	numeric(18,0)
 
 DECLARE c_items CURSOR FOR 
-	SELECT top 10 m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
+	SELECT m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
 	FROM gd_esquema.Maestra m
 	ORDER BY m.Nro_Factura
 
