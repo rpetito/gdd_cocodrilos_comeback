@@ -22,7 +22,6 @@ namespace PagoAgilFrba.AbmFactura
             ClienteTB.Clear();
             EmpresaTB.Clear();
             FacturaTB.Clear();
-            BajaFacturaGV.Rows.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)

@@ -51,6 +51,7 @@
             this.CancelarButton.TabIndex = 16;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // FiltrarButton
             // 
@@ -70,12 +71,18 @@
             this.LimpiarButton.TabIndex = 13;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // BuscadorGV
             // 
+            this.BuscadorGV.AllowUserToAddRows = false;
+            this.BuscadorGV.AllowUserToDeleteRows = false;
+            this.BuscadorGV.AllowUserToOrderColumns = true;
             this.BuscadorGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.BuscadorGV.Location = new System.Drawing.Point(12, 167);
+            this.BuscadorGV.MultiSelect = false;
             this.BuscadorGV.Name = "BuscadorGV";
+            this.BuscadorGV.ReadOnly = true;
             this.BuscadorGV.Size = new System.Drawing.Size(400, 199);
             this.BuscadorGV.TabIndex = 15;
             // 

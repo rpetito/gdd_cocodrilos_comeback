@@ -51,6 +51,7 @@
             this.CancelarButton.TabIndex = 20;
             this.CancelarButton.Text = "Cancelar";
             this.CancelarButton.UseVisualStyleBackColor = true;
+            this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
             // FiltrarButton
             // 
@@ -70,12 +71,18 @@
             this.LimpiarButton.TabIndex = 17;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // BuscadorEmpresaGV
             // 
+            this.BuscadorEmpresaGV.AllowUserToAddRows = false;
+            this.BuscadorEmpresaGV.AllowUserToDeleteRows = false;
+            this.BuscadorEmpresaGV.AllowUserToOrderColumns = true;
             this.BuscadorEmpresaGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.BuscadorEmpresaGV.Location = new System.Drawing.Point(12, 167);
+            this.BuscadorEmpresaGV.MultiSelect = false;
             this.BuscadorEmpresaGV.Name = "BuscadorEmpresaGV";
+            this.BuscadorEmpresaGV.ReadOnly = true;
             this.BuscadorEmpresaGV.Size = new System.Drawing.Size(400, 199);
             this.BuscadorEmpresaGV.TabIndex = 19;
             // 

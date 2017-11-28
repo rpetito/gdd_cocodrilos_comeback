@@ -22,7 +22,6 @@ namespace PagoAgilFrba.AbmEmpresa
             NombreTB.Clear();
             CuitTB.Clear();
             RubroCB.ResetText();
-            BajaEmpresaGV.Rows.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)

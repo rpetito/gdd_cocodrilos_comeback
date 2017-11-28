@@ -21,7 +21,6 @@ namespace PagoAgilFrba.RegistroPago
         {
             SucursalCB.ResetText();
             TotalTB.Clear();
-            FacturasGV.Rows.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)

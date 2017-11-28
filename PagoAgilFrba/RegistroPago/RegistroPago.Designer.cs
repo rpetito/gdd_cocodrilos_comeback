@@ -63,9 +63,14 @@
             // 
             // FacturasGV
             // 
+            this.FacturasGV.AllowUserToAddRows = false;
+            this.FacturasGV.AllowUserToDeleteRows = false;
+            this.FacturasGV.AllowUserToOrderColumns = true;
             this.FacturasGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.FacturasGV.Location = new System.Drawing.Point(12, 115);
+            this.FacturasGV.MultiSelect = false;
             this.FacturasGV.Name = "FacturasGV";
+            this.FacturasGV.ReadOnly = true;
             this.FacturasGV.Size = new System.Drawing.Size(400, 199);
             this.FacturasGV.TabIndex = 15;
             // 

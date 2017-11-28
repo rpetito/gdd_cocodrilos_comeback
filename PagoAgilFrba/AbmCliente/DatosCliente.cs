@@ -6,17 +6,34 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PagoAgilFrba.Model;
+using PagoAgilFrba.Controller;
 using System.Windows.Forms;
 
 namespace PagoAgilFrba.AbmCliente
 {
     public partial class DatosCliente : Form
     {
+        Int32 habilitado = -1;
         public DatosCliente()
         {
-            EstadoCB.Items.Add("Habilitado");
-            EstadoCB.Items.Add("Deshabilitado");
             InitializeComponent();
+            NombreTB.Text = Cliente.getInstance().getNombre();
+            ApellidoTB.Text = Cliente.getInstance().getApellido();
+            DniTB.Text = Cliente.getInstance().getDni().ToString();
+            TelefonoTB.Text = Cliente.getInstance().getTelefono();
+            MailTB.Text = Cliente.getInstance().getMail();
+            FecNacDP.Value = Cliente.getInstance().getFecNac();
+            DireccionTB.Text = Cliente.getInstance().getDireccion();
+            CodigoPostalTB.Text = Cliente.getInstance().getCodPostal();
+            LocalidadTB.Text = Cliente.getInstance().getLocalidad();
+            PisoTB.Text = Cliente.getInstance().getPiso().ToString();
+            DepartamentoTB.Text = Cliente.getInstance().getDepto();
+
+            if (Cliente.getInstance().getHabilitado() == 1)
+                EstadoCB.Checked = true;
+            else EstadoCB.Checked = false;
+
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -37,6 +54,46 @@ namespace PagoAgilFrba.AbmCliente
         private void CancelarButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void ModificarButton_Click(object sender, EventArgs e)
+        {
+
+            habilitar();
+
+            ClienteController clienteController = new ClienteController();
+            clienteController.modifyClient(new Util.SQLResponse<Int32>
+            {
+                onSuccess = (Int32 result) =>
+                {
+                    Util.Util.showSuccessDialog();
+                    this.Close();
+                },
+                onError = (Error fail) =>
+                {
+
+                }
+
+            },
+            Convert.ToDecimal(DniTB.Text),
+            NombreTB.Text,
+            ApellidoTB.Text,
+            FecNacDP.Value,
+            MailTB.Text,
+            DireccionTB.Text,
+            TelefonoTB.Text,
+            Convert.ToInt32(PisoTB.Text),
+            DepartamentoTB.Text,
+            LocalidadTB.Text,
+            CodigoPostalTB.Text,
+            habilitado);
+        }
+
+        private void habilitar()
+        {
+            if (EstadoCB.Checked == true)
+                habilitado = 1;
+            else habilitado = 0;
         }
     }
 }

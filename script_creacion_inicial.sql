@@ -485,8 +485,7 @@ BEGIN TRY
 	FROM COCODRILOS_COMEBACK.CLIENTE c
 	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
 			(@apellido IS NULL OR c.apellido = @apellido) AND
-			(@dni IS NULL OR c.dni = @dni) AND
-			c.habilitado = 1
+			(@dni IS NULL OR c.dni = @dni)
 
 END TRY 
 BEGIN CATCH

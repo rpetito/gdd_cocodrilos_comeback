@@ -68,9 +68,14 @@
             // 
             // ModificarFacturaGV
             // 
+            this.ModificarFacturaGV.AllowUserToAddRows = false;
+            this.ModificarFacturaGV.AllowUserToDeleteRows = false;
+            this.ModificarFacturaGV.AllowUserToOrderColumns = true;
             this.ModificarFacturaGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModificarFacturaGV.Location = new System.Drawing.Point(12, 208);
+            this.ModificarFacturaGV.MultiSelect = false;
             this.ModificarFacturaGV.Name = "ModificarFacturaGV";
+            this.ModificarFacturaGV.ReadOnly = true;
             this.ModificarFacturaGV.Size = new System.Drawing.Size(400, 199);
             this.ModificarFacturaGV.TabIndex = 18;
             // 

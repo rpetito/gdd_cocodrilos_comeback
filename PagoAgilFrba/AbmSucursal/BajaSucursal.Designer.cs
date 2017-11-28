@@ -65,9 +65,14 @@
             // 
             // BajaSucursalGV
             // 
+            this.BajaSucursalGV.AllowUserToAddRows = false;
+            this.BajaSucursalGV.AllowUserToDeleteRows = false;
+            this.BajaSucursalGV.AllowUserToOrderColumns = true;
             this.BajaSucursalGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.BajaSucursalGV.Location = new System.Drawing.Point(12, 172);
+            this.BajaSucursalGV.MultiSelect = false;
             this.BajaSucursalGV.Name = "BajaSucursalGV";
+            this.BajaSucursalGV.ReadOnly = true;
             this.BajaSucursalGV.Size = new System.Drawing.Size(400, 199);
             this.BajaSucursalGV.TabIndex = 14;
             // 

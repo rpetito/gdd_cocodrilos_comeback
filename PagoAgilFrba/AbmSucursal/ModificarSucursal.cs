@@ -22,7 +22,6 @@ namespace PagoAgilFrba.AbmSucursal
             NombreTB.Clear();
             DireccionTB.Clear();
             CodigoPostalTB.Clear();
-            ModificarSucursalGV.Rows.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)

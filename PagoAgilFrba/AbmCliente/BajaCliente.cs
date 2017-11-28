@@ -30,7 +30,6 @@ namespace PagoAgilFrba.AbmCliente
             NombreTB.Clear();
             ApellidoTB.Clear();
             DniTB.Clear();
-            BajaClienteGV.Rows.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)

@@ -65,9 +65,14 @@
             // 
             // ModificarSucursalGV
             // 
+            this.ModificarSucursalGV.AllowUserToAddRows = false;
+            this.ModificarSucursalGV.AllowUserToDeleteRows = false;
+            this.ModificarSucursalGV.AllowUserToOrderColumns = true;
             this.ModificarSucursalGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.ModificarSucursalGV.Location = new System.Drawing.Point(12, 172);
+            this.ModificarSucursalGV.MultiSelect = false;
             this.ModificarSucursalGV.Name = "ModificarSucursalGV";
+            this.ModificarSucursalGV.ReadOnly = true;
             this.ModificarSucursalGV.Size = new System.Drawing.Size(400, 199);
             this.ModificarSucursalGV.TabIndex = 18;
             // 

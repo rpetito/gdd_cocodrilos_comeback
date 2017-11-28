@@ -59,7 +59,8 @@ namespace PagoAgilFrba.AbmCliente
             {
                 onSuccess = (Int32 result) =>
                 {
-
+                    Util.Util.showSuccessDialog();
+                    this.Close();
                 },
                 onError = (Error fail) =>
                 {

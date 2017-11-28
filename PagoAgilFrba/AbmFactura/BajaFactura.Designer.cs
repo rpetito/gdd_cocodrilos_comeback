@@ -68,9 +68,14 @@
             // 
             // BajaFacturaGV
             // 
+            this.BajaFacturaGV.AllowUserToAddRows = false;
+            this.BajaFacturaGV.AllowUserToDeleteRows = false;
+            this.BajaFacturaGV.AllowUserToOrderColumns = true;
             this.BajaFacturaGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.BajaFacturaGV.Location = new System.Drawing.Point(12, 206);
+            this.BajaFacturaGV.MultiSelect = false;
             this.BajaFacturaGV.Name = "BajaFacturaGV";
+            this.BajaFacturaGV.ReadOnly = true;
             this.BajaFacturaGV.Size = new System.Drawing.Size(400, 199);
             this.BajaFacturaGV.TabIndex = 22;
             // 

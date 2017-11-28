@@ -20,7 +20,6 @@ namespace PagoAgilFrba.AbmRol
         private void LimpiarButton_Click(object sender, EventArgs e)
         {
             NombreTB.Clear();
-            ModificarRolGV.Rows.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)
