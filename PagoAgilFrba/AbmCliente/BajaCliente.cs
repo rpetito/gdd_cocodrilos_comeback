@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PagoAgilFrba.Model;
 using PagoAgilFrba.Controller;
+using PagoAgilFrba.Util;
 
 namespace PagoAgilFrba.AbmCliente
 {
@@ -21,6 +22,7 @@ namespace PagoAgilFrba.AbmCliente
         public BajaCliente()
         {
             InitializeComponent();
+			
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -51,6 +53,31 @@ namespace PagoAgilFrba.AbmCliente
 
             }, NombreTB.Text, ApellidoTB.Text, DniTB.Text, BajaClienteGV);
         }
+
+
+		private void eliminarCliente_Click(object sender, EventArgs e) {
+			if(BajaClienteGV.SelectedRows.Count > 0) {
+				foreach(DataGridViewRow row in BajaClienteGV.SelectedRows) {
+					Decimal clienteDNI = (Decimal) row.Cells[0].Value;
+					clienteController.removeClient(new SQLResponse<Int32>() {
+
+						onSuccess = (Int32 result) => {
+							Util.Util.showSuccessDialog();
+							this.FiltrarButton.PerformClick();
+						},
+
+						onError = (Error error) => {
+
+						}
+
+					}, clienteDNI);
+				}
+			} else {
+				MessageBox.Show("Debe seleccionar al menos una fila completa.", "Selección vacía");
+			}
+		}
+
+		
 
     }
 }

@@ -56,12 +56,11 @@ namespace PagoAgilFrba.Controller {
 
 				result = (Int32) sqlCommand.ExecuteScalar();
 				sqlExecutorHelper.onReadData(result);
-                MessageBox.Show("Operación realizada.");
                 Conexion.Close();
 
 			} catch(Exception ex) {
+				MessageBox.Show(ex.Message, "Error");
 				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
-				MessageBox.Show(ex.ToString(), "Algo salio mal. Intente nuevamente.");
 			}
 		}
 

@@ -485,7 +485,8 @@ BEGIN TRY
 	FROM COCODRILOS_COMEBACK.CLIENTE c
 	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
 			(@apellido IS NULL OR c.apellido = @apellido) AND
-			(@dni IS NULL OR c.dni = @dni)
+			(@dni IS NULL OR c.dni = @dni) AND
+			c.habilitado = 1
 
 END TRY 
 BEGIN CATCH
@@ -1085,7 +1086,8 @@ GO
 	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_CLIENTE(@dni numeric(18,0))
 	AS
 	BEGIN TRY
-		DELETE FROM COCODRILOS_COMEBACK.CLIENTE
+		UPDATE COCODRILOS_COMEBACK.CLIENTE
+		SET habilitado = 0
 		WHERE dni = @dni
 		
 		SELECT @@ROWCOUNT
@@ -1110,7 +1112,8 @@ GO
 		@piso		int,
 		@dpto		nvarchar(10),
 		@localidad	nvarchar(50),
-		@cod_postal	nvarchar(255)
+		@cod_postal	nvarchar(255),
+		@habilitado bit
 	) 
 	AS
 	BEGIN TRY 
@@ -1127,7 +1130,10 @@ GO
 			piso = @piso,
 			dpto = @dpto,
 			localidad = @localidad,
-			cod_postal = @cod_postal
+			cod_postal = @cod_postal,
+			habilitado = @habilitado
+
+		SELECT @@ROWCOUNT
 
 	END TRY
 	BEGIN CATCH

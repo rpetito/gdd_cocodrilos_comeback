@@ -277,6 +277,7 @@
     </Compile>
     <Compile Include="Util\SQLExecutorHelper.cs" />
     <Compile Include="Util\SQLResponse.cs" />
+    <Compile Include="Util\Util.cs" />
     <EmbeddedResource Include="AbmCliente\ABMCliente.resx">
       <DependentUpon>ABMCliente.cs</DependentUpon>
     </EmbeddedResource>

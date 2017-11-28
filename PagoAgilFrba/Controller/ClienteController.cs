@@ -65,6 +65,38 @@ namespace PagoAgilFrba.Controller
             });
         }
 
+
+		public void removeClient(SQLResponse<Int32> listener, Decimal dni) {
+			SQLExecutor sqlExecutor = new SQLExecutor();
+			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
+
+				getProcedureName = () => { return "BAJA_CLIENTE"; },
+
+				addParams = (SqlCommand sqlCommand) => {
+					sqlCommand.Parameters.AddWithValue("@dni", dni);
+				},
+
+
+
+				onReadData = (Int32 result) => {
+
+					listener.onSuccess(result);
+
+				},
+
+				onError = (Error error) => {
+
+				},
+
+				onDataProcessed = () => {
+
+				}
+			});
+		
+		}
+		
+
+
         public void filterClient(SQLResponse<SqlDataReader> listener, String nombre, String apellido, String dni, DataGridView dgv)
         {
 
