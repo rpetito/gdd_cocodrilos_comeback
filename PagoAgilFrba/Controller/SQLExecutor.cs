@@ -32,7 +32,6 @@ namespace PagoAgilFrba.Controller {
 					sqlExecutorHelper.onReadData(result);
 				}
 				sqlExecutorHelper.onDataProcessed();
-                MessageBox.Show("Operación realizada.");
                 Conexion.Close();
 
 			} catch(Exception ex) {
@@ -93,7 +92,6 @@ namespace PagoAgilFrba.Controller {
                     sqlExecutorHelper.onReadData(result);
                 }
                 sqlExecutorHelper.onDataProcessed();
-                MessageBox.Show("Operación realizada.");
                 Conexion.Close();
                 return dt;
 

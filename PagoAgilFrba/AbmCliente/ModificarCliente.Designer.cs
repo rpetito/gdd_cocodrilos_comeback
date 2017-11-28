@@ -52,6 +52,7 @@
             this.FiltrarButton.TabIndex = 9;
             this.FiltrarButton.Text = "Filtrar";
             this.FiltrarButton.UseVisualStyleBackColor = true;
+			this.FiltrarButton.Click += new System.EventHandler(this.ModificarButton_Click);
             // 
             // LimpiarButton
             // 

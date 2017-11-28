@@ -472,9 +472,12 @@ GO
 
 
 -----------------------------------------------------------------------------
----------------------------FUNCIONALIDADES POR ROL---------------------------
+-------------------------------BUSCAR CLIENTE--------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE(@nombre nvarchar(255), @apellido nvarchar(255), @dni numeric(18,0)) 
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE(
+	@nombre nvarchar(255) = NULL,
+	@apellido nvarchar(255) = NULL, 
+	@dni numeric(18,0) = NULL) 
 AS
 BEGIN TRY
 	

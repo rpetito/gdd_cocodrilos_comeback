@@ -65,7 +65,7 @@ namespace PagoAgilFrba.Controller
             });
         }
 
-        public void filterClient(SQLResponse<SqlDataReader> listener, String nombre, String apellido, Decimal dni, DataGridView dgv)
+        public void filterClient(SQLResponse<SqlDataReader> listener, String nombre, String apellido, String dni, DataGridView dgv)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
@@ -75,12 +75,18 @@ namespace PagoAgilFrba.Controller
                 getProcedureName = () => { return "BUSCAR_CLIENTE"; },
 
                 addParams = (SqlCommand sqlCommand) => {
-                    sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
-                    sqlCommand.Parameters["@nombre"].Value = nombre;
-                    sqlCommand.Parameters.Add("@apellido", SqlDbType.NVarChar);
-                    sqlCommand.Parameters["@apellido"].Value = apellido;
-                    sqlCommand.Parameters.Add("@dni", SqlDbType.Decimal);
-                    sqlCommand.Parameters["@dni"].Value = dni;
+					if(!string.IsNullOrWhiteSpace(nombre)) {
+						sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+						sqlCommand.Parameters["@nombre"].Value = nombre;
+					}
+					if(!string.IsNullOrWhiteSpace(apellido)) {
+						sqlCommand.Parameters.Add("@apellido", SqlDbType.NVarChar);
+						sqlCommand.Parameters["@apellido"].Value = apellido;
+					}
+					if(!string.IsNullOrWhiteSpace(dni)) {
+						sqlCommand.Parameters.Add("@dni", SqlDbType.Decimal);
+						sqlCommand.Parameters["@dni"].Value = Convert.ToDecimal(dni);
+					}
                 },
 
 

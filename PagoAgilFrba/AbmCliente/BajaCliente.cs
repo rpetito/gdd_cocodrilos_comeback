@@ -15,6 +15,9 @@ namespace PagoAgilFrba.AbmCliente
 {
     public partial class BajaCliente : Form
     {
+
+		private ClienteController clienteController = new ClienteController();
+
         public BajaCliente()
         {
             InitializeComponent();
@@ -35,8 +38,7 @@ namespace PagoAgilFrba.AbmCliente
 
         private void FiltrarButton_Click(object sender, EventArgs e)
         {
-            ClienteController filtroCliente = new ClienteController();
-            filtroCliente.filterClient(new Util.SQLResponse<SqlDataReader>
+            clienteController.filterClient(new Util.SQLResponse<SqlDataReader>
             {
                 onSuccess = (SqlDataReader result) =>
                 {
@@ -47,7 +49,7 @@ namespace PagoAgilFrba.AbmCliente
 
                 }
 
-            }, NombreTB.Text, ApellidoTB.Text, Convert.ToDecimal(DniTB.Text), BajaClienteGV);
+            }, NombreTB.Text, ApellidoTB.Text, DniTB.Text, BajaClienteGV);
         }
 
     }
