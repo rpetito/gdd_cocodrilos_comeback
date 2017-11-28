@@ -1,8 +1,11 @@
 ﻿using PagoAgilFrba.Controller;
+using PagoAgilFrba.Model;
+using PagoAgilFrba.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -24,9 +27,8 @@ namespace PagoAgilFrba.AbmCliente
         }
 
 
-		private void ModificarButton_Click(object sender, EventArgs e) { 
-		
-		}
+	
+
 
         private void LimpiarButton_Click(object sender, EventArgs e)
         {
@@ -40,6 +42,23 @@ namespace PagoAgilFrba.AbmCliente
         {
             this.Close();
         }
+
+
+		private void FiltrarButton_Click(object sender, EventArgs e) {
+			clienteController.filterClient(new SQLResponse<SqlDataReader>() {
+
+				onSuccess = (SqlDataReader result) => {
+
+				},
+
+				onError = (Error error) => {
+
+				}
+
+			}, NombreTB.Text, ApellidoTB.Text, DniTB.Text, ModificarGV);
+		}
+
+
 
     }
 
