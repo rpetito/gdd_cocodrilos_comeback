@@ -298,7 +298,7 @@ CREATE TABLE COCODRILOS_COMEBACK.FACTURA (
 CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 	item_id			int IDENTITY(1,1),
 	fact_numero		numeric(18,0),
-	fact_empresa	nvarchar(50),
+	fact_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	precio_unitario	numeric(18,5),
 	cantidad		numeric(18,0),
 	PRIMARY KEY (item_id, fact_numero, fact_empresa),
@@ -330,14 +330,14 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS(
 	importe_comision	numeric(18,2),
 	porcentaje_comision	numeric(18,2),
 	fact_numero			numeric(18,0),
-	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA(
 	fact_numero				numeric(18,0),
-	fact_empresa			nvarchar(50),
+	fact_empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	dev_motivo				nvarchar(250) DEFAULT 'No especifica',
 	dev_usuario_aceptante	numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.USUARIO,
 	dev_tipo_devolucion		nvarchar(50) NOT NULL,
@@ -1262,27 +1262,34 @@ GO
 	-------------------MODIFICACION--------------------
 	---------------------------------------------------
 	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA(
-		@cuit		nvarchar(50),
-		@nombre		nvarchar(255),
-		@direccion	nvarchar(255),
-		@rubro		numeric(18,0),
-		@habilitado bit
+		@oldCuit		nvarchar(50),
+		@newCuit		nvarchar(50),
+		@nombre			nvarchar(255),
+		@direccion		nvarchar(255),
+		@fecRendicion	int,
+		@rubro			decimal(18,0),
+		@habilitado		bit
 	) 
 	AS
-	BEGIN TRY 
+	--BEGIN TRY 
+	BEGIN
 
 		UPDATE COCODRILOS_COMEBACK.EMPRESA
 		SET 
-			cuit = @cuit,
+			cuit = @newCuit,
 			nombre = @nombre,
 			direccion = @direccion,
+			dia_rendicion = @fecRendicion,
 			rubro = @rubro,
 			habilitado = @habilitado
+		WHERE cuit = @oldCuit
 
 		SELECT @@ROWCOUNT
 
-	END TRY
-	BEGIN CATCH
-		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	END CATCH
+	--END TRY
+	END
+	--BEGIN CATCH
+	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	--END CATCH
+
 	GO
