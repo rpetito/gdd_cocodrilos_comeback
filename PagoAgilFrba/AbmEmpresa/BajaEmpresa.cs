@@ -19,14 +19,14 @@ namespace PagoAgilFrba.AbmEmpresa
 
         Decimal idRubro;
         Dictionary<Decimal, String> dictRubro = new Dictionary<Decimal, String>();
-        EmpresaController empresa = new EmpresaController();
+        EmpresaController empresaController = new EmpresaController();
 
         public BajaEmpresa()
         {
             InitializeComponent();
 
             
-            empresa.fillRubros(new SQLResponse<SqlDataReader>()
+            empresaController.fillRubros(new SQLResponse<SqlDataReader>()
             {
 
                 onSuccess = (SqlDataReader result) => {
@@ -55,7 +55,7 @@ namespace PagoAgilFrba.AbmEmpresa
         private void FiltrarButton_Click(object sender, EventArgs e)
         {
             idRubro = dictRubro.FirstOrDefault(x => x.Value == RubroCB.Text).Key;
-            empresa.filterEmpresa(new Util.SQLResponse<SqlDataReader>
+            empresaController.filterEmpresa(new Util.SQLResponse<SqlDataReader>
             {
                 onSuccess = (SqlDataReader result) =>
                 {
@@ -76,7 +76,7 @@ namespace PagoAgilFrba.AbmEmpresa
                 foreach (DataGridViewRow row in BajaEmpresaGV.SelectedRows)
                 {
                     String cuit = (String)row.Cells[0].Value;
-                    empresa.removeEmpresa(new SQLResponse<Int32>()
+                    empresaController.removeEmpresa(new SQLResponse<Int32>()
                     {
 
                         onSuccess = (Int32 result) => {

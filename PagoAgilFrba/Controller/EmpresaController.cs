@@ -159,5 +159,48 @@ namespace PagoAgilFrba.Controller
 
         }
 
+        public void modifyEmpresa(SQLResponse<Int32> listener, String oldCuit, String newCuit, String nombre, String direccion, Int32 fecRendicion, Decimal rubro, Int32 habilitado)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            {
+
+                getProcedureName = () => { return "MODIFICAR_EMPRESA"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    sqlCommand.Parameters.Add("@oldCuit", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@oldCuit"].Value = oldCuit;
+                    sqlCommand.Parameters.Add("@newCuit", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@newCuit"].Value = newCuit;
+                    sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@nombre"].Value = nombre;
+                    sqlCommand.Parameters.Add("@direccion", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@direccion"].Value = direccion;
+                    sqlCommand.Parameters.Add("@fecRendicion", SqlDbType.Int);
+                    sqlCommand.Parameters["@fecRendicion"].Value = fecRendicion;
+                    sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
+                    sqlCommand.Parameters["@rubro"].Value = rubro;
+                    sqlCommand.Parameters.Add("@habilitado", SqlDbType.Bit);
+                    sqlCommand.Parameters["@habilitado"].Value = habilitado;
+                },
+
+
+
+                onReadData = (Int32 result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => { }
+
+            });
+        }
+
     }
 }

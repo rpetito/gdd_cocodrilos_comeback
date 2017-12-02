@@ -66,6 +66,16 @@ namespace PagoAgilFrba
             return this.dia_rendicion;
         }
 
+        public void setRubro(Decimal rubro)
+        {
+            this.rubro = rubro;
+        }
+
+        public Decimal getRubro()
+        {
+            return this.rubro;
+        }
+
         public void setHabilitado(Int32 habilitado)
         {
             this.habilitado = habilitado;

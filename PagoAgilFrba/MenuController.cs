@@ -24,25 +24,25 @@ namespace PagoAgilFrba
                     form = new AbmEmpresa.ABMEmpresa();
                     break;
                 case 3:
-                    form = new AbmFactura.ABMFactura();
-                    break;
-                case 4:
-                    form = new AbmRol.ABMRol();
-                    break;
-                case 5:
                     form = new AbmSucursal.ABMSucursal();
                     break;
-                case 6:
+                case 4:
+                    form = new AbmFactura.ABMFactura();
+                    break;
+                case 5:
                     form = new RegistroPago.RegistroPago();
                     break;
-                case 7:
+                case 6:
                     form = new Rendicion.Rendicion();
                     break;
-                case 8:
+                case 7:
                     form = new Devolucion.Devolucion();
                     break;
-                case 9:
+                case 8:
                     form = new ListadoEstadistico.ListadoEstadistico();
+                    break;
+                case 9:
+                    form = new AbmRol.ABMRol();
                     break;
 
             }

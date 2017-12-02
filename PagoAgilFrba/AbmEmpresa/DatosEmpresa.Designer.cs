@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.CrearButton = new System.Windows.Forms.Button();
+            this.ModificarButton = new System.Windows.Forms.Button();
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.CancelarButton = new System.Windows.Forms.Button();
             this.EmpresaGB = new System.Windows.Forms.GroupBox();
+            this.EstadoCB = new System.Windows.Forms.CheckBox();
             this.RubroCB = new System.Windows.Forms.ComboBox();
             this.Estado = new System.Windows.Forms.Label();
             this.CuitTB = new System.Windows.Forms.TextBox();
@@ -41,23 +42,25 @@
             this.Dni = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
             this.Direccion = new System.Windows.Forms.Label();
-            this.EstadoCB = new System.Windows.Forms.CheckBox();
+            this.FecRendicion = new System.Windows.Forms.Label();
+            this.FecRendicionTB = new System.Windows.Forms.TextBox();
             this.EmpresaGB.SuspendLayout();
             this.SuspendLayout();
             // 
-            // CrearButton
+            // ModificarButton
             // 
-            this.CrearButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CrearButton.Location = new System.Drawing.Point(353, 177);
-            this.CrearButton.Name = "CrearButton";
-            this.CrearButton.Size = new System.Drawing.Size(75, 23);
-            this.CrearButton.TabIndex = 11;
-            this.CrearButton.Text = "Crear";
-            this.CrearButton.UseVisualStyleBackColor = true;
+            this.ModificarButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ModificarButton.Location = new System.Drawing.Point(352, 235);
+            this.ModificarButton.Name = "ModificarButton";
+            this.ModificarButton.Size = new System.Drawing.Size(75, 23);
+            this.ModificarButton.TabIndex = 11;
+            this.ModificarButton.Text = "Modificar";
+            this.ModificarButton.UseVisualStyleBackColor = true;
+            this.ModificarButton.Click += new System.EventHandler(this.ModificarButton_Click);
             // 
             // LimpiarButton
             // 
-            this.LimpiarButton.Location = new System.Drawing.Point(187, 177);
+            this.LimpiarButton.Location = new System.Drawing.Point(186, 235);
             this.LimpiarButton.Name = "LimpiarButton";
             this.LimpiarButton.Size = new System.Drawing.Size(75, 23);
             this.LimpiarButton.TabIndex = 10;
@@ -67,7 +70,7 @@
             // 
             // CancelarButton
             // 
-            this.CancelarButton.Location = new System.Drawing.Point(22, 177);
+            this.CancelarButton.Location = new System.Drawing.Point(21, 235);
             this.CancelarButton.Name = "CancelarButton";
             this.CancelarButton.Size = new System.Drawing.Size(75, 23);
             this.CancelarButton.TabIndex = 9;
@@ -77,6 +80,8 @@
             // 
             // EmpresaGB
             // 
+            this.EmpresaGB.Controls.Add(this.FecRendicionTB);
+            this.EmpresaGB.Controls.Add(this.FecRendicion);
             this.EmpresaGB.Controls.Add(this.EstadoCB);
             this.EmpresaGB.Controls.Add(this.RubroCB);
             this.EmpresaGB.Controls.Add(this.Estado);
@@ -89,10 +94,20 @@
             this.EmpresaGB.Controls.Add(this.Direccion);
             this.EmpresaGB.Location = new System.Drawing.Point(12, 12);
             this.EmpresaGB.Name = "EmpresaGB";
-            this.EmpresaGB.Size = new System.Drawing.Size(426, 147);
+            this.EmpresaGB.Size = new System.Drawing.Size(426, 189);
             this.EmpresaGB.TabIndex = 8;
             this.EmpresaGB.TabStop = false;
             this.EmpresaGB.Text = "Empresa";
+            // 
+            // EstadoCB
+            // 
+            this.EstadoCB.AutoSize = true;
+            this.EstadoCB.Location = new System.Drawing.Point(190, 151);
+            this.EstadoCB.Name = "EstadoCB";
+            this.EstadoCB.Size = new System.Drawing.Size(73, 17);
+            this.EstadoCB.TabIndex = 23;
+            this.EstadoCB.Text = "Habilitado";
+            this.EstadoCB.UseVisualStyleBackColor = true;
             // 
             // RubroCB
             // 
@@ -105,7 +120,7 @@
             // Estado
             // 
             this.Estado.AutoSize = true;
-            this.Estado.Location = new System.Drawing.Point(141, 107);
+            this.Estado.Location = new System.Drawing.Point(141, 152);
             this.Estado.Name = "Estado";
             this.Estado.Size = new System.Drawing.Size(43, 13);
             this.Estado.TabIndex = 13;
@@ -168,22 +183,28 @@
             this.Direccion.TabIndex = 0;
             this.Direccion.Text = "Dirección:";
             // 
-            // EstadoCB
+            // FecRendicion
             // 
-            this.EstadoCB.AutoSize = true;
-            this.EstadoCB.Location = new System.Drawing.Point(190, 106);
-            this.EstadoCB.Name = "EstadoCB";
-            this.EstadoCB.Size = new System.Drawing.Size(73, 17);
-            this.EstadoCB.TabIndex = 23;
-            this.EstadoCB.Text = "Habilitado";
-            this.EstadoCB.UseVisualStyleBackColor = true;
+            this.FecRendicion.AutoSize = true;
+            this.FecRendicion.Location = new System.Drawing.Point(90, 94);
+            this.FecRendicion.Name = "FecRendicion";
+            this.FecRendicion.Size = new System.Drawing.Size(94, 13);
+            this.FecRendicion.TabIndex = 24;
+            this.FecRendicion.Text = "Día de Rendición:";
+            // 
+            // FecRendicionTB
+            // 
+            this.FecRendicionTB.Location = new System.Drawing.Point(190, 91);
+            this.FecRendicionTB.Name = "FecRendicionTB";
+            this.FecRendicionTB.Size = new System.Drawing.Size(100, 20);
+            this.FecRendicionTB.TabIndex = 25;
             // 
             // DatosEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(449, 216);
-            this.Controls.Add(this.CrearButton);
+            this.ClientSize = new System.Drawing.Size(449, 270);
+            this.Controls.Add(this.ModificarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.EmpresaGB);
@@ -197,7 +218,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button CrearButton;
+        private System.Windows.Forms.Button ModificarButton;
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.GroupBox EmpresaGB;
@@ -211,5 +232,7 @@
         private System.Windows.Forms.Label Direccion;
         private System.Windows.Forms.Label Estado;
         private System.Windows.Forms.CheckBox EstadoCB;
+        private System.Windows.Forms.TextBox FecRendicionTB;
+        private System.Windows.Forms.Label FecRendicion;
     }
 }
