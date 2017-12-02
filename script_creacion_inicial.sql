@@ -116,6 +116,20 @@ DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE
 IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_EMPRESA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_EMPRESA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_RUBROS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_RUBROS
 
 
 
@@ -284,7 +298,7 @@ CREATE TABLE COCODRILOS_COMEBACK.FACTURA (
 CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 	item_id			int IDENTITY(1,1),
 	fact_numero		numeric(18,0),
-	fact_empresa	nvarchar(50),
+	fact_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	precio_unitario	numeric(18,5),
 	cantidad		numeric(18,0),
 	PRIMARY KEY (item_id, fact_numero, fact_empresa),
@@ -316,14 +330,14 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS(
 	importe_comision	numeric(18,2),
 	porcentaje_comision	numeric(18,2),
 	fact_numero			numeric(18,0),
-	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA(
 	fact_numero				numeric(18,0),
-	fact_empresa			nvarchar(50),
+	fact_empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	dev_motivo				nvarchar(250) DEFAULT 'No especifica',
 	dev_usuario_aceptante	numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.USUARIO,
 	dev_tipo_devolucion		nvarchar(50) NOT NULL,
@@ -485,6 +499,44 @@ BEGIN TRY
 			(@apellido IS NULL OR c.apellido = @apellido) AND
 			(@dni IS NULL OR c.dni = @dni)
 
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+-----------------------------------------------------------------------------
+-------------------------------BUSCAR EMPRESA--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA(
+	@nombre nvarchar(255) = NULL,
+	@rubro numeric(18,0) = NULL, 
+	@cuit nvarchar(50) = NULL) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.EMPRESA e
+	WHERE	(@nombre IS NULL OR e.nombre = @nombre) AND
+			(@rubro IS NULL OR e.rubro = @rubro) AND
+			(@cuit IS NULL OR e.cuit = @cuit)
+
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+-----------------------------------------------------------------------------
+-------------------------------OBTENER RUBROS--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_RUBROS
+AS
+BEGIN TRY
+	SELECT *
+	FROM COCODRILOS_COMEBACK.RUBRO
 END TRY 
 BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
@@ -1156,4 +1208,97 @@ GO
 	--BEGIN CATCH
 	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	--END CATCH
+
+	GO
+
+
+---------------------------------------------------
+-------------------ABM EMPRESA---------------------
+---------------------------------------------------
+
+	---------------------------------------------------
+	-----------------------ALTA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.ALTA_EMPRESA(
+		@cuit		nvarchar(50),
+		@nombre		nvarchar(255),
+		@direccion	nvarchar(255),
+		@rubro		numeric(18,0)
+	) 
+	AS 
+	BEGIN TRY
+
+		INSERT INTO COCODRILOS_COMEBACK.EMPRESA (
+			cuit,
+			nombre,
+			direccion,
+			rubro
+		) VALUES (
+			@cuit,
+			@nombre,
+			@direccion,
+			@rubro
+		)
+
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-----------------------BAJA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_EMPRESA(@cuit nvarchar(50))
+	AS
+	BEGIN TRY
+		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		SET habilitado = 0
+		WHERE cuit = @cuit
+		
+		SELECT @@ROWCOUNT
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA(
+		@oldCuit		nvarchar(50),
+		@newCuit		nvarchar(50),
+		@nombre			nvarchar(255),
+		@direccion		nvarchar(255),
+		@fecRendicion	int,
+		@rubro			decimal(18,0),
+		@habilitado		bit
+	) 
+	AS
+	--BEGIN TRY 
+	BEGIN
+
+		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		SET 
+			cuit = @newCuit,
+			nombre = @nombre,
+			direccion = @direccion,
+			dia_rendicion = @fecRendicion,
+			rubro = @rubro,
+			habilitado = @habilitado
+		WHERE cuit = @oldCuit
+
+		SELECT @@ROWCOUNT
+
+	--END TRY
+	END
+	--BEGIN CATCH
+	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	--END CATCH
+
 	GO
