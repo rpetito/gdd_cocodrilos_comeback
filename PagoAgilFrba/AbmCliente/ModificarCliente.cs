@@ -81,9 +81,15 @@ namespace PagoAgilFrba.AbmCliente
                 Cliente.getInstance().setHabilitado(Convert.ToInt32(this.ModificarGV.CurrentRow.Cells[12].Value));
 
                 DatosCliente datos = new PagoAgilFrba.AbmCliente.DatosCliente();
+				datos.FormClosed += new FormClosedEventHandler(ModificarCliente_datosClienteClosed);
                 datos.Show();
             }
         }
+
+		void ModificarCliente_datosClienteClosed(object sender, FormClosedEventArgs e) {
+			FiltrarButton.PerformClick();
+		}
+
     }
 
 
