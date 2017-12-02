@@ -49,7 +49,7 @@ namespace PagoAgilFrba.AbmCliente
 
 
 		private void FiltrarButton_Click(object sender, EventArgs e) {
-			clienteController.filterClient(new SQLResponse<SqlDataReader>() {
+			clienteController.filterClientTotalidad(new SQLResponse<SqlDataReader>() {
 
 				onSuccess = (SqlDataReader result) => {
 
