@@ -14,7 +14,9 @@ namespace PagoAgilFrba.AbmCliente
 {
     public partial class DatosCliente : Form
     {
-        Int32 habilitado = -1;
+        private Int32 habilitado = -1;
+		private String originalDNI;
+
         public DatosCliente()
         {
             InitializeComponent();
@@ -29,6 +31,8 @@ namespace PagoAgilFrba.AbmCliente
             LocalidadTB.Text = Cliente.getInstance().getLocalidad();
             PisoTB.Text = Cliente.getInstance().getPiso().ToString();
             DepartamentoTB.Text = Cliente.getInstance().getDepto();
+
+			originalDNI = Cliente.getInstance().getDni().ToString();
 
             if (Cliente.getInstance().getHabilitado() == 1)
                 EstadoCB.Checked = true;
@@ -75,6 +79,7 @@ namespace PagoAgilFrba.AbmCliente
                 }
 
             },
+			Convert.ToDecimal(originalDNI),
             Convert.ToDecimal(DniTB.Text),
             NombreTB.Text,
             ApellidoTB.Text,
@@ -95,5 +100,12 @@ namespace PagoAgilFrba.AbmCliente
                 habilitado = 1;
             else habilitado = 0;
         }
+
+		
+
     }
+
+
+
+
 }

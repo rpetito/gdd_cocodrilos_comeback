@@ -141,7 +141,7 @@ namespace PagoAgilFrba.Controller
 
         }
 
-        public void modifyClient(SQLResponse<Int32> listener, decimal dni, string nombre, string apellido, DateTime fecha_nac, string mail, string direccion, string telefono, int piso, string dpto, string localidad, string cod_postal, Int32 habilitado)
+        public void modifyClient(SQLResponse<Int32> listener, decimal oldDNI, decimal newDNI, string nombre, string apellido, DateTime fecha_nac, string mail, string direccion, string telefono, int piso, string dpto, string localidad, string cod_postal, Int32 habilitado)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
@@ -150,9 +150,11 @@ namespace PagoAgilFrba.Controller
 
                 getProcedureName = () => { return "MODIFICAR_CLIENTE"; },
 
-                addParams = (SqlCommand sqlCommand) => {
-                    sqlCommand.Parameters.Add("@dni", SqlDbType.Decimal);
-                    sqlCommand.Parameters["@dni"].Value = dni;
+				addParams = (SqlCommand sqlCommand) => {
+					sqlCommand.Parameters.Add("@oldDni", SqlDbType.Decimal);
+					sqlCommand.Parameters["@oldDni"].Value = oldDNI;
+                    sqlCommand.Parameters.Add("@newDni", SqlDbType.Decimal);
+					sqlCommand.Parameters["@newDni"].Value = newDNI;
                     sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
                     sqlCommand.Parameters["@nombre"].Value = nombre;
                     sqlCommand.Parameters.Add("@apellido", SqlDbType.NVarChar);

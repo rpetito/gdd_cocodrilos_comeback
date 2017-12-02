@@ -147,8 +147,6 @@ GO
 
 
 
-
-
 --###########################################################################
 --###########################################################################
 		---------------------CREACION DE SCHEMA----------------------
@@ -184,7 +182,7 @@ CREATE TABLE COCODRILOS_COMEBACK.USUARIO (
 	user_password	char(100) NOT NULL,
 	mail			nvarchar(255) UNIQUE,
 	login_fallidos	int DEFAULT 0,
-	habilitado		int DEFAULT 1
+	habilitado		bit DEFAULT 1
 )
 
 
@@ -193,7 +191,7 @@ CREATE TABLE COCODRILOS_COMEBACK.SUCURSAL (
 	nombre		nvarchar(50),
 	direccion	nvarchar(50),
 	cod_postal	numeric(18,0) UNIQUE,
-	habilitado	int DEFAULT 1
+	habilitado	bit DEFAULT 1
 )
 
 
@@ -209,21 +207,21 @@ CREATE TABLE COCODRILOS_COMEBACK.CLIENTE (
 	dpto		nvarchar(10) DEFAULT '-',
 	localidad	nvarchar(50) DEFAULT '-',
 	cod_postal	nvarchar(255) NOT NULL,
-	habilitado	int DEFAULT 1
+	habilitado	bit DEFAULT 1
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.ROL (
 	id				int IDENTITY(1,1) PRIMARY KEY,
 	descripcion		nvarchar(255) UNIQUE,
-	habilitado		int DEFAULT 1
+	habilitado		bit DEFAULT 1
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.ROL_USUARIO (
 	id_usuario		numeric(18,0),
 	id_rol			int,
-	habilitado		int DEFAULT 1,
+	habilitado		bit DEFAULT 1,
 	PRIMARY KEY(id_usuario, id_rol),
 	FOREIGN KEY (id_usuario) REFERENCES COCODRILOS_COMEBACK.USUARIO,
 	FOREIGN KEY (id_rol) REFERENCES COCODRILOS_COMEBACK.ROL
@@ -266,14 +264,14 @@ CREATE TABLE COCODRILOS_COMEBACK.EMPRESA (
 	direccion		nvarchar(255),
 	dia_rendicion	int DEFAULT 28, 
 	rubro			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.RUBRO,
-	habilitado		int DEFAULT 1
+	habilitado		bit DEFAULT 1
 )
 
 
 CREATE TABLE COCODRILOS_COMEBACK.FACTURA (
 	numero			numeric(18,0),
-	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
-	empresa			nvarchar(50)  FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE ON UPDATE CASCADE,
+	empresa			nvarchar(50)  FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	fecha_emision	datetime,
 	fecha_vto		datetime,
 	total			numeric(18,2),
@@ -303,7 +301,7 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
 	importe_comision	numeric(18,2),
 	porcentaje_comision	numeric(18,2),
 	fact_numero			numeric(18,0),
-	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
+	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
 	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
@@ -344,12 +342,12 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
 	pago_id			numeric(18,0) PRIMARY KEY,
 	fecha_pago		datetime,
 	fact_numero		numeric(18,0),
-	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
-	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
-	medio_pago_id	int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.MEDIO_PAGO,
+	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
+	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE ON UPDATE CASCADE,
+	medio_pago_id	int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.MEDIO_PAGO ON UPDATE CASCADE,
 	fecha_vto		datetime,
 	importe_pago	numeric(20,2),
-	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL,
+	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL ON UPDATE CASCADE,
 	FOREIGN KEY(fact_numero, empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA,
 )
 
@@ -359,12 +357,12 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS(
 	pago_id			numeric(18,0),
 	fecha_pago		datetime,
 	fact_numero		numeric(18,0),
-	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA,
-	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE,
-	medio_pago_id	int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.MEDIO_PAGO,
+	empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
+	cliente			numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.CLIENTE ON UPDATE CASCADE,
+	medio_pago_id	int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.MEDIO_PAGO ON UPDATE CASCADE,
 	fecha_vto		datetime,
 	importe_pago	numeric(20,2),
-	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL,
+	sucursal		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL ON UPDATE CASCADE,
 	FOREIGN KEY(fact_numero, empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA,
 )
 
@@ -495,6 +493,13 @@ GO
 
 
 
+
+
+--###########################################################################
+--###########################################################################
+----------------------------CREACION DE TRIGGERS-----------------------------
+--###########################################################################
+--###########################################################################
 
 
 
@@ -1101,7 +1106,8 @@ GO
 	-------------------MODIFICACION--------------------
 	---------------------------------------------------
 	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE(
-		@dni		numeric(18,0),
+		@oldDni		numeric(18,0),
+		@newDni		numeric(18,0),
 		@nombre		nvarchar(255),
 		@apellido	nvarchar(255),
 		@fecha_nac	datetime,
@@ -1115,11 +1121,12 @@ GO
 		@habilitado bit
 	) 
 	AS
-	BEGIN TRY 
+	--BEGIN TRY 
+	BEGIN
 
 		UPDATE COCODRILOS_COMEBACK.CLIENTE
 		SET 
-			dni = @dni,
+			dni = @newDni,
 			nombre = @nombre,
 			apellido = @apellido,
 			fecha_nac = @fecha_nac,
@@ -1131,11 +1138,13 @@ GO
 			localidad = @localidad,
 			cod_postal = @cod_postal,
 			habilitado = @habilitado
+		WHERE dni = @oldDni
 
 		SELECT @@ROWCOUNT
 
-	END TRY
-	BEGIN CATCH
-		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	END CATCH
+	--END TRY
+	END
+	--BEGIN CATCH
+	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	--END CATCH
 	GO

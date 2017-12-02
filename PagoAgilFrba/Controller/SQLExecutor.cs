@@ -36,7 +36,7 @@ namespace PagoAgilFrba.Controller {
 
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message, "Error");
-				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
+				sqlExecutorHelper.onError(Error.errorWithMessage(ex.Message));
 			}
 
 		}
@@ -60,7 +60,7 @@ namespace PagoAgilFrba.Controller {
 
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message, "Error");
-				sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
+				sqlExecutorHelper.onError(Error.errorWithMessage(ex.Message));
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace PagoAgilFrba.Controller {
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
-                sqlExecutorHelper.onError(Error.errorWithMessage("Algo salio mal. Intente nuevamente"));
+                sqlExecutorHelper.onError(Error.errorWithMessage(ex.Message));
                 return null;
             }
 
