@@ -45,6 +45,7 @@ namespace PagoAgilFrba.AbmEmpresa
             DireccionTB.Clear();
             CuitTB.Clear();
             RubroCB.ResetText();
+            DiaRendicionTB.Clear();
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)
@@ -72,7 +73,8 @@ namespace PagoAgilFrba.AbmEmpresa
             CuitTB.Text,
             NombreTB.Text,
             DireccionTB.Text,
-            idRubro);
+            idRubro,
+            Convert.ToInt32(DiaRendicionTB.Text));
         }
     }
 }

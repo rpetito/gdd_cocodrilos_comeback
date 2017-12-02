@@ -1270,7 +1270,8 @@ GO
 		@cuit		nvarchar(50),
 		@nombre		nvarchar(255),
 		@direccion	nvarchar(255),
-		@rubro		numeric(18,0)
+		@rubro		numeric(18,0),
+		@diaRendicion int
 	) 
 	AS 
 	BEGIN TRY
@@ -1279,11 +1280,13 @@ GO
 			cuit,
 			nombre,
 			direccion,
+			dia_rendicion,
 			rubro
 		) VALUES (
 			@cuit,
 			@nombre,
 			@direccion,
+			@diaRendicion,
 			@rubro
 		)
 

@@ -15,7 +15,7 @@ namespace PagoAgilFrba.Controller
     class EmpresaController
     {
 
-        public void insertNewEmpresa(SQLResponse<Int32> listener, String cuit, String nombre, String direccion, Decimal rubro)
+        public void insertNewEmpresa(SQLResponse<Int32> listener, String cuit, String nombre, String direccion, Decimal rubro, Int32 diaRendicion)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
@@ -32,6 +32,8 @@ namespace PagoAgilFrba.Controller
                     sqlCommand.Parameters["@direccion"].Value = direccion;
                     sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
                     sqlCommand.Parameters["@rubro"].Value = rubro;
+                    sqlCommand.Parameters.Add("@diaRendicion", SqlDbType.Int);
+                    sqlCommand.Parameters["@diaRendicion"].Value = diaRendicion;
                 },
 
 
