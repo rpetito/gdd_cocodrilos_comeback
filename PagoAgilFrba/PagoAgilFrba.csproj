@@ -214,6 +214,7 @@
     <Compile Include="Controller\FuncionalidadController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
+    <Compile Include="Controller\SucursalController.cs" />
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="Devolucion\Devolucion.cs">
       <SubType>Form</SubType>
@@ -388,6 +389,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RegistroPago\RegistroPago.resx">
       <DependentUpon>RegistroPago.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Rendicion\Rendicion.resx">
+      <DependentUpon>Rendicion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SeleccionRol.resx">
       <DependentUpon>SeleccionRol.cs</DependentUpon>

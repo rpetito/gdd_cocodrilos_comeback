@@ -39,7 +39,7 @@ namespace PagoAgilFrba.AbmCliente
 
         private void FiltrarButton_Click(object sender, EventArgs e)
         {
-            clienteController.filterClient(new Util.SQLResponse<SqlDataReader>
+            clienteController.filterClientHabilitado(new Util.SQLResponse<SqlDataReader>
             {
                 onSuccess = (SqlDataReader result) =>
                 {

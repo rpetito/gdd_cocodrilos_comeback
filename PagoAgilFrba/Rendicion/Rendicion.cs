@@ -16,5 +16,10 @@ namespace PagoAgilFrba.Rendicion
         {
             InitializeComponent();
         }
+
+        private void Rendicion_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

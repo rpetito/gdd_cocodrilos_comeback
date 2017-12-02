@@ -113,8 +113,11 @@ DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_CLIENTE
 IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_CLIENTE') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE 
 
-IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE_HABILITADO') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_HABILITADO
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE_TOTALIDAD') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_TOTALIDAD
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_EMPRESA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_EMPRESA
@@ -125,14 +128,20 @@ DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_EMPRESA
 IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_EMPRESA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA
 
-IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA_HABILITADA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_HABILITADA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA_TOTALIDAD') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_TOTALIDAD
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_RUBROS') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_RUBROS
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_TOTALIDAD') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_TOTALIDAD
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_SUCURSAL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_SUCURSAL
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_ROL') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_ROL
@@ -148,8 +157,6 @@ DROP PROCEDURE COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL
-
-
 
 
 
@@ -537,9 +544,32 @@ GO
 
 
 -----------------------------------------------------------------------------
--------------------------------BUSCAR CLIENTE--------------------------------
+--------------------BUSCAR CLIENTE HABILITADO--------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE(
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_HABILITADO(
+	@nombre nvarchar(255) = NULL,
+	@apellido nvarchar(255) = NULL, 
+	@dni numeric(18,0) = NULL) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.CLIENTE c
+	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
+			(@apellido IS NULL OR c.apellido = @apellido) AND
+			(@dni IS NULL OR c.dni = @dni) AND
+			c.habilitado = 1
+
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+-----------------------------------------------------------------------------
+---------------------BUSCAR CLIENTE TOTALIDAD--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_TOTALIDAD(
 	@nombre nvarchar(255) = NULL,
 	@apellido nvarchar(255) = NULL, 
 	@dni numeric(18,0) = NULL) 
@@ -558,11 +588,32 @@ BEGIN CATCH
 END CATCH
 GO
 
+-----------------------------------------------------------------------------
+--------------------BUSCAR EMPRESA HABILITADA--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_HABILITADA(
+	@nombre nvarchar(255) = NULL,
+	@rubro numeric(18,0) = NULL, 
+	@cuit nvarchar(50) = NULL) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.EMPRESA e
+	WHERE	(@nombre IS NULL OR e.nombre = @nombre) AND
+			(@rubro IS NULL OR e.rubro = @rubro) AND
+			(@cuit IS NULL OR e.cuit = @cuit) AND
+			e.habilitado = 1
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 -----------------------------------------------------------------------------
--------------------------------BUSCAR EMPRESA--------------------------------
+---------------------BUSCAR EMPRESA TOTALIDAD--------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA(
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_TOTALIDAD(
 	@nombre nvarchar(255) = NULL,
 	@rubro numeric(18,0) = NULL, 
 	@cuit nvarchar(50) = NULL) 
@@ -1281,7 +1332,8 @@ GO
 		@cuit		nvarchar(50),
 		@nombre		nvarchar(255),
 		@direccion	nvarchar(255),
-		@rubro		numeric(18,0)
+		@rubro		numeric(18,0),
+		@diaRendicion int
 	) 
 	AS 
 	BEGIN TRY
@@ -1290,11 +1342,13 @@ GO
 			cuit,
 			nombre,
 			direccion,
+			dia_rendicion,
 			rubro
 		) VALUES (
 			@cuit,
 			@nombre,
 			@direccion,
+			@diaRendicion,
 			@rubro
 		)
 
@@ -1338,9 +1392,8 @@ GO
 		@habilitado		bit
 	) 
 	AS
-	--BEGIN TRY 
-	BEGIN
-
+	BEGIN TRY 
+	
 		UPDATE COCODRILOS_COMEBACK.EMPRESA
 		SET 
 			cuit = @newCuit,
@@ -1353,13 +1406,98 @@ GO
 
 		SELECT @@ROWCOUNT
 
-	--END TRY
-	END
-	--BEGIN CATCH
-	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	--END CATCH
-
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
 	GO
+
+
+
+---------------------------------------------------
+-------------------ABM SUCURSAL---------------------
+---------------------------------------------------
+
+	---------------------------------------------------
+	-----------------------ALTA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.ALTA_SUCURSAL(
+		@nombre		nvarchar(255),
+		@direccion	nvarchar(255),
+		@cod_postal	numeric(18,0)
+	) 
+	AS 
+	BEGIN TRY
+
+		INSERT INTO COCODRILOS_COMEBACK.SUCURSAL(
+			nombre,
+			direccion,
+			cod_postal
+		) VALUES (
+			@nombre,
+			@direccion,
+			@cod_postal
+		)
+
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		IF @@ERROR = 2627 
+		THROW 99999, 'Codigo postal incorrecto. Ya existe una sucursal con el codigo postal ingresado.', 1
+		ELSE	
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+/*
+	---------------------------------------------------
+	-----------------------BAJA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_SUCURSAL(@cuit nvarchar(50))
+	AS
+	BEGIN TRY
+		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		SET habilitado = 0
+		WHERE cuit = @cuit
+		
+		SELECT @@ROWCOUNT
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA(
+		@cuit		nvarchar(50),
+		@nombre		nvarchar(255),
+		@direccion	nvarchar(255),
+		@rubro		numeric(18,0),
+		@habilitado bit
+	) 
+	AS
+	BEGIN TRY 
+
+		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		SET 
+			cuit = @cuit,
+			nombre = @nombre,
+			direccion = @direccion,
+			rubro = @rubro,
+			habilitado = @habilitado
+
+		SELECT @@ROWCOUNT
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+	*/
 
 
 ---------------------------------------------------

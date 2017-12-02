@@ -15,7 +15,7 @@ namespace PagoAgilFrba.Controller
     class EmpresaController
     {
 
-        public void insertNewEmpresa(SQLResponse<Int32> listener, String cuit, String nombre, String direccion, Decimal rubro)
+        public void insertNewEmpresa(SQLResponse<Int32> listener, String cuit, String nombre, String direccion, Decimal rubro, Int32 diaRendicion)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
@@ -32,6 +32,8 @@ namespace PagoAgilFrba.Controller
                     sqlCommand.Parameters["@direccion"].Value = direccion;
                     sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
                     sqlCommand.Parameters["@rubro"].Value = rubro;
+                    sqlCommand.Parameters.Add("@diaRendicion", SqlDbType.Int);
+                    sqlCommand.Parameters["@diaRendicion"].Value = diaRendicion;
                 },
 
 
@@ -83,14 +85,14 @@ namespace PagoAgilFrba.Controller
             });
         }
 
-        public void filterEmpresa(SQLResponse<SqlDataReader> listener, String cuit, String nombre, Decimal rubro, DataGridView dgv)
+        public void filterEmpresaHabilitada(SQLResponse<SqlDataReader> listener, String cuit, String nombre, Decimal rubro, DataGridView dgv)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_EMPRESA"; },
+                getProcedureName = () => { return "BUSCAR_EMPRESA_HABILITADA"; },
 
                 addParams = (SqlCommand sqlCommand) => {
                     if (!string.IsNullOrWhiteSpace(cuit))
@@ -129,6 +131,51 @@ namespace PagoAgilFrba.Controller
 
         }
 
+        public void filterEmpresaTotalidad(SQLResponse<SqlDataReader> listener, String cuit, String nombre, Decimal rubro, DataGridView dgv)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
+            {
+
+                getProcedureName = () => { return "BUSCAR_EMPRESA_TOTALIDAD"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    if (!string.IsNullOrWhiteSpace(cuit))
+                    {
+                        sqlCommand.Parameters.Add("@cuit", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@cuit"].Value = cuit;
+                    }
+                    if (!string.IsNullOrWhiteSpace(nombre))
+                    {
+                        sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@nombre"].Value = nombre;
+                    }
+
+                    sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
+                    sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+
+                },
+
+
+
+                onReadData = (SqlDataReader result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => {
+
+                }
+
+            }, dgv);
+
+        }
 
         public void removeEmpresa(SQLResponse<Int32> listener, String cuit)
         {

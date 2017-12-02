@@ -97,14 +97,14 @@ namespace PagoAgilFrba.Controller
 		
 
 
-        public void filterClient(SQLResponse<SqlDataReader> listener, String nombre, String apellido, String dni, DataGridView dgv)
+        public void filterClientHabilitado(SQLResponse<SqlDataReader> listener, String nombre, String apellido, String dni, DataGridView dgv)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_CLIENTE"; },
+                getProcedureName = () => { return "BUSCAR_CLIENTE_HABILITADO"; },
 
                 addParams = (SqlCommand sqlCommand) => {
 					if(!string.IsNullOrWhiteSpace(nombre)) {
@@ -194,6 +194,53 @@ namespace PagoAgilFrba.Controller
                 onDataProcessed = () => { }
 
             });
+        }
+
+        public void filterClientTotalidad(SQLResponse<SqlDataReader> listener, String nombre, String apellido, String dni, DataGridView dgv)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
+            {
+
+                getProcedureName = () => { return "BUSCAR_CLIENTE_TOTALIDAD"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    if (!string.IsNullOrWhiteSpace(nombre))
+                    {
+                        sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@nombre"].Value = nombre;
+                    }
+                    if (!string.IsNullOrWhiteSpace(apellido))
+                    {
+                        sqlCommand.Parameters.Add("@apellido", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@apellido"].Value = apellido;
+                    }
+                    if (!string.IsNullOrWhiteSpace(dni))
+                    {
+                        sqlCommand.Parameters.Add("@dni", SqlDbType.Decimal);
+                        sqlCommand.Parameters["@dni"].Value = Convert.ToDecimal(dni);
+                    }
+                },
+
+
+
+                onReadData = (SqlDataReader result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => {
+
+                }
+
+            }, dgv);
+
         }
 
     }
