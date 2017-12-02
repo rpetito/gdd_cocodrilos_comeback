@@ -12,11 +12,17 @@ namespace PagoAgilFrba.AbmEmpresa
 {
     public partial class DatosEmpresa : Form
     {
+        Int32 habilitado = -1;
         public DatosEmpresa()
         {
-            EstadoCB.Items.Add("Habilitado");
-            EstadoCB.Items.Add("Deshabilitado");
             InitializeComponent();
+            CuitTB.Text = Empresa.getInstance().getCuit();
+            NombreTB.Text = Empresa.getInstance().getNombre();
+            DireccionTB.Text = Empresa.getInstance().getDireccion();
+            //RubroCB.Text = Empresa.getInstance().get
+            if (Empresa.getInstance().getHabilitado() == 1)
+                EstadoCB.Checked = true;
+            else EstadoCB.Checked = false;
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)

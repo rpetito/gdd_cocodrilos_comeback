@@ -32,7 +32,6 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.CancelarButton = new System.Windows.Forms.Button();
             this.EmpresaGB = new System.Windows.Forms.GroupBox();
-            this.EstadoCB = new System.Windows.Forms.ComboBox();
             this.RubroCB = new System.Windows.Forms.ComboBox();
             this.Estado = new System.Windows.Forms.Label();
             this.CuitTB = new System.Windows.Forms.TextBox();
@@ -42,6 +41,7 @@
             this.Dni = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
             this.Direccion = new System.Windows.Forms.Label();
+            this.EstadoCB = new System.Windows.Forms.CheckBox();
             this.EmpresaGB.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,14 +93,6 @@
             this.EmpresaGB.TabIndex = 8;
             this.EmpresaGB.TabStop = false;
             this.EmpresaGB.Text = "Empresa";
-            // 
-            // EstadoCB
-            // 
-            this.EstadoCB.FormattingEnabled = true;
-            this.EstadoCB.Location = new System.Drawing.Point(190, 104);
-            this.EstadoCB.Name = "EstadoCB";
-            this.EstadoCB.Size = new System.Drawing.Size(100, 21);
-            this.EstadoCB.TabIndex = 12;
             // 
             // RubroCB
             // 
@@ -176,6 +168,16 @@
             this.Direccion.TabIndex = 0;
             this.Direccion.Text = "Dirección:";
             // 
+            // EstadoCB
+            // 
+            this.EstadoCB.AutoSize = true;
+            this.EstadoCB.Location = new System.Drawing.Point(190, 106);
+            this.EstadoCB.Name = "EstadoCB";
+            this.EstadoCB.Size = new System.Drawing.Size(73, 17);
+            this.EstadoCB.TabIndex = 23;
+            this.EstadoCB.Text = "Habilitado";
+            this.EstadoCB.UseVisualStyleBackColor = true;
+            // 
             // DatosEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -207,7 +209,7 @@
         private System.Windows.Forms.Label Dni;
         private System.Windows.Forms.Label Nombre;
         private System.Windows.Forms.Label Direccion;
-        private System.Windows.Forms.ComboBox EstadoCB;
         private System.Windows.Forms.Label Estado;
+        private System.Windows.Forms.CheckBox EstadoCB;
     }
 }

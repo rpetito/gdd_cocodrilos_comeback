@@ -209,6 +209,7 @@
     <Compile Include="BaseDeDatos.cs" />
     <Compile Include="Cliente.cs" />
     <Compile Include="Controller\ClienteController.cs" />
+    <Compile Include="Controller\EmpresaController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
     <Compile Include="Controller\UserController.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="Devolucion\Devolucion.Designer.cs">
       <DependentUpon>Devolucion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Empresa.cs" />
     <Compile Include="MenuController.cs" />
     <Compile Include="Model\Error.cs" />
     <Compile Include="Rol.cs" />
