@@ -133,6 +133,7 @@
             this.CrearButton.TabIndex = 9;
             this.CrearButton.Text = "Crear";
             this.CrearButton.UseVisualStyleBackColor = true;
+            this.CrearButton.Click += new System.EventHandler(this.CrearButton_Click);
             // 
             // AltaSucursal
             // 

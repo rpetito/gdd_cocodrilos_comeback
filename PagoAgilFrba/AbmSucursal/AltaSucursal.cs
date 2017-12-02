@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PagoAgilFrba.Controller;
+using PagoAgilFrba.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -27,6 +29,31 @@ namespace PagoAgilFrba.AbmSucursal
         private void CancelarButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void CrearButton_Click(object sender, EventArgs e)
+        {
+            String nombre = NombreTB.Text;
+            String direccion = DireccionTB.Text;
+            Decimal codPostal = Convert.ToDecimal(CodigoPostalTB.Text);
+
+            SucursalController sucursalController = new SucursalController();
+            sucursalController.insertNewSucursal(new Util.SQLResponse<Int32>
+            {
+                onSuccess = (Int32 result) =>
+                {
+                    Util.Util.showSuccessDialog();
+                    this.Close();
+                },
+                onError = (Error fail) =>
+                {
+
+                }
+
+            },
+            nombre,
+            direccion,
+            codPostal);
         }
     }
 }
