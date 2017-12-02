@@ -212,6 +212,7 @@
     <Compile Include="Controller\EmpresaController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
+    <Compile Include="Controller\SucursalController.cs" />
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="Devolucion\Devolucion.cs">
       <SubType>Form</SubType>

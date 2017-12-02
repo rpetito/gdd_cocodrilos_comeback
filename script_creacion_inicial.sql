@@ -1330,9 +1330,8 @@ GO
 		@habilitado		bit
 	) 
 	AS
-	--BEGIN TRY 
-	BEGIN
-
+	BEGIN TRY 
+	
 		UPDATE COCODRILOS_COMEBACK.EMPRESA
 		SET 
 			cuit = @newCuit,
@@ -1345,10 +1344,96 @@ GO
 
 		SELECT @@ROWCOUNT
 
-	--END TRY
-	END
-	--BEGIN CATCH
-	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	--END CATCH
-
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
 	GO
+
+
+
+---------------------------------------------------
+-------------------ABM SUCURSAL---------------------
+---------------------------------------------------
+
+	---------------------------------------------------
+	-----------------------ALTA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.ALTA_SUCURSAL(
+		@nombre		nvarchar(255),
+		@direccion	nvarchar(255),
+		@cod_postal	numeric(18,0)
+	) 
+	AS 
+	BEGIN TRY
+
+		INSERT INTO COCODRILOS_COMEBACK.SUCURSAL(
+			nombre,
+			direccion,
+			cod_postal
+		) VALUES (
+			@nombre,
+			@direccion,
+			@cod_postal
+		)
+
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		IF @@ERROR = 2627 
+		THROW 99999, 'Codigo postal incorrecto. Ya existe una sucursal con el codigo postal ingresado.', 1
+		ELSE	
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+/*
+	---------------------------------------------------
+	-----------------------BAJA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_SUCURSAL(@cuit nvarchar(50))
+	AS
+	BEGIN TRY
+		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		SET habilitado = 0
+		WHERE cuit = @cuit
+		
+		SELECT @@ROWCOUNT
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA(
+		@cuit		nvarchar(50),
+		@nombre		nvarchar(255),
+		@direccion	nvarchar(255),
+		@rubro		numeric(18,0),
+		@habilitado bit
+	) 
+	AS
+	BEGIN TRY 
+
+		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		SET 
+			cuit = @cuit,
+			nombre = @nombre,
+			direccion = @direccion,
+			rubro = @rubro,
+			habilitado = @habilitado
+
+		SELECT @@ROWCOUNT
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+	*/
+
