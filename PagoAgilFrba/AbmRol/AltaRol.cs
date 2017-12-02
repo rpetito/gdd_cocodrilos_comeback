@@ -1,7 +1,12 @@
-﻿using System;
+﻿using PagoAgilFrba.Controller;
+using PagoAgilFrba.Model;
+using PagoAgilFrba.Util;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -12,10 +17,34 @@ namespace PagoAgilFrba.AbmRol
 {
     public partial class AltaRol : Form
     {
+
+		FuncionalidadController funcionaliadController;
+		List<Int32> funcionalidadesSeleccionadas = new List<Int32>();
+
         public AltaRol()
         {
             InitializeComponent();
+
+			DataGridViewCheckBoxColumn checkbox = new DataGridViewCheckBoxColumn();
+			checkbox.HeaderText = "Agregar";
+			checkbox.Name = "agregarCheckbox";
+			FuncionalidadesGV.Columns.Add(checkbox);
+
+			funcionaliadController = new FuncionalidadController();
+			funcionaliadController.getAllFunctionalities(new SQLResponse<SqlDataReader>() {
+
+				onSuccess = (SqlDataReader result) => {
+
+				},
+
+				onError = (Error error) => { 
+				
+				}
+
+			}, FuncionalidadesGV);
+		
         }
+
 
         private void LimpiarButton_Click(object sender, EventArgs e)
         {
@@ -23,9 +52,42 @@ namespace PagoAgilFrba.AbmRol
             FuncionalidadesGV.Rows.Clear();
         }
 
+
         private void CancelarButton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+
+		private void CrearButton_Click(object sender, EventArgs e) {
+			RolController rolController = new RolController();
+			
+			RolRequest rolRequest = new RolRequest();
+			rolRequest.descripcion = NombreTB.Text.ToString();
+			foreach(DataGridViewRow row in this.FuncionalidadesGV.Rows) {
+				Boolean selected = row.Cells[0].Value == null ? false : true;
+				if(selected) {
+					rolRequest.addFuncionalidad((Int32) row.Cells[1].Value);
+				}
+			}
+
+			rolController.createRol(new SQLResponse<Int32>() {
+
+				onSuccess = (Int32 result) => {
+					if(result == 0) {
+						MessageBox.Show("Acción completada con éxito.");
+					}
+				},
+
+				onError = (Error error) => { 
+					
+				}
+
+			}, rolRequest);
+		}
+
+		
+
     }
+
 }

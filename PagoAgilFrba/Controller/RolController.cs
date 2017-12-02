@@ -39,8 +39,42 @@ namespace PagoAgilFrba.Controller {
 
 			});
 		}
-	
+
+
+
+		public void createRol(SQLResponse<Int32> listener, RolRequest rol) {
+
+			SQLExecutor sqlExecutor = new SQLExecutor();
+			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
+
+				getProcedureName = () => { return "ALTA_ROL"; },
+
+				addParams = (SqlCommand sqlCommand) => {
+					sqlCommand.Parameters.Add("@descripcion", SqlDbType.NVarChar);
+					sqlCommand.Parameters["@descripcion"].Value = rol.descripcion;
+					sqlCommand.Parameters.Add("@funcionalities", SqlDbType.NVarChar);
+					sqlCommand.Parameters["@funcionalities"].Value = rol.funcionalidades;
+				},
+
+				onReadData = (Int32 result) => {
+					listener.onSuccess(result);
+				},
+
+				onError = (Error error) => {
+				},
+
+				onDataProcessed = () => {
+					
+				}
+
+			});
+
+		}
+
+
 	}
+
+
 
 
 }

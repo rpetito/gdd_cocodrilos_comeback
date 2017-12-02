@@ -176,6 +176,7 @@
     <Compile Include="AbmRol\ModificarRol.Designer.cs">
       <DependentUpon>ModificarRol.cs</DependentUpon>
     </Compile>
+    <Compile Include="AbmRol\SqlRespose.cs" />
     <Compile Include="AbmSucursal\ABMSucursal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,6 +211,7 @@
     <Compile Include="Cliente.cs" />
     <Compile Include="Controller\ClienteController.cs" />
     <Compile Include="Controller\EmpresaController.cs" />
+    <Compile Include="Controller\FuncionalidadController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
     <Compile Include="Controller\UserController.cs" />
@@ -222,6 +224,7 @@
     <Compile Include="Empresa.cs" />
     <Compile Include="MenuController.cs" />
     <Compile Include="Model\Error.cs" />
+    <Compile Include="Model\RolRequest.cs" />
     <Compile Include="Rol.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="Menu.cs">
