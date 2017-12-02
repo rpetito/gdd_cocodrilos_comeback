@@ -55,7 +55,7 @@ namespace PagoAgilFrba.AbmEmpresa
         private void FiltrarButton_Click(object sender, EventArgs e)
         {
             idRubro = dictRubro.FirstOrDefault(x => x.Value == RubroCB.Text).Key;
-            empresaController.filterEmpresa(new Util.SQLResponse<SqlDataReader>
+            empresaController.filterEmpresaHabilitada(new Util.SQLResponse<SqlDataReader>
             {
                 onSuccess = (SqlDataReader result) =>
                 {
