@@ -42,7 +42,6 @@ namespace PagoAgilFrba.AbmEmpresa
 
             idRubro = Empresa.getInstance().getRubro();
             rubroNombre = dictRubro.FirstOrDefault(x => x.Key == idRubro).Value;
-            newRubro = dictRubro.FirstOrDefault(x => x.Value == RubroCB.SelectedText).Key;
 
             oldCuit = Empresa.getInstance().getCuit();
 
@@ -73,6 +72,8 @@ namespace PagoAgilFrba.AbmEmpresa
         private void ModificarButton_Click(object sender, EventArgs e)
         {
             habilitar();
+
+			newRubro = dictRubro.FirstOrDefault(x => x.Value == RubroCB.Text).Key;
 
             empresaController.modifyEmpresa(new Util.SQLResponse<Int32>
             {

@@ -642,6 +642,21 @@ END CATCH
 GO
 
 
+-----------------------------------------------------------------------------
+-------------------------------OBTENER RUBROS--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_RUBROS
+AS
+BEGIN TRY
+	SELECT *
+	FROM COCODRILOS_COMEBACK.RUBRO
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
 
 --###########################################################################
 --###########################################################################
@@ -1375,11 +1390,12 @@ GO
 		@nombre			nvarchar(255),
 		@direccion		nvarchar(255),
 		@fecRendicion	int,
-		@rubro			decimal(18,0),
+		@rubro			numeric(18,0),
 		@habilitado		bit
 	) 
 	AS
-	BEGIN TRY 
+	BEGIN
+	--BEGIN TRY 
 	
 		UPDATE COCODRILOS_COMEBACK.EMPRESA
 		SET 
@@ -1393,10 +1409,11 @@ GO
 
 		SELECT @@ROWCOUNT
 
-	END TRY
-	BEGIN CATCH
-		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	END CATCH
+	END
+	--END TRY
+	--BEGIN CATCH
+	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	--END CATCH
 	GO
 
 
