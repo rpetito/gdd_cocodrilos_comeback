@@ -113,11 +113,8 @@ DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_CLIENTE
 IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_CLIENTE') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_CLIENTE 
 
-IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE_HABILITADO') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_HABILITADO
-
-IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE_TOTALIDAD') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_TOTALIDAD
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_EMPRESA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_EMPRESA
@@ -128,11 +125,8 @@ DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_EMPRESA
 IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_EMPRESA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA
 
-IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA_HABILITADA') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_HABILITADA
-
-IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA_TOTALIDAD') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_TOTALIDAD
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_RUBROS') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_RUBROS
@@ -152,6 +146,34 @@ DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_HABILITADA
 IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_SUCURSAL') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_SUCURSAL
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_TOTALIDAD') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_TOTALIDAD
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_SUCURSAL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_SUCURSAL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.HABILITAR_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.HABILITAR_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ROLES') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES
+
+
 
 GO
 --###########################################################################
@@ -165,6 +187,9 @@ DROP FUNCTION COCODRILOS_COMEBACK.ID_FORMA_PAGO
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS') IS NOT NULL
 DROP FUNCTION COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.STRING_SPLIT') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.STRING_SPLIT
 
 
 
@@ -453,6 +478,37 @@ END
 GO 
 
 
+------------------------------------------------------------------------
+---------------------------STRING SPLIT---------------------------------
+------------------------------------------------------------------------
+CREATE FUNCTION COCODRILOS_COMEBACK.STRING_SPLIT( @stringToSplit nvarchar(255), @character char(1))
+RETURNS
+ @returnList TABLE ([Name] [nvarchar] (500))
+AS
+BEGIN
+
+ DECLARE @name NVARCHAR(255)
+ DECLARE @pos INT
+
+ WHILE CHARINDEX(@character, @stringToSplit) > 0
+ BEGIN
+  SELECT @pos  = CHARINDEX(@character, @stringToSplit)  
+  SELECT @name = SUBSTRING(@stringToSplit, 1, @pos-1)
+
+  INSERT INTO @returnList 
+  SELECT @name
+
+  SELECT @stringToSplit = SUBSTRING(@stringToSplit, @pos+1, LEN(@stringToSplit)-@pos)
+ END
+
+ INSERT INTO @returnList
+ SELECT @stringToSplit
+
+ RETURN
+END
+GO
+
+
 
 
 
@@ -502,12 +558,13 @@ GO
 
 
 -----------------------------------------------------------------------------
---------------------BUSCAR CLIENTE HABILITADO--------------------------------
+-----------------------------BUSCAR CLIENTE----------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_HABILITADO(
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE(
 	@nombre nvarchar(255) = NULL,
 	@apellido nvarchar(255) = NULL, 
-	@dni numeric(18,0) = NULL) 
+	@dni numeric(18,0) = NULL,
+	@habilitado bit = NULL) 
 AS
 BEGIN TRY
 	
@@ -516,7 +573,7 @@ BEGIN TRY
 	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
 			(@apellido IS NULL OR c.apellido = @apellido) AND
 			(@dni IS NULL OR c.dni = @dni) AND
-			c.habilitado = 1
+			@habilitado IS NULL OR c.habilitado = @habilitado
 
 END TRY 
 BEGIN CATCH
@@ -524,35 +581,15 @@ BEGIN CATCH
 END CATCH
 GO
 
------------------------------------------------------------------------------
----------------------BUSCAR CLIENTE TOTALIDAD--------------------------------
------------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_TOTALIDAD(
-	@nombre nvarchar(255) = NULL,
-	@apellido nvarchar(255) = NULL, 
-	@dni numeric(18,0) = NULL) 
-AS
-BEGIN TRY
-	
-	SELECT *
-	FROM COCODRILOS_COMEBACK.CLIENTE c
-	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
-			(@apellido IS NULL OR c.apellido = @apellido) AND
-			(@dni IS NULL OR c.dni = @dni)
-
-END TRY 
-BEGIN CATCH
-		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-END CATCH
-GO
 
 -----------------------------------------------------------------------------
---------------------BUSCAR EMPRESA HABILITADA--------------------------------
+------------------------------BUSCAR EMPRESA---------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_HABILITADA(
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA(
 	@nombre nvarchar(255) = NULL,
 	@rubro numeric(18,0) = NULL, 
-	@cuit nvarchar(50) = NULL) 
+	@cuit nvarchar(50) = NULL,
+	@habilitada bit = NULL) 
 AS
 BEGIN TRY
 	
@@ -561,32 +598,60 @@ BEGIN TRY
 	WHERE	(@nombre IS NULL OR e.nombre = @nombre) AND
 			(@rubro IS NULL OR e.rubro = @rubro) AND
 			(@cuit IS NULL OR e.cuit = @cuit) AND
-			e.habilitado = 1
+			@habilitada IS NULL OR e.habilitado = @habilitada
 END TRY 
 BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 END CATCH
 GO
 
+
 -----------------------------------------------------------------------------
----------------------BUSCAR EMPRESA TOTALIDAD--------------------------------
+---------------------------OBTENER FUNCIONALIDADES----------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA_TOTALIDAD(
-	@nombre nvarchar(255) = NULL,
-	@rubro numeric(18,0) = NULL, 
-	@cuit nvarchar(50) = NULL) 
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_TOTALIDAD
 AS
 BEGIN TRY
-	
 	SELECT *
-	FROM COCODRILOS_COMEBACK.EMPRESA e
-	WHERE	(@nombre IS NULL OR e.nombre = @nombre) AND
-			(@rubro IS NULL OR e.rubro = @rubro) AND
-			(@cuit IS NULL OR e.cuit = @cuit)
-
+	FROM COCODRILOS_COMEBACK.FUNCIONALIDAD
 END TRY 
 BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+-----------------------------------------------------------------------------
+-------------------------------HABILITAR ROL---------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.HABILITAR_ROL(@rolID int) 
+AS
+BEGIN TRY
+	UPDATE COCODRILOS_COMEBACK.ROL
+	SET habilitado = 1
+	WHERE id = @rolID
+
+	SELECT @@ROWCOUNT
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+-----------------------------------------------------------------------------
+-------------------------------OBTENER ROLES---------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@nombre nvarchar(255) = NULL, @habilitado bit = 1)
+AS
+BEGIN TRY
+	SELECT *
+	FROM COCODRILOS_COMEBACK.ROL r
+	WHERE	(@nombre IS NULL OR r.descripcion = @nombre) AND
+			r.habilitado = @habilitado
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 END CATCH
 GO
 
@@ -599,9 +664,9 @@ AS
 BEGIN TRY
 	SELECT *
 	FROM COCODRILOS_COMEBACK.RUBRO
-END TRY 
+END TRY
 BEGIN CATCH
-		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 END CATCH
 GO
 
@@ -627,8 +692,6 @@ BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 END CATCH
 GO
-
-
 
 
 
@@ -1308,7 +1371,8 @@ GO
 		@cuit		nvarchar(50),
 		@nombre		nvarchar(255),
 		@direccion	nvarchar(255),
-		@rubro		numeric(18,0)
+		@rubro		numeric(18,0),
+		@diaRendicion int
 	) 
 	AS 
 	BEGIN TRY
@@ -1317,11 +1381,13 @@ GO
 			cuit,
 			nombre,
 			direccion,
+			dia_rendicion,
 			rubro
 		) VALUES (
 			@cuit,
 			@nombre,
 			@direccion,
+			@diaRendicion,
 			@rubro
 		)
 
@@ -1361,7 +1427,7 @@ GO
 		@nombre			nvarchar(255),
 		@direccion		nvarchar(255),
 		@fecRendicion	int,
-		@rubro			decimal(18,0),
+		@rubro			numeric(18,0),
 		@habilitado		bit
 	) 
 	AS
@@ -1477,4 +1543,156 @@ GO
 	GO
 	*/
 
+
+
+---------------------------------------------------
+---------------------ABM ROL-----------------------
+---------------------------------------------------
+
+	---------------------------------------------------
+	-----------------------BAJA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_ROL(@rolID int)
+	AS
+	BEGIN TRY
+		UPDATE COCODRILOS_COMEBACK.ROL
+		SET habilitado = 0
+		WHERE id = @rolID
+
+		DELETE FROM COCODRILOS_COMEBACK.ROL_USUARIO 
+		WHERE id_rol = @rolID
+		
+		SELECT @@ROWCOUNT
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-----------REMOVER FUNCIONALIDAD A ROL-------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL(@rolID int, @funID int) 
+	AS
+	BEGIN TRY
+		DELETE FROM COCODRILOS_COMEBACK.ROL_FUNCIONALIDAD 
+		WHERE id_rol = @rolID AND id_funcionalidad = @funID 
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-----------AGREGAR FUNCIONALIDAD A ROL-------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL(@rolID int, @funID int) 
+	AS
+	BEGIN TRY
+		INSERT INTO COCODRILOS_COMEBACK.ROL_FUNCIONALIDAD (
+			id_rol,
+			id_funcionalidad
+		) VALUES (
+			@rolID,
+			@funID
+		) 
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-----------------------ALTA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.ALTA_ROL(
+		@descripcion	nvarchar(255),
+		@funcionalities	nvarchar(255) = NULL
+	) 
+	AS 
+	BEGIN TRY
+
+		INSERT INTO COCODRILOS_COMEBACK.ROL (
+			descripcion	
+		) VALUES (
+			@descripcion
+		)
+
+		DECLARE @insertedRolID int = (SELECT IDENT_CURRENT('COCODRILOS_COMEBACK.ROL'))
+		IF @funcionalities IS NOT NULL
+			BEGIN
+				DECLARE @actualFunID nvarchar(255)
+				DECLARE c_agregar_func CURSOR FOR
+					SELECT *
+					FROM COCODRILOS_COMEBACK.STRING_SPLIT(@funcionalities, '&')
+				OPEN c_agregar_func
+				FETCH NEXT FROM c_agregar_func INTO @actualFunID
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+						DECLARE @funIdInt INT = (SELECT (CONVERT(int, @actualFunID)))
+						EXEC COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL @insertedRolID, @funIdInt
+						FETCH NEXT FROM c_agregar_func INTO @actualFunID
+					END
+				CLOSE c_agregar_func
+				DEALLOCATE c_agregar_func
+			END
+
+
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_ROL(
+		@rolID			int,
+		@descripcion	nvarchar(255),
+		@funToRemoveID	int = NULL,
+		@funToAddID		nvarchar(255) = NULL
+	) 
+	AS
+	BEGIN TRY 
+
+		UPDATE COCODRILOS_COMEBACK.ROL
+		SET 
+			descripcion = @descripcion
+		WHERE id = @rolID
+
+		IF @funToRemoveID IS NOT NULL
+			EXEC COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL @rolID, @funToRemoveID
+
+		IF @funToAddID IS NOT NULL
+			BEGIN
+				DECLARE @actualFunID nvarchar(255)
+				DECLARE c_agregar_func CURSOR FOR
+					SELECT *
+					FROM COCODRILOS_COMEBACK.STRING_SPLIT(@funToAddID, '&')
+				OPEN c_agregar_func
+				FETCH NEXT FROM c_agregar_func INTO @actualFunID
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+						DECLARE @funIdInt INT = (SELECT (CONVERT(int, @actualFunID)))
+						EXEC COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL @rolID, @funIdInt
+						FETCH NEXT FROM c_agregar_func INTO @actualFunID
+					END
+				CLOSE c_agregar_func
+				DEALLOCATE c_agregar_func
+			END
+
+		SELECT @@ROWCOUNT
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
 

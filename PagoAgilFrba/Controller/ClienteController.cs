@@ -104,7 +104,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_CLIENTE_HABILITADO"; },
+                getProcedureName = () => { return "BUSCAR_CLIENTE"; },
 
                 addParams = (SqlCommand sqlCommand) => {
 					if(!string.IsNullOrWhiteSpace(nombre)) {
@@ -119,6 +119,8 @@ namespace PagoAgilFrba.Controller
 						sqlCommand.Parameters.Add("@dni", SqlDbType.Decimal);
 						sqlCommand.Parameters["@dni"].Value = Convert.ToDecimal(dni);
 					}
+					sqlCommand.Parameters.Add("@habilitado", SqlDbType.Bit);
+					sqlCommand.Parameters["@habilitado"].Value = 1;
                 },
 
 
@@ -203,7 +205,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_CLIENTE_TOTALIDAD"; },
+                getProcedureName = () => { return "BUSCAR_CLIENTE"; },
 
                 addParams = (SqlCommand sqlCommand) => {
                     if (!string.IsNullOrWhiteSpace(nombre))

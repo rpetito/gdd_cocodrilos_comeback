@@ -15,7 +15,7 @@ namespace PagoAgilFrba.Controller
     class EmpresaController
     {
 
-        public void insertNewEmpresa(SQLResponse<Int32> listener, String cuit, String nombre, String direccion, Decimal rubro)
+        public void insertNewEmpresa(SQLResponse<Int32> listener, String cuit, String nombre, String direccion, Decimal rubro, Int32 diaRendicion)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
@@ -32,6 +32,8 @@ namespace PagoAgilFrba.Controller
                     sqlCommand.Parameters["@direccion"].Value = direccion;
                     sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
                     sqlCommand.Parameters["@rubro"].Value = rubro;
+                    sqlCommand.Parameters.Add("@diaRendicion", SqlDbType.Int);
+                    sqlCommand.Parameters["@diaRendicion"].Value = diaRendicion;
                 },
 
 
@@ -63,7 +65,8 @@ namespace PagoAgilFrba.Controller
 
                 onReadData = (SqlDataReader result) => {
 
-                    dict.Add(result.GetDecimal(0), (result.GetString(1)));
+					dict.Add(result.GetDecimal(0), (result.GetString(1)));
+					comboBox.Items.Add(result.GetString(1));
 
                 },
 
@@ -72,11 +75,6 @@ namespace PagoAgilFrba.Controller
                 },
 
                 onDataProcessed = () => {
-
-                    foreach (KeyValuePair<Decimal, String> item in dict)
-                    {
-                        comboBox.Items.Add(item.Value);
-                    }
 
                 }
 
@@ -90,7 +88,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_EMPRESA_HABILITADA"; },
+                getProcedureName = () => { return "BUSCAR_EMPRESA"; },
 
                 addParams = (SqlCommand sqlCommand) => {
                     if (!string.IsNullOrWhiteSpace(cuit))
@@ -104,8 +102,11 @@ namespace PagoAgilFrba.Controller
                         sqlCommand.Parameters["@nombre"].Value = nombre;
                     }
                     
-                        sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
-                        sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+                    sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
+                    sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+
+					sqlCommand.Parameters.Add("@habilitada", SqlDbType.Bit);
+					sqlCommand.Parameters["@habilitada"].Value = 1;
                     
                 },
 
@@ -136,7 +137,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_EMPRESA_TOTALIDAD"; },
+                getProcedureName = () => { return "BUSCAR_EMPRESA"; },
 
                 addParams = (SqlCommand sqlCommand) => {
                     if (!string.IsNullOrWhiteSpace(cuit))
@@ -149,9 +150,10 @@ namespace PagoAgilFrba.Controller
                         sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
                         sqlCommand.Parameters["@nombre"].Value = nombre;
                     }
-
-                    sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
-                    sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+					if(rubro != 0) {
+						sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
+						sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+					}
 
                 },
 

@@ -40,6 +40,8 @@
             this.Dni = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
             this.Direccion = new System.Windows.Forms.Label();
+            this.DiaRendicionTB = new System.Windows.Forms.TextBox();
+            this.DiaRendicion = new System.Windows.Forms.Label();
             this.EmpresaGB.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,6 +78,8 @@
             // 
             // EmpresaGB
             // 
+            this.EmpresaGB.Controls.Add(this.DiaRendicion);
+            this.EmpresaGB.Controls.Add(this.DiaRendicionTB);
             this.EmpresaGB.Controls.Add(this.RubroCB);
             this.EmpresaGB.Controls.Add(this.CuitTB);
             this.EmpresaGB.Controls.Add(this.DireccionTB);
@@ -86,7 +90,7 @@
             this.EmpresaGB.Controls.Add(this.Direccion);
             this.EmpresaGB.Location = new System.Drawing.Point(11, 13);
             this.EmpresaGB.Name = "EmpresaGB";
-            this.EmpresaGB.Size = new System.Drawing.Size(426, 115);
+            this.EmpresaGB.Size = new System.Drawing.Size(426, 144);
             this.EmpresaGB.TabIndex = 4;
             this.EmpresaGB.TabStop = false;
             this.EmpresaGB.Text = "Empresa";
@@ -156,6 +160,22 @@
             this.Direccion.TabIndex = 0;
             this.Direccion.Text = "Dirección:";
             // 
+            // DiaRendicionTB
+            // 
+            this.DiaRendicionTB.Location = new System.Drawing.Point(201, 94);
+            this.DiaRendicionTB.Name = "DiaRendicionTB";
+            this.DiaRendicionTB.Size = new System.Drawing.Size(100, 20);
+            this.DiaRendicionTB.TabIndex = 23;
+            // 
+            // DiaRendicion
+            // 
+            this.DiaRendicion.AutoSize = true;
+            this.DiaRendicion.Location = new System.Drawing.Point(101, 97);
+            this.DiaRendicion.Name = "DiaRendicion";
+            this.DiaRendicion.Size = new System.Drawing.Size(94, 13);
+            this.DiaRendicion.TabIndex = 24;
+            this.DiaRendicion.Text = "Día de Rendición:";
+            // 
             // AltaEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -187,5 +207,7 @@
         private System.Windows.Forms.Label Dni;
         private System.Windows.Forms.Label Nombre;
         private System.Windows.Forms.Label Direccion;
+        private System.Windows.Forms.Label DiaRendicion;
+        private System.Windows.Forms.TextBox DiaRendicionTB;
     }
 }
