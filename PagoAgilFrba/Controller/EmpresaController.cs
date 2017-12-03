@@ -92,7 +92,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_EMPRESA_HABILITADA"; },
+                getProcedureName = () => { return "BUSCAR_EMPRESA"; },
 
                 addParams = (SqlCommand sqlCommand) => {
                     if (!string.IsNullOrWhiteSpace(cuit))
@@ -106,8 +106,11 @@ namespace PagoAgilFrba.Controller
                         sqlCommand.Parameters["@nombre"].Value = nombre;
                     }
                     
-                        sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
-                        sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+                    sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
+                    sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+
+					sqlCommand.Parameters.Add("@habilitada", SqlDbType.Bit);
+					sqlCommand.Parameters["@habilitada"].Value = 1;
                     
                 },
 
@@ -138,7 +141,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "BUSCAR_EMPRESA_TOTALIDAD"; },
+                getProcedureName = () => { return "BUSCAR_EMPRESA"; },
 
                 addParams = (SqlCommand sqlCommand) => {
                     if (!string.IsNullOrWhiteSpace(cuit))
@@ -151,9 +154,10 @@ namespace PagoAgilFrba.Controller
                         sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
                         sqlCommand.Parameters["@nombre"].Value = nombre;
                     }
-
-                    sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
-                    sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+					if(rubro != 0) {
+						sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
+						sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+					}
 
                 },
 
