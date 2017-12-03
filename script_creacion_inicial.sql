@@ -550,12 +550,13 @@ GO
 
 
 -----------------------------------------------------------------------------
---------------------BUSCAR CLIENTE HABILITADO--------------------------------
+-----------------------------BUSCAR CLIENTE----------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_HABILITADO(
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE(
 	@nombre nvarchar(255) = NULL,
 	@apellido nvarchar(255) = NULL, 
-	@dni numeric(18,0) = NULL) 
+	@dni numeric(18,0) = NULL,
+	@habilitado bit = NULL) 
 AS
 BEGIN TRY
 	
@@ -564,7 +565,7 @@ BEGIN TRY
 	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
 			(@apellido IS NULL OR c.apellido = @apellido) AND
 			(@dni IS NULL OR c.dni = @dni) AND
-			c.habilitado = 1
+			@habilitado IS NULL OR c.habilitado = @habilitado
 
 END TRY 
 BEGIN CATCH
@@ -572,27 +573,6 @@ BEGIN CATCH
 END CATCH
 GO
 
------------------------------------------------------------------------------
----------------------BUSCAR CLIENTE TOTALIDAD--------------------------------
------------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE_TOTALIDAD(
-	@nombre nvarchar(255) = NULL,
-	@apellido nvarchar(255) = NULL, 
-	@dni numeric(18,0) = NULL) 
-AS
-BEGIN TRY
-	
-	SELECT *
-	FROM COCODRILOS_COMEBACK.CLIENTE c
-	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
-			(@apellido IS NULL OR c.apellido = @apellido) AND
-			(@dni IS NULL OR c.dni = @dni)
-
-END TRY 
-BEGIN CATCH
-		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-END CATCH
-GO
 
 -----------------------------------------------------------------------------
 --------------------BUSCAR EMPRESA HABILITADA--------------------------------
@@ -675,12 +655,13 @@ GO
 -----------------------------------------------------------------------------
 -------------------------------OBTENER ROLES---------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@habilitado bit = 1)
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@nombre nvarchar(255) = NULL, @habilitado bit = 1)
 AS
 BEGIN TRY
 	SELECT *
-	FROM COCODRILOS_COMEBACK.ROL
-	WHERE habilitado = @habilitado
+	FROM COCODRILOS_COMEBACK.ROL r
+	WHERE	(@nombre IS NULL OR r.descripcion = @nombre) AND
+			r.habilitado = @habilitado
 END TRY
 BEGIN CATCH
 	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1

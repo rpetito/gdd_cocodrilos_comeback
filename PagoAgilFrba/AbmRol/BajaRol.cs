@@ -60,6 +60,7 @@ namespace PagoAgilFrba.AbmRol
 					onSuccess = (Int32 result) => {
 						if(result > 0) {
 							Util.Util.showSuccessDialog();
+							FiltratButton.PerformClick();
 						}
 					},
 
