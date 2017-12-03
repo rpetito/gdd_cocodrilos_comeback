@@ -56,8 +56,6 @@ namespace PagoAgilFrba.Controller
         public void fillRubros(SQLResponse<SqlDataReader> listener, Dictionary<Decimal, String> dict, ComboBox comboBox)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
-			dict.Add(0, "Todos");
-			comboBox.Items.Add("Todos");
             sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
