@@ -13,6 +13,17 @@ namespace PagoAgilFrba.Util {
 		public static void showSuccessDialog() {
 			MessageBox.Show("Acción completada con éxito.");
 		}
+
+		public static void addButtonColumnToGridView(DataGridView gridView, DataGridViewCellEventHandler listener) {
+			DataGridViewButtonColumn button = new DataGridViewButtonColumn();
+			button.HeaderText = "Seleccionar";
+			button.Name = "seleccionarButton";
+			button.Text = "Seleccionar";
+			button.UseColumnTextForButtonValue = true;
+			gridView.Columns.Add(button);
+			gridView.CellContentClick += listener;
+			button.Frozen = true;
+		}
 	
 	}
 

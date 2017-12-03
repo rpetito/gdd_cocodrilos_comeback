@@ -158,6 +158,12 @@ DROP PROCEDURE COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL
 IF OBJECT_ID('COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.HABILITAR_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.HABILITAR_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ROLES') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES
+
 
 
 
@@ -649,10 +655,37 @@ GO
 
 
 -----------------------------------------------------------------------------
---------------------------OBTENER FUNCIONALIDADES----------------------------
+-------------------------------HABILITAR ROL---------------------------------
 -----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.HABILITAR_ROL(@rolID int) 
+AS
+BEGIN TRY
+	UPDATE COCODRILOS_COMEBACK.ROL
+	SET habilitado = 1
+	WHERE id = @rolID
+
+	SELECT @@ROWCOUNT
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 
+-----------------------------------------------------------------------------
+-------------------------------OBTENER ROLES---------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@habilitado bit = 1)
+AS
+BEGIN TRY
+	SELECT *
+	FROM COCODRILOS_COMEBACK.ROL
+	WHERE habilitado = @habilitado
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 
 
@@ -1513,6 +1546,9 @@ GO
 		UPDATE COCODRILOS_COMEBACK.ROL
 		SET habilitado = 0
 		WHERE id = @rolID
+
+		DELETE FROM COCODRILOS_COMEBACK.ROL_USUARIO 
+		WHERE id_rol = @rolID
 		
 		SELECT @@ROWCOUNT
 	END TRY
