@@ -1394,8 +1394,7 @@ GO
 		@habilitado		bit
 	) 
 	AS
-	BEGIN
-	--BEGIN TRY 
+	BEGIN TRY 
 	
 		UPDATE COCODRILOS_COMEBACK.EMPRESA
 		SET 
@@ -1409,11 +1408,10 @@ GO
 
 		SELECT @@ROWCOUNT
 
-	END
-	--END TRY
-	--BEGIN CATCH
-	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	--END CATCH
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
 	GO
 
 
