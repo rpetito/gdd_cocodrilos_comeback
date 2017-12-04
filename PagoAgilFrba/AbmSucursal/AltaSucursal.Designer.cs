@@ -38,6 +38,7 @@
             this.CancelarButton = new System.Windows.Forms.Button();
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.CrearButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.SucursalGB.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -74,6 +75,7 @@
             this.NombreTB.Name = "NombreTB";
             this.NombreTB.Size = new System.Drawing.Size(100, 20);
             this.NombreTB.TabIndex = 3;
+            this.NombreTB.TextChanged += new System.EventHandler(this.NombreTB_TextChanged);
             // 
             // DireccionTB
             // 
@@ -81,6 +83,7 @@
             this.DireccionTB.Name = "DireccionTB";
             this.DireccionTB.Size = new System.Drawing.Size(100, 20);
             this.DireccionTB.TabIndex = 4;
+            this.DireccionTB.TextChanged += new System.EventHandler(this.DireccionTB_TextChanged);
             // 
             // CodigoPostalTB
             // 
@@ -88,9 +91,11 @@
             this.CodigoPostalTB.Name = "CodigoPostalTB";
             this.CodigoPostalTB.Size = new System.Drawing.Size(100, 20);
             this.CodigoPostalTB.TabIndex = 5;
+            this.CodigoPostalTB.TextChanged += new System.EventHandler(this.CodigoPostalTB_TextChanged);
             // 
             // SucursalGB
             // 
+            this.SucursalGB.Controls.Add(this.label1);
             this.SucursalGB.Controls.Add(this.Direccion);
             this.SucursalGB.Controls.Add(this.Nombre);
             this.SucursalGB.Controls.Add(this.CodigoPostal);
@@ -99,7 +104,7 @@
             this.SucursalGB.Controls.Add(this.NombreTB);
             this.SucursalGB.Location = new System.Drawing.Point(12, 12);
             this.SucursalGB.Name = "SucursalGB";
-            this.SucursalGB.Size = new System.Drawing.Size(239, 145);
+            this.SucursalGB.Size = new System.Drawing.Size(239, 155);
             this.SucursalGB.TabIndex = 6;
             this.SucursalGB.TabStop = false;
             this.SucursalGB.Text = "Sucursal";
@@ -135,6 +140,15 @@
             this.CrearButton.UseVisualStyleBackColor = true;
             this.CrearButton.Click += new System.EventHandler(this.CrearButton_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(59, 139);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(174, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Todos los campos son olbligatorios.";
+            // 
             // AltaSucursal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,5 +178,6 @@
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button CrearButton;
+        private System.Windows.Forms.Label label1;
     }
 }

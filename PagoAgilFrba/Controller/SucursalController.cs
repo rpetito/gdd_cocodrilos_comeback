@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace PagoAgilFrba.Controller
 {
@@ -44,6 +45,83 @@ namespace PagoAgilFrba.Controller
                 onDataProcessed = () => { }
 
             });
+        }
+
+        public void removeSucursal(SQLResponse<Int32> listener, Int32 idSucursal)
+        {
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            {
+
+                getProcedureName = () => { return "BAJA_SUCURSAL"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    sqlCommand.Parameters.AddWithValue("@idsucursal", idSucursal);
+                },
+
+
+
+                onReadData = (Int32 result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => {
+
+                }
+            });
+
+        }
+        public void filterSucursalHabilitada(SQLResponse<SqlDataReader> listener, String nombre, String direccion, String codPostal, DataGridView dgv)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
+            {
+
+                getProcedureName = () => { return "BUSCAR_SUCURSAL_HABILITADA"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    if (!string.IsNullOrWhiteSpace(nombre))
+                    {
+                        sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@nombre"].Value = nombre;
+                    }
+                    if (!string.IsNullOrWhiteSpace(direccion))
+                    {
+                        sqlCommand.Parameters.Add("@direccion", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@direccion"].Value = direccion;
+                    }
+                    if (!string.IsNullOrWhiteSpace(codPostal))
+                    {
+                        sqlCommand.Parameters.Add("@cod_postal", SqlDbType.Decimal);
+                        sqlCommand.Parameters["@cod_postal"].Value = Convert.ToDecimal(codPostal);
+                    }
+                },
+
+
+
+                onReadData = (SqlDataReader result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => {
+
+                }
+
+            }, dgv);
+
         }
     }
 }

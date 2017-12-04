@@ -17,6 +17,7 @@ namespace PagoAgilFrba.AbmSucursal
         public AltaSucursal()
         {
             InitializeComponent();
+            this.CrearButton.Enabled = false;
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -54,6 +55,21 @@ namespace PagoAgilFrba.AbmSucursal
             nombre,
             direccion,
             codPostal);
+        }
+
+        private void NombreTB_TextChanged(object sender, EventArgs e)
+        {
+           this.CrearButton.Enabled = !string.IsNullOrWhiteSpace(this.NombreTB.Text) && !string.IsNullOrWhiteSpace(this.DireccionTB.Text) && !string.IsNullOrWhiteSpace(this.CodigoPostalTB.Text);       
+        }
+
+        private void DireccionTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = !string.IsNullOrWhiteSpace(this.NombreTB.Text) && !string.IsNullOrWhiteSpace(this.DireccionTB.Text) && !string.IsNullOrWhiteSpace(this.CodigoPostalTB.Text);
+        }
+
+        private void CodigoPostalTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = !string.IsNullOrWhiteSpace(this.NombreTB.Text) && !string.IsNullOrWhiteSpace(this.DireccionTB.Text) && !string.IsNullOrWhiteSpace(this.CodigoPostalTB.Text);
         }
     }
 }

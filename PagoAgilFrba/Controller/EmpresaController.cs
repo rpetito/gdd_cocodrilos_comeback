@@ -65,7 +65,8 @@ namespace PagoAgilFrba.Controller
 
                 onReadData = (SqlDataReader result) => {
 
-                    dict.Add(result.GetDecimal(0), (result.GetString(1)));
+					dict.Add(result.GetDecimal(0), (result.GetString(1)));
+					comboBox.Items.Add(result.GetString(1));
 
                 },
 
@@ -74,11 +75,6 @@ namespace PagoAgilFrba.Controller
                 },
 
                 onDataProcessed = () => {
-
-                    foreach (KeyValuePair<Decimal, String> item in dict)
-                    {
-                        comboBox.Items.Add(item.Value);
-                    }
 
                 }
 

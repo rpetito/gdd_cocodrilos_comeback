@@ -131,6 +131,21 @@ DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_RUBROS') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_RUBROS
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_SUCURSAL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_SUCURSAL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_CLIENTE') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_CLIENTE
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_EMPRESA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_HABILITADA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_HABILITADA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_SUCURSAL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_SUCURSAL
+
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_TOTALIDAD') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_TOTALIDAD
 
@@ -163,7 +178,6 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_ROL
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_FALTANTES_ROL') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_FALTANTES_ROL
-
 
 
 GO
@@ -676,6 +690,29 @@ BEGIN CATCH
 END CATCH
 GO
 
+------------------------------------------------------------------------------
+--------------------BUSCAR SUCURSAL HABILITADA--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_HABILITADA(
+	@nombre nvarchar(255) = NULL,
+	@direccion nvarchar(255) = NULL, 
+	@cod_postal numeric(18,0) = NULL) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.SUCURSAL S
+	WHERE	(@nombre IS NULL OR S.nombre = @nombre) AND
+			(@direccion IS NULL OR s.direccion = @direccion) AND
+			(@cod_postal IS NULL OR s.cod_postal = @cod_postal) AND
+			S.habilitado = 1
+
+
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 
 
@@ -1415,8 +1452,7 @@ GO
 		@habilitado		bit
 	) 
 	AS
-	BEGIN
-	--BEGIN TRY 
+	BEGIN TRY 
 	
 		UPDATE COCODRILOS_COMEBACK.EMPRESA
 		SET 
@@ -1430,11 +1466,10 @@ GO
 
 		SELECT @@ROWCOUNT
 
-	END
-	--END TRY
-	--BEGIN CATCH
-	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	--END CATCH
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
 	GO
 
 
@@ -1475,16 +1510,22 @@ GO
 	END CATCH
 	GO
 
-/*
+
 	---------------------------------------------------
 	-----------------------BAJA------------------------
 	---------------------------------------------------
-	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_SUCURSAL(@cuit nvarchar(50))
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_SUCURSAL(@idSucursal int)
 	AS
 	BEGIN TRY
-		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		UPDATE COCODRILOS_COMEBACK.SUCURSAL
 		SET habilitado = 0
-		WHERE cuit = @cuit
+		WHERE id = @idSucursal
+
+		update COCODRILOS_COMEBACK.ROL_USUARIO
+		SET habilitado = 0 
+		WHERE id_usuario IN (SELECT U.dni
+					  FROM USUARIO_SUCURSAL US JOIN USUARIO U ON US.user_dni = U.dni JOIN ROL_USUARIO RU ON RU.id_usuario = U.dni
+					  WHERE US.sucursal_id = @idSucursal)
 		
 		SELECT @@ROWCOUNT
 	END TRY
@@ -1492,8 +1533,7 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
-
-
+/*
 	---------------------------------------------------
 	-------------------MODIFICACION--------------------
 	---------------------------------------------------
@@ -1523,6 +1563,7 @@ GO
 	END CATCH
 	GO
 	*/
+
 
 
 ---------------------------------------------------
@@ -1675,3 +1716,4 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
+
