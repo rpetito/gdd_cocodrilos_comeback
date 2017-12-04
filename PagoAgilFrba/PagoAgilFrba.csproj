@@ -176,7 +176,6 @@
     <Compile Include="AbmRol\ModificarRol.Designer.cs">
       <DependentUpon>ModificarRol.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmRol\SqlRespose.cs" />
     <Compile Include="AbmSucursal\ABMSucursal.cs">
       <SubType>Form</SubType>
     </Compile>

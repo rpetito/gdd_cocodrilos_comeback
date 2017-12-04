@@ -23,7 +23,7 @@ namespace PagoAgilFrba.AbmRol
         {
             InitializeComponent();
 			this.rolController = new RolController();
-			Util.Util.addButtonColumnToGridView(EliminarRolGV, new DataGridViewCellEventHandler(this.EliminarRolGV_CellContentClick));
+			Util.Util.addButtonEliminarColumnToGridView(EliminarRolGV, new DataGridViewCellEventHandler(this.EliminarRolGV_CellContentClick));
         }
 
 
@@ -38,7 +38,7 @@ namespace PagoAgilFrba.AbmRol
         }
 
 		private void FiltratButton_Click(object sender, EventArgs e) {
-			rolController.getRolByName(new SQLResponse<SqlDataReader>() {
+			rolController.getAvailableRolByName(new SQLResponse<SqlDataReader>() {
 
 				onSuccess = (SqlDataReader result) => {
 
