@@ -173,6 +173,9 @@ DROP PROCEDURE COCODRILOS_COMEBACK.HABILITAR_ROL
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ROLES') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_FACTURA
+
 
 
 GO
@@ -700,8 +703,6 @@ GO
 ----------------------------CREACION DE TRIGGERS-----------------------------
 --###########################################################################
 --###########################################################################
-
-
 
 
 
@@ -1696,3 +1697,117 @@ GO
 	END CATCH
 	GO
 
+
+---------------------------------------------------
+-------------------ABM FACTURA---------------------
+---------------------------------------------------
+
+	---------------------------------------------------
+	-----------------------ALTA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.ALTA_FACTURA(
+		@numero			numeric(18,0),
+		@cliente		numeric(18,0),
+		@empresa		nvarchar(50),
+		@fechaEmision	datetime,
+		@fechaVto		datetime,
+		@total			numeric(18,2),
+		@items			nvarchar(max)
+	)
+	AS
+	--BEGIN TRY
+	BEGIN
+
+		INSERT INTO COCODRILOS_COMEBACK.FACTURA (
+			numero,
+			cliente,
+			empresa,
+			fecha_emision,
+			fecha_vto,
+			total
+		) VALUES (
+			@numero,
+			@cliente,
+			@empresa,
+			@fechaEmision,
+			@fechaVto,
+			@total
+		)
+
+		--LA INFORMACION DE LOS ITEMS VENDRA EN FORMATO PRECIO1;CANTIDAD1&PRECIO2;CANTIDAD2&....
+		DECLARE @itemInfo nvarchar(255)
+		DECLARE @itemCant nvarchar(50)
+		DECLARE @itemPrecio nvarchar(50)
+
+		DECLARE c_items CURSOR FOR
+			SELECT *
+			FROM STRING_SPLIT(@items, '&')
+
+		OPEN c_items
+		
+		FETCH NEXT FROM c_items INTO @itemInfo
+
+		WHILE(@@FETCH_STATUS = 0)
+			BEGIN
+
+				--VOY A LEER EL PRECIO Y LA CANTIDAD DEL ITEM ACTUAL
+				DECLARE @precio	nvarchar(50)
+				DECLARE @cant	nvarchar(50)
+
+				DECLARE c_item_info CURSOR FOR
+					SELECT *
+					FROM STRING_SPLIT(@itemInfo, ';')
+				OPEN c_item_info
+				
+				--COMO SIEMPRE VIENEN EN PARES LA INFO (PRECIO Y CANT) SIEMPRE SON DOS ELEMENTOS 
+				--EN EL CURSOR, LEO PRIMERO PRECIO Y DESPUES CANTIDAD
+				FETCH NEXT FROM c_item_info INTO @precio
+				FETCH NEXT FROM c_item_info INTO @cant
+
+				--AGREGO EL ITEM DE LA FACTURA CON SU PRECIO Y CANTIDAD
+				INSERT INTO COCODRILOS_COMEBACK.ITEM_FACTURA (
+					fact_numero,
+					fact_empresa,
+					precio_unitario,
+					cantidad
+				) VALUES (
+					@numero,
+					@empresa,
+					CONVERT(numeric(18,5), @precio),
+					CONVERT(numeric(18,0), @cant)
+				)
+
+				CLOSE c_item_info
+				DEALLOCATE c_item_info
+
+				--LEO SIGUIENTE REGISTRO PRECIO;CANTIDAD
+				FETCH NEXT FROM c_items INTO @itemInfo
+				
+			END
+
+			CLOSE c_items
+			DEALLOCATE c_items
+
+
+		SELECT @@ERROR
+	END
+	--END TRY
+	--BEGIN CATCH
+	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	--END CATCH
+	GO
+
+
+
+
+	---------------------------------------------------
+	-----------------------BAJA------------------------
+	---------------------------------------------------
+
+
+
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
