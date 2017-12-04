@@ -1715,8 +1715,21 @@ GO
 		@items			nvarchar(max)
 	)
 	AS
-	--BEGIN TRY
-	BEGIN
+	BEGIN TRY
+
+		DECLARE @errorMessage nvarchar(255)
+
+		IF NOT EXISTS(SELECT * FROM COCODRILOS_COMEBACK.CLIENTE WHERE dni = @cliente)
+			BEGIN
+				SET @errorMessage = 'El cliente no existe.';
+				THROW 99999, '', 1
+			END
+
+		IF NOT EXISTS(SELECT * FROM COCODRILOS_COMEBACK.EMPRESA WHERE cuit = @empresa)
+			BEGIN
+				SET @errorMessage = 'La empresa no existe.';
+				THROW 99999, '', 1
+			END
 
 		INSERT INTO COCODRILOS_COMEBACK.FACTURA (
 			numero,
@@ -1790,11 +1803,10 @@ GO
 
 
 		SELECT @@ERROR
-	END
-	--END TRY
-	--BEGIN CATCH
-	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	--END CATCH
+	END TRY
+	BEGIN CATCH
+		THROW 99999, @errorMessage, 1
+	END CATCH
 	GO
 
 
