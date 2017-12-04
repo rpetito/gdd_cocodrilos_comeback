@@ -19,11 +19,22 @@ namespace PagoAgilFrba.AbmFactura
     {
 
 		FacturaController facturaController;
+		DataTable itemsFacturaDataTable;
 
         public AltaFactura()
         {
             InitializeComponent();
 			this.facturaController = new FacturaController();
+			this.itemsFacturaDataTable = new DataTable();
+			this.itemsFacturaDataTable.Columns.Add("Precio");
+			this.itemsFacturaDataTable.Columns.Add("Cantidad");
+			this.ItemsFacturaGV.DataSource = itemsFacturaDataTable;
+			Util.Util.addButtonColumnToGridView(
+				ItemsFacturaGV,
+				new DataGridViewCellEventHandler(this.AltaFactura_EliminarItemHandler),
+				"Eliminar"
+			);
+			
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -33,7 +44,7 @@ namespace PagoAgilFrba.AbmFactura
             FacturaTB.Clear();
             AltaDP.ResetText();
             VencimientoDP.ResetText();
-            ItemsFacturaGV.Rows.Clear();
+			itemsFacturaDataTable.Rows.Clear();
             TotalTB.Clear();
         }
 
@@ -53,19 +64,50 @@ namespace PagoAgilFrba.AbmFactura
 			foreach(DataGridViewRow row in ItemsFacturaGV.Rows) {
 				Decimal precio = (Decimal)row.Cells[0].Value;
 				Int32 cantidad = (Int32)row.Cells[1].Value;
-				factura.addItem(new ItemFactura(precio, cantidad));
+				factura.addItem(precio, cantidad);
 			}
-			
-			
-			this.facturaController.altaFactura(new SQLResponse<Int32>() { 
-			
+
+
+			this.facturaController.altaFactura(new SQLResponse<Int32>() {
+
+				onSuccess = (Int32 result) => {
+					if(result == 0) {
+						Util.Util.showSuccessDialog();
+					}
+				},
+
+				onError = (Error error) => { 
+				
+				}
+
 			}, factura);
 		}
 
 
 		private void agregarItemButton_Click(object sender, EventArgs e) {
+			using(AltaItemFactura altaItemFactura = new AltaItemFactura()) {
+				altaItemFactura.ShowDialog();
+				String precio = altaItemFactura.precio;
+				String cant = altaItemFactura.cantidad;
+
+				if(altaItemFactura.DialogResult == DialogResult.OK) {
+					itemsFacturaDataTable.Rows.Add(precio, cant);
+				}
+				
+			}
+		}
+
+
+		private void AltaFactura_EliminarItemHandler(object sender, DataGridViewCellEventArgs e) {
+
+			if(e.ColumnIndex == 0) {
+				itemsFacturaDataTable.Rows.Remove(itemsFacturaDataTable.Rows[e.RowIndex]);
+			}
 
 		}
+
+
+		
 
 		
 

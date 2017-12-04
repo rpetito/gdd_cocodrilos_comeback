@@ -189,6 +189,7 @@
 			this.ItemsFacturaGV.Name = "ItemsFacturaGV";
 			this.ItemsFacturaGV.Size = new System.Drawing.Size(425, 150);
 			this.ItemsFacturaGV.TabIndex = 10;
+			this.ItemsFacturaGV.AllowUserToAddRows = false;
 			// 
 			// TotalTB
 			// 

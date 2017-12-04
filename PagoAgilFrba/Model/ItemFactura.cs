@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PagoAgilFrba.Model {
 
 
-	class ItemFactura {
+	public class ItemFactura {
 
 		public Decimal precio { get; set; }
 		public Int32 cantidad { get; set; }

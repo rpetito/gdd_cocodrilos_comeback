@@ -32,9 +32,9 @@ namespace PagoAgilFrba.Controller {
 					command.Parameters.Add("@fechaVto", SqlDbType.DateTime);
 					command.Parameters["@fechaVto"].Value = factura.fechaVto;
 					command.Parameters.Add("@total", SqlDbType.Decimal);
-					command.Parameters["@total"].Value = factura.total;
+					command.Parameters["@total"].Value = factura.getTotal();
 					command.Parameters.Add("@items", SqlDbType.NVarChar);
-					command.Parameters["@items"].Value = factura.items.getItemsAsStream();
+					command.Parameters["@items"].Value = factura.getItemsAsStream();
 				},
 
 				onReadData = (Int32 result) => {
