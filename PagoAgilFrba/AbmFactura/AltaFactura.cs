@@ -40,7 +40,9 @@ namespace PagoAgilFrba.AbmFactura
         private void LimpiarButton_Click(object sender, EventArgs e)
         {
             ClienteTB.Clear();
-            EmpresaTB.Clear();
+			EmpresaTB1.Clear();
+			EmpresaTB2.Clear();
+			EmpresaTB3.Clear();
             FacturaTB.Clear();
             AltaDP.ResetText();
             VencimientoDP.ResetText();
@@ -58,12 +60,12 @@ namespace PagoAgilFrba.AbmFactura
 			Factura factura = new Factura();
 			factura.numero = Int32.Parse(FacturaTB.Text.ToString());
 			factura.cliente = Int32.Parse(ClienteTB.Text.ToString());
-			factura.empresa = EmpresaTB.Text.ToString();
-			factura.fechaEmision = DateTime.Parse(FecAlta.Text.ToString());
-			factura.fechaVto = DateTime.Parse(FecVenc.Text.ToString());
+			factura.empresa = EmpresaTB1.Text.ToString() + "-" + EmpresaTB2.Text.ToString() + "-" + EmpresaTB3.Text.ToString();
+			factura.fechaEmision = AltaDP.Value.Date;
+			factura.fechaVto = VencimientoDP.Value.Date;
 			foreach(DataGridViewRow row in ItemsFacturaGV.Rows) {
-				Decimal precio = (Decimal)row.Cells[0].Value;
-				Int32 cantidad = (Int32)row.Cells[1].Value;
+				Decimal precio = Decimal.Parse(row.Cells[1].Value.ToString());
+				Int32 cantidad = Int32.Parse(row.Cells[2].Value.ToString());
 				factura.addItem(precio, cantidad);
 			}
 

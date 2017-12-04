@@ -35,12 +35,14 @@
 			this.FecAlta = new System.Windows.Forms.Label();
 			this.FecVenc = new System.Windows.Forms.Label();
 			this.FacturaGB = new System.Windows.Forms.GroupBox();
+			this.EmpresaTB3 = new System.Windows.Forms.TextBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.EmpresaTB2 = new System.Windows.Forms.TextBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.VencimientoDP = new System.Windows.Forms.DateTimePicker();
 			this.AltaDP = new System.Windows.Forms.DateTimePicker();
 			this.FacturaTB = new System.Windows.Forms.TextBox();
-			this.EmpresaButton = new System.Windows.Forms.Button();
-			this.EmpresaTB = new System.Windows.Forms.TextBox();
-			this.ClienteButton = new System.Windows.Forms.Button();
+			this.EmpresaTB1 = new System.Windows.Forms.TextBox();
 			this.ClienteTB = new System.Windows.Forms.TextBox();
 			this.ItemsFacturaGV = new System.Windows.Forms.DataGridView();
 			this.TotalTB = new System.Windows.Forms.TextBox();
@@ -108,12 +110,14 @@
 			// 
 			// FacturaGB
 			// 
+			this.FacturaGB.Controls.Add(this.EmpresaTB3);
+			this.FacturaGB.Controls.Add(this.label2);
+			this.FacturaGB.Controls.Add(this.EmpresaTB2);
+			this.FacturaGB.Controls.Add(this.label1);
 			this.FacturaGB.Controls.Add(this.VencimientoDP);
 			this.FacturaGB.Controls.Add(this.AltaDP);
 			this.FacturaGB.Controls.Add(this.FacturaTB);
-			this.FacturaGB.Controls.Add(this.EmpresaButton);
-			this.FacturaGB.Controls.Add(this.EmpresaTB);
-			this.FacturaGB.Controls.Add(this.ClienteButton);
+			this.FacturaGB.Controls.Add(this.EmpresaTB1);
 			this.FacturaGB.Controls.Add(this.ClienteTB);
 			this.FacturaGB.Controls.Add(this.FecVenc);
 			this.FacturaGB.Controls.Add(this.Cliente);
@@ -126,6 +130,38 @@
 			this.FacturaGB.TabIndex = 9;
 			this.FacturaGB.TabStop = false;
 			this.FacturaGB.Text = "Factura";
+			// 
+			// EmpresaTB3
+			// 
+			this.EmpresaTB3.Location = new System.Drawing.Point(341, 52);
+			this.EmpresaTB3.Name = "EmpresaTB3";
+			this.EmpresaTB3.Size = new System.Drawing.Size(27, 20);
+			this.EmpresaTB3.TabIndex = 19;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(325, 55);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(10, 13);
+			this.label2.TabIndex = 18;
+			this.label2.Text = "-";
+			// 
+			// EmpresaTB2
+			// 
+			this.EmpresaTB2.Location = new System.Drawing.Point(225, 52);
+			this.EmpresaTB2.Name = "EmpresaTB2";
+			this.EmpresaTB2.Size = new System.Drawing.Size(94, 20);
+			this.EmpresaTB2.TabIndex = 17;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(209, 55);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(10, 13);
+			this.label1.TabIndex = 16;
+			this.label1.Text = "-";
 			// 
 			// VencimientoDP
 			// 
@@ -148,35 +184,15 @@
 			this.FacturaTB.Size = new System.Drawing.Size(108, 20);
 			this.FacturaTB.TabIndex = 10;
 			// 
-			// EmpresaButton
+			// EmpresaTB1
 			// 
-			this.EmpresaButton.Location = new System.Drawing.Point(298, 50);
-			this.EmpresaButton.Name = "EmpresaButton";
-			this.EmpresaButton.Size = new System.Drawing.Size(37, 23);
-			this.EmpresaButton.TabIndex = 13;
-			this.EmpresaButton.Text = "...";
-			this.EmpresaButton.UseVisualStyleBackColor = true;
-			// 
-			// EmpresaTB
-			// 
-			this.EmpresaTB.Enabled = false;
-			this.EmpresaTB.Location = new System.Drawing.Point(175, 52);
-			this.EmpresaTB.Name = "EmpresaTB";
-			this.EmpresaTB.Size = new System.Drawing.Size(108, 20);
-			this.EmpresaTB.TabIndex = 12;
-			// 
-			// ClienteButton
-			// 
-			this.ClienteButton.Location = new System.Drawing.Point(298, 20);
-			this.ClienteButton.Name = "ClienteButton";
-			this.ClienteButton.Size = new System.Drawing.Size(37, 23);
-			this.ClienteButton.TabIndex = 11;
-			this.ClienteButton.Text = "...";
-			this.ClienteButton.UseVisualStyleBackColor = true;
+			this.EmpresaTB1.Location = new System.Drawing.Point(175, 52);
+			this.EmpresaTB1.Name = "EmpresaTB1";
+			this.EmpresaTB1.Size = new System.Drawing.Size(27, 20);
+			this.EmpresaTB1.TabIndex = 12;
 			// 
 			// ClienteTB
 			// 
-			this.ClienteTB.Enabled = false;
 			this.ClienteTB.Location = new System.Drawing.Point(175, 22);
 			this.ClienteTB.Name = "ClienteTB";
 			this.ClienteTB.Size = new System.Drawing.Size(108, 20);
@@ -184,12 +200,12 @@
 			// 
 			// ItemsFacturaGV
 			// 
+			this.ItemsFacturaGV.AllowUserToAddRows = false;
 			this.ItemsFacturaGV.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
 			this.ItemsFacturaGV.Location = new System.Drawing.Point(12, 210);
 			this.ItemsFacturaGV.Name = "ItemsFacturaGV";
 			this.ItemsFacturaGV.Size = new System.Drawing.Size(425, 150);
 			this.ItemsFacturaGV.TabIndex = 10;
-			this.ItemsFacturaGV.AllowUserToAddRows = false;
 			// 
 			// TotalTB
 			// 
@@ -274,10 +290,8 @@
         private System.Windows.Forms.GroupBox FacturaGB;
         private System.Windows.Forms.DateTimePicker VencimientoDP;
         private System.Windows.Forms.DateTimePicker AltaDP;
-        private System.Windows.Forms.TextBox FacturaTB;
-        private System.Windows.Forms.Button EmpresaButton;
-        private System.Windows.Forms.TextBox EmpresaTB;
-        private System.Windows.Forms.Button ClienteButton;
+		private System.Windows.Forms.TextBox FacturaTB;
+		private System.Windows.Forms.TextBox EmpresaTB1;
         private System.Windows.Forms.TextBox ClienteTB;
         private System.Windows.Forms.DataGridView ItemsFacturaGV;
         private System.Windows.Forms.TextBox TotalTB;
@@ -285,5 +299,9 @@
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button CrearButton;
 		private System.Windows.Forms.Button agregarItemButton;
+		private System.Windows.Forms.TextBox EmpresaTB3;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.TextBox EmpresaTB2;
+		private System.Windows.Forms.Label label1;
     }
 }
