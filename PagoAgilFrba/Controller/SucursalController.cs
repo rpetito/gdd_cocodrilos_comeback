@@ -123,5 +123,52 @@ namespace PagoAgilFrba.Controller
             }, dgv);
 
         }
+
+        public void filterSucursalTotalidad(SQLResponse<SqlDataReader> listener, String nombre, String direccion, String codPostal, DataGridView dgv)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
+            {
+
+                getProcedureName = () => { return "BUSCAR_SUCURSAL_TOTALIDAD"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    if (!string.IsNullOrWhiteSpace(nombre))
+                    {
+                        sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@nombre"].Value = nombre;
+                    }
+                    if (!string.IsNullOrWhiteSpace(direccion))
+                    {
+                        sqlCommand.Parameters.Add("@direccion", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@direccion"].Value = direccion;
+                    }
+                    if (!string.IsNullOrWhiteSpace(codPostal))
+                    {
+                        sqlCommand.Parameters.Add("@cod_postal", SqlDbType.Decimal);
+                        sqlCommand.Parameters["@cod_postal"].Value = Convert.ToDecimal(codPostal);
+                    }
+                },
+
+
+
+                onReadData = (SqlDataReader result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => {
+
+                }
+
+            }, dgv);
+
+        }
     }
 }
