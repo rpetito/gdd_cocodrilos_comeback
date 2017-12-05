@@ -182,6 +182,9 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_EMPRESAS
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FACTURAS') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_FACTURA
+
 
 
 GO
@@ -343,6 +346,7 @@ CREATE TABLE COCODRILOS_COMEBACK.FACTURA (
 	total			numeric(18,2),
 	pagada			bit DEFAULT 0,
 	rendida			bit DEFAULT 0,
+	habilitada		bit DEFAULT 1
 	PRIMARY KEY(numero, empresa)
 )
 
@@ -726,7 +730,8 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS(
 	@numero		numeric(18,0) = NULL,
 	@empresa	nvarchar(50) = NULL,
 	@pagada		bit = NULL,
-	@rendida	bit = NULL
+	@rendida	bit = NULL,
+	@habilitada bit = NULL
 )
 AS
 BEGIN TRY
@@ -735,7 +740,8 @@ BEGIN TRY
 	WHERE	(@numero IS NULL OR f.numero = @numero) AND
 			(@empresa IS NULL OR f.empresa = @empresa) AND
 			(@pagada IS NULL OR f.pagada = @pagada) AND
-			(@rendida IS NULL OR f.rendida = @rendida)
+			(@rendida IS NULL OR f.rendida = @rendida) AND
+			(@habilitada IS NULL OR f.habilitada = @habilitada)
 END TRY
 BEGIN CATCH
 	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
@@ -1853,7 +1859,24 @@ GO
 	---------------------------------------------------
 	-----------------------BAJA------------------------
 	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_FACTURA(
+		@numero		numeric(18,0),
+		@empresa	nvarchar(50)
+	) 
+	AS
+	BEGIN TRY
 
+		UPDATE COCODRILOS_COMEBACK.FACTURA
+		SET habilitada = 0
+		WHERE numero = @numero AND empresa = @empresa
+
+		SELECT @@ROWCOUNT
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
 
 
 
