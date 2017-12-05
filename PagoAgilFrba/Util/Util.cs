@@ -15,7 +15,7 @@ namespace PagoAgilFrba.Util {
 			MessageBox.Show("Acción completada con éxito.");
 		}
 
-		public static void addButtonColumnToGridView(DataGridView gridView, DataGridViewCellEventHandler listener) {
+		public static void addButtonSeleccionarColumnToGridView(DataGridView gridView, DataGridViewCellEventHandler listener) {
 			DataGridViewButtonColumn button = new DataGridViewButtonColumn();
 			button.HeaderText = "Seleccionar";
 			button.Name = "seleccionarButton";
@@ -38,10 +38,12 @@ namespace PagoAgilFrba.Util {
 			button.Frozen = true;
 		}
 
+
 		public static Boolean onlyNumbersText(String text) {
 			Regex pattern = new Regex("^\\d+([\\,\\d]{1,2})?$");
 			return pattern.IsMatch(text);
 		}
+
 
 		public static void handleOnlyNumbersLengthInput(String text, int maxLength, KeyPressEventArgs e) {
 			if(text.Length < maxLength) {
@@ -55,11 +57,25 @@ namespace PagoAgilFrba.Util {
 			}
 		}
 
+
 		public static String getPlainTextFromCurrency(String text) {
 			return text.Substring(2, (text.Length - 2));
 		}
 	
-	}
+
+        public static void addButtonEliminarColumnToGridView(DataGridView gridView, DataGridViewCellEventHandler listener)
+        {
+            DataGridViewButtonColumn button = new DataGridViewButtonColumn();
+            button.HeaderText = "Eliminar";
+            button.Name = "eliminarButton";
+            button.Text = "Eliminar";
+            button.UseColumnTextForButtonValue = true;
+            gridView.Columns.Add(button);
+            gridView.CellContentClick += listener;
+            button.Frozen = true;
+        }
+
+    }
 
 
 }

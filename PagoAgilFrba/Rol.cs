@@ -8,10 +8,21 @@ namespace PagoAgilFrba
 {
     class Rol
     {
-
+        public static Rol instance = null;
         Int32 id;
         String detalle;
         Boolean habilitado;
+        List<Int32> funcionalidades = new List<Int32>();
+
+        public static Rol getInstance()
+        {
+            if (instance == null)
+            {
+                instance = new Rol();
+            }
+
+            return instance;
+        }
 
         public Int32 getID()
         {
@@ -65,6 +76,16 @@ namespace PagoAgilFrba
         public override int GetHashCode()
         {
             return base.GetHashCode();
+        }
+
+        public void addFuncionalidad(Int32 funcionalidad)
+        {
+            this.funcionalidades.Add(funcionalidad);
+        }
+
+        public List<Int32> getFuncionalidades()
+        {
+            return this.funcionalidades;
         }
 
     }

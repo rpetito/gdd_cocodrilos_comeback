@@ -75,8 +75,9 @@ namespace PagoAgilFrba.AbmRol
 
 				onSuccess = (Int32 result) => {
 					if(result == 0) {
-						MessageBox.Show("Acción completada con éxito.");
-					}
+                        Util.Util.showSuccessDialog();
+                        this.Close();
+                    }
 				},
 
 				onError = (Error error) => { 

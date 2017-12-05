@@ -185,6 +185,14 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS
 IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_FALTANTES_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_FALTANTES_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA 
 
 
 GO
@@ -655,13 +663,13 @@ GO
 -----------------------------------------------------------------------------
 -------------------------------OBTENER ROLES---------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@nombre nvarchar(255) = NULL, @habilitado bit = 1)
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@nombre nvarchar(255) = NULL, @habilitado bit = NULL)
 AS
 BEGIN TRY
 	SELECT *
 	FROM COCODRILOS_COMEBACK.ROL r
 	WHERE	(@nombre IS NULL OR r.descripcion = @nombre) AND
-			r.habilitado = @habilitado
+			@habilitado IS NULL OR r.habilitado = @habilitado
 END TRY
 BEGIN CATCH
 	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
@@ -684,6 +692,21 @@ END CATCH
 GO
 
 -----------------------------------------------------------------------------
+------------------OBTENER FUNCIONALIDADES POR ROL----------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_ROL(@idRol int)
+AS
+BEGIN TRY
+	SELECT f.id, f.descripcion
+	FROM COCODRILOS_COMEBACK.ROL_FUNCIONALIDAD rf join COCODRILOS_COMEBACK.FUNCIONALIDAD f on rf.id_funcionalidad = f.id
+	WHERE rf.id_rol = @idRol
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+------------------------------------------------------------------------------
 --------------------BUSCAR SUCURSAL HABILITADA--------------------------------
 -----------------------------------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_HABILITADA(
@@ -699,6 +722,7 @@ BEGIN TRY
 			(@direccion IS NULL OR s.direccion = @direccion) AND
 			(@cod_postal IS NULL OR s.cod_postal = @cod_postal) AND
 			S.habilitado = 1
+
 
 END TRY 
 BEGIN CATCH
