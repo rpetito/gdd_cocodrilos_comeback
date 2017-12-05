@@ -29,7 +29,7 @@ namespace PagoAgilFrba.Model {
 		public Decimal getTotal() {
 			Decimal total = 0;
 			foreach(ItemFactura item in items) {
-				total += item.precio;
+				total += item.precio * item.cantidad;
 			}
 			return total;
 		}
