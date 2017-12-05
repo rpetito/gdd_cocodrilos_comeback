@@ -1884,3 +1884,40 @@ GO
 	---------------------------------------------------
 	-------------------MODIFICACION--------------------
 	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA(
+		@numero			numeric(18,0),
+		@empresa		nvarchar(50),
+		@cliente		numeric(18,0),
+		@fecha_emision	datetime,
+		@fecha_vto		datetime,
+		@total			numeric(18,2),
+		@pagada			bit,
+		@rendida		bit,
+		@habilitada		bit,
+		@items			nvarchar(max)
+	)
+	AS
+	BEGIN TRY
+
+		--MODIFICACION DE FACTURA, LA PK (NUMERO, EMPRESA) NO SE PUEDE MODIFICAR
+		UPDATE COCODRILOS_COMEBACK.FACTURA
+		SET cliente = @cliente,
+			fecha_emision = @fecha_emision,
+			fecha_vto = @fecha_vto,
+			total = @total,
+			pagada = @pagada,
+			rendida = @rendida,
+			habilitada = @habilitada
+		WHERE numero = @numero AND empresa = @empresa
+		
+
+		--MODIFICACION DE ITEMS DE LA FACTURA
+		--LA INFORMACION DE LOS ITEMS VIENE EN FORMATO 
+		--ITEMID1;NUEVOPRECIO1;NUEVACANTIDAD1&ITEMID2;NUEVOPRECIO2;NUEVACANTIDAD3...
+		
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
