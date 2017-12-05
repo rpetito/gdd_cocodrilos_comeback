@@ -25,8 +25,8 @@ namespace PagoAgilFrba.AbmFactura
 			this.facturaController = new FacturaController();
 			Util.Util.addButtonColumnToGridView(
 				BajaFacturaGV, 
-				new DataGridViewCellEventHandler(this.BajaFactura_GridViewCellEventHandler),
-				"Eliminar");
+				"Eliminar",
+				new DataGridViewCellEventHandler(this.BajaFactura_GridViewCellEventHandler));
 			EmpresaController empresaController = new EmpresaController();
 			empresaController.getEmpresas(new SQLResponse<SqlDataReader>() {
 

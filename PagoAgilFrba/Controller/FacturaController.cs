@@ -56,10 +56,48 @@ namespace PagoAgilFrba.Controller {
 
 
 
-		public void modificarFactura() { 
-		
-		}
+		public void modificarFactura(SQLResponse<Int32> listener, Factura factura) {
+			SQLExecutor sqlExecutor = new SQLExecutor();
+			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
 
+				getProcedureName = () => { return "MODIFICAR_FACTURA"; },
+
+				addParams = (SqlCommand command) => {
+					command.Parameters.Add("@numero", SqlDbType.Decimal);
+					command.Parameters["@numero"].Value = factura.numero;
+					command.Parameters.Add("@empresa", SqlDbType.NVarChar);
+					command.Parameters["@empresa"].Value = factura.empresa;
+					command.Parameters.Add("@cliente", SqlDbType.Decimal);
+					command.Parameters["@cliente"].Value = factura.cliente;
+					command.Parameters.Add("@fecha_emision", SqlDbType.DateTime);
+					command.Parameters["@fecha_emision"].Value = factura.fechaEmision;
+					command.Parameters.Add("@fecha_vto", SqlDbType.DateTime);
+					command.Parameters["@fecha_vto"].Value = factura.fechaVto;
+					command.Parameters.Add("@total", SqlDbType.Decimal);
+					command.Parameters["@total"].Value = factura.getTotal();
+					command.Parameters.Add("@pagada", SqlDbType.Bit);
+					command.Parameters["@pagada"].Value = factura.pagada;
+					command.Parameters.Add("@rendida", SqlDbType.Bit);
+					command.Parameters["@rendida"].Value = factura.rendida;
+					command.Parameters.Add("@habilitada", SqlDbType.Bit);
+					command.Parameters["@habilitada"].Value = factura.habilitada;
+					command.Parameters.Add("@items", SqlDbType.NVarChar);
+					command.Parameters["@items"].Value = factura.getItemAsStreamWithId();
+				},
+
+				onReadData = (Int32 result) => {
+					listener.onSuccess(result);
+				},
+
+				onDataProcessed = () => {
+
+				},
+
+				onError = (Error error) => {
+
+				}
+			});
+		}
 
 
 		public void bajaFactura(SQLResponse<Int32> listener, String numeroFactura, String empresa) {
@@ -142,6 +180,37 @@ namespace PagoAgilFrba.Controller {
 
 			
 		}
+
+
+
+		public void getItemsFactura(SQLResponse<SqlDataReader> listener, Decimal factNumero, String empresa, DataGridView dataGridView) {
+
+			SQLExecutor sqlExecutor = new SQLExecutor();
+			sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>() {
+
+				getProcedureName = () => { return "OBTENER_ITEMS_FACTURA"; },
+
+				addParams = (SqlCommand command) => {
+					command.Parameters.Add("@factura", SqlDbType.Decimal);
+					command.Parameters["@factura"].Value = factNumero;
+					command.Parameters.Add("@empresa", SqlDbType.NVarChar);
+					command.Parameters["@empresa"].Value = empresa;
+				},
+
+				onReadData = (SqlDataReader result) => {
+					listener.onSuccess(result);
+				},
+
+				onDataProcessed = () => {
+				},
+
+				onError = (Error error) => {
+
+				}
+
+			}, dataGridView);
+
+		} 
 
 
 	

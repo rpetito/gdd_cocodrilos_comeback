@@ -27,14 +27,16 @@ namespace PagoAgilFrba.Util {
 			button.Frozen = true;
 		}
 
-		public static void addButtonColumnToGridView(DataGridView gridView, DataGridViewCellEventHandler listener, String text) {
+		public static void addButtonColumnToGridView(DataGridView gridView, String text, DataGridViewCellEventHandler listener = null) {
 			DataGridViewButtonColumn button = new DataGridViewButtonColumn();
 			button.HeaderText = text;
 			button.Name = text + "Button";
 			button.Text = text;
 			button.UseColumnTextForButtonValue = true;
 			gridView.Columns.Add(button);
-			gridView.CellContentClick += listener;
+			if(listener != null) {
+				gridView.CellContentClick += listener;
+			}
 			button.Frozen = true;
 		}
 
