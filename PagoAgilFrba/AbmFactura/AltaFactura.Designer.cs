@@ -1,4 +1,5 @@
-﻿namespace PagoAgilFrba.AbmFactura
+﻿using System;
+namespace PagoAgilFrba.AbmFactura
 {
     partial class AltaFactura
     {
@@ -35,14 +36,9 @@
 			this.FecAlta = new System.Windows.Forms.Label();
 			this.FecVenc = new System.Windows.Forms.Label();
 			this.FacturaGB = new System.Windows.Forms.GroupBox();
-			this.EmpresaTB3 = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.EmpresaTB2 = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.VencimientoDP = new System.Windows.Forms.DateTimePicker();
 			this.AltaDP = new System.Windows.Forms.DateTimePicker();
 			this.FacturaTB = new System.Windows.Forms.TextBox();
-			this.EmpresaTB1 = new System.Windows.Forms.TextBox();
 			this.ClienteTB = new System.Windows.Forms.TextBox();
 			this.ItemsFacturaGV = new System.Windows.Forms.DataGridView();
 			this.CancelarButton = new System.Windows.Forms.Button();
@@ -50,6 +46,7 @@
 			this.CrearButton = new System.Windows.Forms.Button();
 			this.agregarItemButton = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
+			this.altaFacturaEmpresaCB = new CustomComboBox<String>();
 			this.FacturaGB.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ItemsFacturaGV)).BeginInit();
 			this.SuspendLayout();
@@ -113,14 +110,10 @@
 			// 
 			// FacturaGB
 			// 
-			this.FacturaGB.Controls.Add(this.EmpresaTB3);
-			this.FacturaGB.Controls.Add(this.label2);
-			this.FacturaGB.Controls.Add(this.EmpresaTB2);
-			this.FacturaGB.Controls.Add(this.label1);
+			this.FacturaGB.Controls.Add(this.altaFacturaEmpresaCB);
 			this.FacturaGB.Controls.Add(this.VencimientoDP);
 			this.FacturaGB.Controls.Add(this.AltaDP);
 			this.FacturaGB.Controls.Add(this.FacturaTB);
-			this.FacturaGB.Controls.Add(this.EmpresaTB1);
 			this.FacturaGB.Controls.Add(this.ClienteTB);
 			this.FacturaGB.Controls.Add(this.FecVenc);
 			this.FacturaGB.Controls.Add(this.Cliente);
@@ -133,40 +126,6 @@
 			this.FacturaGB.TabIndex = 9;
 			this.FacturaGB.TabStop = false;
 			this.FacturaGB.Text = "Factura";
-			// 
-			// EmpresaTB3
-			// 
-			this.EmpresaTB3.Location = new System.Drawing.Point(341, 52);
-			this.EmpresaTB3.Name = "EmpresaTB3";
-			this.EmpresaTB3.Size = new System.Drawing.Size(27, 20);
-			this.EmpresaTB3.TabIndex = 19;
-			this.EmpresaTB3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EmpresaTB3_KeyPress);
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(325, 55);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(10, 13);
-			this.label2.TabIndex = 18;
-			this.label2.Text = "-";
-			// 
-			// EmpresaTB2
-			// 
-			this.EmpresaTB2.Location = new System.Drawing.Point(225, 52);
-			this.EmpresaTB2.Name = "EmpresaTB2";
-			this.EmpresaTB2.Size = new System.Drawing.Size(94, 20);
-			this.EmpresaTB2.TabIndex = 17;
-			this.EmpresaTB2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EmpresaTB2_KeyPress);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(209, 55);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(10, 13);
-			this.label1.TabIndex = 16;
-			this.label1.Text = "-";
 			// 
 			// VencimientoDP
 			// 
@@ -188,14 +147,6 @@
 			this.FacturaTB.Name = "FacturaTB";
 			this.FacturaTB.Size = new System.Drawing.Size(108, 20);
 			this.FacturaTB.TabIndex = 10;
-			// 
-			// EmpresaTB1
-			// 
-			this.EmpresaTB1.Location = new System.Drawing.Point(175, 52);
-			this.EmpresaTB1.Name = "EmpresaTB1";
-			this.EmpresaTB1.Size = new System.Drawing.Size(27, 20);
-			this.EmpresaTB1.TabIndex = 12;
-			this.EmpresaTB1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EmpresaTB1_KeyPress);
 			// 
 			// ClienteTB
 			// 
@@ -267,6 +218,14 @@
 			this.label3.TabIndex = 16;
 			this.label3.Text = "Total:";
 			// 
+			// altaFacturaEmpresaCB
+			// 
+			this.altaFacturaEmpresaCB.FormattingEnabled = true;
+			this.altaFacturaEmpresaCB.Location = new System.Drawing.Point(175, 52);
+			this.altaFacturaEmpresaCB.Name = "altaFacturaEmpresaCB";
+			this.altaFacturaEmpresaCB.Size = new System.Drawing.Size(121, 21);
+			this.altaFacturaEmpresaCB.TabIndex = 16;
+			// 
 			// AltaFactura
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -302,17 +261,13 @@
         private System.Windows.Forms.DateTimePicker VencimientoDP;
         private System.Windows.Forms.DateTimePicker AltaDP;
 		private System.Windows.Forms.TextBox FacturaTB;
-		private System.Windows.Forms.TextBox EmpresaTB1;
         private System.Windows.Forms.TextBox ClienteTB;
 		private System.Windows.Forms.DataGridView ItemsFacturaGV;
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button CrearButton;
 		private System.Windows.Forms.Button agregarItemButton;
-		private System.Windows.Forms.TextBox EmpresaTB3;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.TextBox EmpresaTB2;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label label3;
+		private CustomComboBox<String> altaFacturaEmpresaCB;
     }
 }

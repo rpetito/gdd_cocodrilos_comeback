@@ -11,7 +11,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using PagoAgilFrba.Controller;
 using PagoAgilFrba.Util;
-using PagoAgilFrba.Model; 
+using PagoAgilFrba.Model;
+using System.Data.SqlClient; 
 
 namespace PagoAgilFrba.AbmFactura
 {
@@ -35,15 +36,24 @@ namespace PagoAgilFrba.AbmFactura
 				"Eliminar"
 			);
 			TotalTB.Text = "$ 0.00";
+			EmpresaController empresaController = new EmpresaController();
+			empresaController.getEmpresas(new SQLResponse<SqlDataReader>() {
+
+				onSuccess = (SqlDataReader result) => {
+					altaFacturaEmpresaCB.addItem(result.GetString(0), result.GetString(1));
+				},
+
+				onError = (Error error) => { 
+					
+				}
+
+			}, 1);
 			
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
         {
             ClienteTB.Clear();
-			EmpresaTB1.Clear();
-			EmpresaTB2.Clear();
-			EmpresaTB3.Clear();
             FacturaTB.Clear();
             AltaDP.ResetText();
             VencimientoDP.ResetText();
@@ -61,7 +71,7 @@ namespace PagoAgilFrba.AbmFactura
 			Factura factura = new Factura();
 			factura.numero = Int32.Parse(FacturaTB.Text.ToString());
 			factura.cliente = Int32.Parse(ClienteTB.Text.ToString());
-			factura.empresa = EmpresaTB1.Text.ToString() + "-" + EmpresaTB2.Text.ToString() + "-" + EmpresaTB3.Text.ToString();
+			factura.empresa = altaFacturaEmpresaCB.getSelectedItemID();
 			factura.fechaEmision = AltaDP.Value.Date;
 			factura.fechaVto = VencimientoDP.Value.Date;
 			foreach(DataGridViewRow row in ItemsFacturaGV.Rows) {
@@ -117,18 +127,6 @@ namespace PagoAgilFrba.AbmFactura
 
 		private void ClienteTB_KeyPress(object sender, KeyPressEventArgs e) {
 			Util.Util.handleOnlyNumbersLengthInput(ClienteTB.Text, 8, e);
-		}
-
-		private void EmpresaTB1_KeyPress(object sender, KeyPressEventArgs e) {
-			Util.Util.handleOnlyNumbersLengthInput(EmpresaTB1.Text, 2, e);
-		}
-
-		private void EmpresaTB2_KeyPress(object sender, KeyPressEventArgs e) {
-			Util.Util.handleOnlyNumbersLengthInput(EmpresaTB2.Text, 8, e);
-		}
-
-		private void EmpresaTB3_KeyPress(object sender, KeyPressEventArgs e) {
-			Util.Util.handleOnlyNumbersLengthInput(EmpresaTB3.Text, 1, e);
 		}
 
 

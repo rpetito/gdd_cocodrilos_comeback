@@ -23,6 +23,7 @@ namespace PagoAgilFrba.Util {
 			button.UseColumnTextForButtonValue = true;
 			gridView.Columns.Add(button);
 			gridView.CellContentClick += listener;
+			gridView.AllowUserToAddRows = false;
 			button.Frozen = true;
 		}
 

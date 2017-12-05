@@ -176,6 +176,12 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES
 IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_EMPRESAS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_EMPRESAS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FACTURAS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS
+
 
 
 GO
@@ -696,6 +702,45 @@ BEGIN CATCH
 END CATCH
 GO
 
+
+-----------------------------------------------------------------------------
+--------------------------OBTENER EMPRESAS-----------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_EMPRESAS(@habilitada bit = NULL)
+AS 
+BEGIN TRY
+	SELECT * 
+	FROM COCODRILOS_COMEBACK.EMPRESA 
+	WHERE @habilitada IS NULL OR habilitado = @habilitada
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+-----------------------------------------------------------------------------
+--------------------------OBTENER FACTURAS-----------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS(
+	@numero		numeric(18,0) = NULL,
+	@empresa	nvarchar(50) = NULL,
+	@pagada		bit = NULL,
+	@rendida	bit = NULL
+)
+AS
+BEGIN TRY
+	SELECT *
+	FROM COCODRILOS_COMEBACK.FACTURA f
+	WHERE	(@numero IS NULL OR f.numero = @numero) AND
+			(@empresa IS NULL OR f.empresa = @empresa) AND
+			(@pagada IS NULL OR f.pagada = @pagada) AND
+			(@rendida IS NULL OR f.rendida = @rendida)
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 
 --###########################################################################

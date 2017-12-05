@@ -223,6 +223,9 @@
     <Compile Include="Controller\SQLExecutor.cs" />
     <Compile Include="Controller\SucursalController.cs" />
     <Compile Include="Controller\UserController.cs" />
+    <Compile Include="CustomComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Devolucion\Devolucion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -230,6 +233,9 @@
       <DependentUpon>Devolucion.cs</DependentUpon>
     </Compile>
     <Compile Include="Empresa.cs" />
+    <Compile Include="FilterComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MenuController.cs" />
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\Factura.cs" />
