@@ -1242,7 +1242,7 @@ BEGIN
 			SET @status = 1002; --USUARIO NO REGISTRADO
 
 	IF(@status = 0) --USUARIO EXISTE Y DEVUELVE LISTADO DE ROLES HABILITADOS
-		SELECT r.ID_USUARIO, r.ID_ROL, rol.DESCRIPCION
+		SELECT r.ID_USUARIO, r.ID_ROL, rol.DESCRIPCION, r.habilitado
 		FROM COCODRILOS_COMEBACK.ROL_USUARIO r JOIN COCODRILOS_COMEBACK.ROL rol ON r.ID_ROL = rol.ID
 		WHERE r.ID_USUARIO = (SELECT u.DNI
 									FROM COCODRILOS_COMEBACK.USUARIO u 
@@ -1644,6 +1644,7 @@ GO
 
 		DECLARE @insertedRolID int = (SELECT IDENT_CURRENT('COCODRILOS_COMEBACK.ROL'))
 		IF @funcionalities IS NOT NULL
+
 			BEGIN
 				DECLARE @actualFunID nvarchar(255)
 				DECLARE c_agregar_func CURSOR FOR
@@ -1671,45 +1672,62 @@ GO
 	GO
 
 
-	---------------------------------------------------
-	-------------------MODIFICACION--------------------
-	---------------------------------------------------
+	-------------------------------------------------------
+	-------------------MODIFICACION ROL--------------------
+	-------------------------------------------------------
 	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_ROL(
-		@rolID			int,
+		@idRol			int,
 		@descripcion	nvarchar(255),
-		@funToRemoveID	int = NULL,
-		@funToAddID		nvarchar(255) = NULL
+		@funcionalities	nvarchar(255) = NULL,
+		@habilitado		bit
 	) 
-	AS
-	BEGIN TRY 
+	AS 
+	BEGIN TRY
 
 		UPDATE COCODRILOS_COMEBACK.ROL
 		SET 
-			descripcion = @descripcion
-		WHERE id = @rolID
+			descripcion = @descripcion,
+			habilitado = @habilitado
 
-		IF @funToRemoveID IS NOT NULL
-			EXEC COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL @rolID, @funToRemoveID
+		WHERE id = @idRol
 
-		IF @funToAddID IS NOT NULL
+		IF @funcionalities IS NOT NULL
+			BEGIN
+				DECLARE @actualFunID1 nvarchar(255)
+				DECLARE c_agregar_func1 CURSOR FOR
+					SELECT rf.id_funcionalidad
+					FROM COCODRILOS_COMEBACK.ROL_FUNCIONALIDAD rf
+					WHERE rf.id_rol = @idRol
+				OPEN c_agregar_func1
+				FETCH NEXT FROM c_agregar_func1 INTO @actualFunID1
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+						DECLARE @funIdInt1 INT = (SELECT (CONVERT(int, @actualFunID1)))
+						EXEC COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL @idRol, @funIdInt1
+						FETCH NEXT FROM c_agregar_func1 INTO @actualFunID1
+					END
+				CLOSE c_agregar_func1
+				DEALLOCATE c_agregar_func1
+			END
 			BEGIN
 				DECLARE @actualFunID nvarchar(255)
 				DECLARE c_agregar_func CURSOR FOR
 					SELECT *
-					FROM COCODRILOS_COMEBACK.STRING_SPLIT(@funToAddID, '&')
+					FROM COCODRILOS_COMEBACK.STRING_SPLIT(@funcionalities, '&')
 				OPEN c_agregar_func
 				FETCH NEXT FROM c_agregar_func INTO @actualFunID
 				WHILE(@@FETCH_STATUS = 0)
 					BEGIN
 						DECLARE @funIdInt INT = (SELECT (CONVERT(int, @actualFunID)))
-						EXEC COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL @rolID, @funIdInt
+						EXEC COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL @idRol, @funIdInt
 						FETCH NEXT FROM c_agregar_func INTO @actualFunID
 					END
 				CLOSE c_agregar_func
 				DEALLOCATE c_agregar_func
 			END
 
-		SELECT @@ROWCOUNT
+
+		SELECT @@ERROR
 
 	END TRY
 	BEGIN CATCH

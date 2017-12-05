@@ -58,7 +58,7 @@ namespace PagoAgilFrba.AbmRol
 				rolController.bajaRol(new SQLResponse<Int32>() {
 					
 					onSuccess = (Int32 result) => {
-						if(result > 0) {
+						if(result >= 0) {
 							Util.Util.showSuccessDialog();
 							FiltratButton.PerformClick();
 						}

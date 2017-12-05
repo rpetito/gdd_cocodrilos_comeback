@@ -56,7 +56,7 @@ namespace PagoAgilFrba.AbmRol
         {
             if (e.ColumnIndex == 0 && e.RowIndex >= 0)
             {
-                
+                RolRequest rolRequest = new RolRequest();
                 Rol.getInstance().setID(Convert.ToInt32(this.ModificarRolGV.CurrentRow.Cells[1].Value));
                 Rol.getInstance().setDetalle(this.ModificarRolGV.CurrentRow.Cells[2].Value.ToString());
                 Rol.getInstance().setHabilitado(Convert.ToBoolean(this.ModificarRolGV.CurrentRow.Cells[3].Value));
@@ -72,18 +72,18 @@ namespace PagoAgilFrba.AbmRol
 
                     }
 
-                }, Convert.ToInt32(this.ModificarRolGV.CurrentRow.Cells[1].Value));
+                }, Convert.ToInt32(this.ModificarRolGV.CurrentRow.Cells[1].Value), rolRequest);
 
                 DatosRol datos = new DatosRol();
-                //datos.FormClosed += new FormClosedEventHandler(ModificarRolGV_datosRolClosed);
+                datos.FormClosed += new FormClosedEventHandler(ModificarRolGV_datosRolClosed);
                 datos.Show();
             }
         }
 
-        /*void ModificarRolGV_datosRolClosed(object sender, FormClosedEventArgs e)
+        void ModificarRolGV_datosRolClosed(object sender, FormClosedEventArgs e)
         {
             FiltratButton.PerformClick();
-        }*/
+        }
 
     }
 }
