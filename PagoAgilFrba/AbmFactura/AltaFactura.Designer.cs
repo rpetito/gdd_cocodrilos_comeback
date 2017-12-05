@@ -31,7 +31,7 @@
 			this.Cliente = new System.Windows.Forms.Label();
 			this.Empresa = new System.Windows.Forms.Label();
 			this.nroFacturaLabel = new System.Windows.Forms.Label();
-			this.Total = new System.Windows.Forms.Label();
+			this.TotalTB = new System.Windows.Forms.Label();
 			this.FecAlta = new System.Windows.Forms.Label();
 			this.FecVenc = new System.Windows.Forms.Label();
 			this.FacturaGB = new System.Windows.Forms.GroupBox();
@@ -45,11 +45,11 @@
 			this.EmpresaTB1 = new System.Windows.Forms.TextBox();
 			this.ClienteTB = new System.Windows.Forms.TextBox();
 			this.ItemsFacturaGV = new System.Windows.Forms.DataGridView();
-			this.TotalTB = new System.Windows.Forms.TextBox();
 			this.CancelarButton = new System.Windows.Forms.Button();
 			this.LimpiarButton = new System.Windows.Forms.Button();
 			this.CrearButton = new System.Windows.Forms.Button();
 			this.agregarItemButton = new System.Windows.Forms.Button();
+			this.label3 = new System.Windows.Forms.Label();
 			this.FacturaGB.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.ItemsFacturaGV)).BeginInit();
 			this.SuspendLayout();
@@ -81,14 +81,17 @@
 			this.nroFacturaLabel.TabIndex = 2;
 			this.nroFacturaLabel.Text = "Nº Factura:";
 			// 
-			// Total
+			// TotalTB
 			// 
-			this.Total.AutoSize = true;
-			this.Total.Location = new System.Drawing.Point(297, 380);
-			this.Total.Name = "Total";
-			this.Total.Size = new System.Drawing.Size(34, 13);
-			this.Total.TabIndex = 6;
-			this.Total.Text = "Total:";
+			this.TotalTB.AutoSize = true;
+			this.TotalTB.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.TotalTB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.TotalTB.Location = new System.Drawing.Point(353, 372);
+			this.TotalTB.Name = "TotalTB";
+			this.TotalTB.Padding = new System.Windows.Forms.Padding(5);
+			this.TotalTB.Size = new System.Drawing.Size(89, 25);
+			this.TotalTB.TabIndex = 6;
+			this.TotalTB.Text = "$999999999";
 			// 
 			// FecAlta
 			// 
@@ -137,6 +140,7 @@
 			this.EmpresaTB3.Name = "EmpresaTB3";
 			this.EmpresaTB3.Size = new System.Drawing.Size(27, 20);
 			this.EmpresaTB3.TabIndex = 19;
+			this.EmpresaTB3.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EmpresaTB3_KeyPress);
 			// 
 			// label2
 			// 
@@ -153,6 +157,7 @@
 			this.EmpresaTB2.Name = "EmpresaTB2";
 			this.EmpresaTB2.Size = new System.Drawing.Size(94, 20);
 			this.EmpresaTB2.TabIndex = 17;
+			this.EmpresaTB2.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EmpresaTB2_KeyPress);
 			// 
 			// label1
 			// 
@@ -190,6 +195,7 @@
 			this.EmpresaTB1.Name = "EmpresaTB1";
 			this.EmpresaTB1.Size = new System.Drawing.Size(27, 20);
 			this.EmpresaTB1.TabIndex = 12;
+			this.EmpresaTB1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EmpresaTB1_KeyPress);
 			// 
 			// ClienteTB
 			// 
@@ -197,6 +203,7 @@
 			this.ClienteTB.Name = "ClienteTB";
 			this.ClienteTB.Size = new System.Drawing.Size(108, 20);
 			this.ClienteTB.TabIndex = 10;
+			this.ClienteTB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ClienteTB_KeyPress);
 			// 
 			// ItemsFacturaGV
 			// 
@@ -206,14 +213,8 @@
 			this.ItemsFacturaGV.Name = "ItemsFacturaGV";
 			this.ItemsFacturaGV.Size = new System.Drawing.Size(425, 150);
 			this.ItemsFacturaGV.TabIndex = 10;
-			// 
-			// TotalTB
-			// 
-			this.TotalTB.Enabled = false;
-			this.TotalTB.Location = new System.Drawing.Point(337, 377);
-			this.TotalTB.Name = "TotalTB";
-			this.TotalTB.Size = new System.Drawing.Size(100, 20);
-			this.TotalTB.TabIndex = 11;
+			this.ItemsFacturaGV.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.ItemsFacturaGV_ItemAdded);
+			this.ItemsFacturaGV.RowsRemoved += new System.Windows.Forms.DataGridViewRowsRemovedEventHandler(this.ItemsFacturaGV_ItemRemoved);
 			// 
 			// CancelarButton
 			// 
@@ -256,19 +257,29 @@
 			this.agregarItemButton.UseVisualStyleBackColor = true;
 			this.agregarItemButton.Click += new System.EventHandler(this.agregarItemButton_Click);
 			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label3.Location = new System.Drawing.Point(307, 379);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(40, 13);
+			this.label3.TabIndex = 16;
+			this.label3.Text = "Total:";
+			// 
 			// AltaFactura
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(449, 479);
+			this.Controls.Add(this.label3);
 			this.Controls.Add(this.agregarItemButton);
 			this.Controls.Add(this.CrearButton);
 			this.Controls.Add(this.LimpiarButton);
 			this.Controls.Add(this.CancelarButton);
-			this.Controls.Add(this.TotalTB);
 			this.Controls.Add(this.ItemsFacturaGV);
 			this.Controls.Add(this.FacturaGB);
-			this.Controls.Add(this.Total);
+			this.Controls.Add(this.TotalTB);
 			this.Name = "AltaFactura";
 			this.Text = "AltaFactura";
 			this.FacturaGB.ResumeLayout(false);
@@ -284,7 +295,7 @@
         private System.Windows.Forms.Label Cliente;
         private System.Windows.Forms.Label Empresa;
         private System.Windows.Forms.Label nroFacturaLabel;
-        private System.Windows.Forms.Label Total;
+        private System.Windows.Forms.Label TotalTB;
         private System.Windows.Forms.Label FecAlta;
         private System.Windows.Forms.Label FecVenc;
         private System.Windows.Forms.GroupBox FacturaGB;
@@ -293,8 +304,7 @@
 		private System.Windows.Forms.TextBox FacturaTB;
 		private System.Windows.Forms.TextBox EmpresaTB1;
         private System.Windows.Forms.TextBox ClienteTB;
-        private System.Windows.Forms.DataGridView ItemsFacturaGV;
-        private System.Windows.Forms.TextBox TotalTB;
+		private System.Windows.Forms.DataGridView ItemsFacturaGV;
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button CrearButton;
@@ -303,5 +313,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.TextBox EmpresaTB2;
 		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label3;
     }
 }

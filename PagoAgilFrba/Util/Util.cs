@@ -38,8 +38,24 @@ namespace PagoAgilFrba.Util {
 		}
 
 		public static Boolean onlyNumbersText(String text) {
-			Regex pattern = new Regex("^\\d+([\\.\\d].{1,2})?$");
+			Regex pattern = new Regex("^\\d+([\\,\\d]{1,2})?$");
 			return pattern.IsMatch(text);
+		}
+
+		public static void handleOnlyNumbersLengthInput(String text, int maxLength, KeyPressEventArgs e) {
+			if(text.Length < maxLength) {
+				if(!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar)) {
+					e.Handled = true;
+				}
+			} else {
+				if(!char.IsControl(e.KeyChar)) {
+					e.Handled = true;
+				}
+			}
+		}
+
+		public static String getPlainTextFromCurrency(String text) {
+			return text.Substring(2, (text.Length - 2));
 		}
 	
 	}

@@ -34,6 +34,7 @@ namespace PagoAgilFrba.AbmFactura
 				new DataGridViewCellEventHandler(this.AltaFactura_EliminarItemHandler),
 				"Eliminar"
 			);
+			TotalTB.Text = "$ 0.00";
 			
         }
 
@@ -47,7 +48,7 @@ namespace PagoAgilFrba.AbmFactura
             AltaDP.ResetText();
             VencimientoDP.ResetText();
 			itemsFacturaDataTable.Rows.Clear();
-            TotalTB.Clear();
+			TotalTB.Text = "";
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)
@@ -103,10 +104,46 @@ namespace PagoAgilFrba.AbmFactura
 		private void AltaFactura_EliminarItemHandler(object sender, DataGridViewCellEventArgs e) {
 
 			if(e.ColumnIndex == 0) {
+				Decimal total = Decimal.Parse(Util.Util.getPlainTextFromCurrency(TotalTB.Text.ToString()));
+				Decimal precio = Decimal.Parse(ItemsFacturaGV.Rows[e.RowIndex].Cells[1].Value.ToString());
+				Int32 cant = Int32.Parse(ItemsFacturaGV.Rows[e.RowIndex].Cells[2].Value.ToString());
+				total -= (precio * cant);
+				TotalTB.Text = "$ " + total.ToString();
 				itemsFacturaDataTable.Rows.Remove(itemsFacturaDataTable.Rows[e.RowIndex]);
 			}
 
 		}
+
+
+		private void ClienteTB_KeyPress(object sender, KeyPressEventArgs e) {
+			Util.Util.handleOnlyNumbersLengthInput(ClienteTB.Text, 8, e);
+		}
+
+		private void EmpresaTB1_KeyPress(object sender, KeyPressEventArgs e) {
+			Util.Util.handleOnlyNumbersLengthInput(EmpresaTB1.Text, 2, e);
+		}
+
+		private void EmpresaTB2_KeyPress(object sender, KeyPressEventArgs e) {
+			Util.Util.handleOnlyNumbersLengthInput(EmpresaTB2.Text, 8, e);
+		}
+
+		private void EmpresaTB3_KeyPress(object sender, KeyPressEventArgs e) {
+			Util.Util.handleOnlyNumbersLengthInput(EmpresaTB3.Text, 1, e);
+		}
+
+
+		private void ItemsFacturaGV_ItemRemoved(object sender, DataGridViewRowsRemovedEventArgs e) { 
+			
+		}
+
+		private void ItemsFacturaGV_ItemAdded(object sender, DataGridViewRowsAddedEventArgs e) {
+			Decimal total = Decimal.Parse(Util.Util.getPlainTextFromCurrency(TotalTB.Text.ToString()));
+			Decimal precio = Decimal.Parse(ItemsFacturaGV.Rows[e.RowIndex].Cells[1].Value.ToString());
+			Int32 cant = Int32.Parse(ItemsFacturaGV.Rows[e.RowIndex].Cells[2].Value.ToString());
+			total += (precio * cant);
+			TotalTB.Text = "$ " + total.ToString();
+		}
+		
 
 
 		
