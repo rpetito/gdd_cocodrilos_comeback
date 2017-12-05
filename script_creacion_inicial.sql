@@ -173,6 +173,26 @@ DROP PROCEDURE COCODRILOS_COMEBACK.HABILITAR_ROL
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ROLES') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.ALTA_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ALTA_FACTURA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_EMPRESAS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_EMPRESAS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FACTURAS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.BAJA_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BAJA_FACTURA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_FALTANTES_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_FALTANTES_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA 
 
 
 GO
@@ -334,6 +354,7 @@ CREATE TABLE COCODRILOS_COMEBACK.FACTURA (
 	total			numeric(18,2),
 	pagada			bit DEFAULT 0,
 	rendida			bit DEFAULT 0,
+	habilitada		bit DEFAULT 1
 	PRIMARY KEY(numero, empresa)
 )
 
@@ -642,13 +663,13 @@ GO
 -----------------------------------------------------------------------------
 -------------------------------OBTENER ROLES---------------------------------
 -----------------------------------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@nombre nvarchar(255) = NULL, @habilitado bit = 1)
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ROLES(@nombre nvarchar(255) = NULL, @habilitado bit = NULL)
 AS
 BEGIN TRY
 	SELECT *
 	FROM COCODRILOS_COMEBACK.ROL r
 	WHERE	(@nombre IS NULL OR r.descripcion = @nombre) AND
-			r.habilitado = @habilitado
+			@habilitado IS NULL OR r.habilitado = @habilitado
 END TRY
 BEGIN CATCH
 	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
@@ -671,6 +692,21 @@ END CATCH
 GO
 
 -----------------------------------------------------------------------------
+------------------OBTENER FUNCIONALIDADES POR ROL----------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_ROL(@idRol int)
+AS
+BEGIN TRY
+	SELECT f.id, f.descripcion
+	FROM COCODRILOS_COMEBACK.ROL_FUNCIONALIDAD rf join COCODRILOS_COMEBACK.FUNCIONALIDAD f on rf.id_funcionalidad = f.id
+	WHERE rf.id_rol = @idRol
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+------------------------------------------------------------------------------
 --------------------BUSCAR SUCURSAL HABILITADA--------------------------------
 -----------------------------------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_HABILITADA(
@@ -687,6 +723,7 @@ BEGIN TRY
 			(@cod_postal IS NULL OR s.cod_postal = @cod_postal) AND
 			S.habilitado = 1
 
+
 END TRY 
 BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
@@ -694,14 +731,53 @@ END CATCH
 GO
 
 
+-----------------------------------------------------------------------------
+--------------------------OBTENER EMPRESAS-----------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_EMPRESAS(@habilitada bit = NULL)
+AS 
+BEGIN TRY
+	SELECT * 
+	FROM COCODRILOS_COMEBACK.EMPRESA 
+	WHERE @habilitada IS NULL OR habilitado = @habilitada
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+
+-----------------------------------------------------------------------------
+--------------------------OBTENER FACTURAS-----------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS(
+	@numero		numeric(18,0) = NULL,
+	@empresa	nvarchar(50) = NULL,
+	@pagada		bit = NULL,
+	@rendida	bit = NULL,
+	@habilitada bit = NULL
+)
+AS
+BEGIN TRY
+	SELECT *
+	FROM COCODRILOS_COMEBACK.FACTURA f
+	WHERE	(@numero IS NULL OR f.numero = @numero) AND
+			(@empresa IS NULL OR f.empresa = @empresa) AND
+			(@pagada IS NULL OR f.pagada = @pagada) AND
+			(@rendida IS NULL OR f.rendida = @rendida) AND
+			(@habilitada IS NULL OR f.habilitada = @habilitada)
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
 
 --###########################################################################
 --###########################################################################
 ----------------------------CREACION DE TRIGGERS-----------------------------
 --###########################################################################
 --###########################################################################
-
-
 
 
 
@@ -1696,3 +1772,176 @@ GO
 	END CATCH
 	GO
 
+
+---------------------------------------------------
+-------------------ABM FACTURA---------------------
+---------------------------------------------------
+
+	---------------------------------------------------
+	-----------------------ALTA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.ALTA_FACTURA(
+		@numero			numeric(18,0),
+		@cliente		numeric(18,0),
+		@empresa		nvarchar(50),
+		@fechaEmision	datetime,
+		@fechaVto		datetime,
+		@total			numeric(18,2),
+		@items			nvarchar(max)
+	)
+	AS
+	BEGIN TRY
+		--DECLARE @errorMessage nvarchar(255)
+
+		--IF NOT EXISTS(SELECT * FROM COCODRILOS_COMEBACK.CLIENTE WHERE dni = @cliente)
+			
+
+		--IF NOT EXISTS(SELECT * FROM COCODRILOS_COMEBACK.EMPRESA WHERE cuit = @empresa)
+			
+
+		INSERT INTO COCODRILOS_COMEBACK.FACTURA (
+			numero,
+			cliente,
+			empresa,
+			fecha_emision,
+			fecha_vto,
+			total
+		) VALUES (
+			@numero,
+			@cliente,
+			@empresa,
+			@fechaEmision,
+			@fechaVto,
+			@total
+		)
+
+		--LA INFORMACION DE LOS ITEMS VENDRA EN FORMATO PRECIO1;CANTIDAD1&PRECIO2;CANTIDAD2&....
+		DECLARE @itemInfo nvarchar(255)
+		DECLARE @itemCant nvarchar(50)
+		DECLARE @itemPrecio nvarchar(50)
+
+		DECLARE c_items CURSOR FOR
+			SELECT *
+			FROM STRING_SPLIT(@items, '&')
+
+		OPEN c_items
+		
+		FETCH NEXT FROM c_items INTO @itemInfo
+
+		WHILE(@@FETCH_STATUS = 0)
+			BEGIN
+
+				--VOY A LEER EL PRECIO Y LA CANTIDAD DEL ITEM ACTUAL
+				DECLARE @precio	nvarchar(50)
+				DECLARE @cant	nvarchar(50)
+
+				DECLARE c_item_info CURSOR FOR
+					SELECT *
+					FROM STRING_SPLIT(@itemInfo, ';')
+				OPEN c_item_info
+				
+				--COMO SIEMPRE VIENEN EN PARES LA INFO (PRECIO Y CANT) SIEMPRE SON DOS ELEMENTOS 
+				--EN EL CURSOR, LEO PRIMERO PRECIO Y DESPUES CANTIDAD
+				FETCH NEXT FROM c_item_info INTO @precio
+				FETCH NEXT FROM c_item_info INTO @cant
+
+				--AGREGO EL ITEM DE LA FACTURA CON SU PRECIO Y CANTIDAD
+				INSERT INTO COCODRILOS_COMEBACK.ITEM_FACTURA (
+					fact_numero,
+					fact_empresa,
+					precio_unitario,
+					cantidad
+				) VALUES (
+					@numero,
+					@empresa,
+					CONVERT(numeric(18,5), @precio),
+					CONVERT(numeric(18,0), @cant)
+				)
+
+				CLOSE c_item_info
+				DEALLOCATE c_item_info
+
+				--LEO SIGUIENTE REGISTRO PRECIO;CANTIDAD
+				FETCH NEXT FROM c_items INTO @itemInfo
+				
+			END
+
+			CLOSE c_items
+			DEALLOCATE c_items
+
+
+		SELECT @@ERROR
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+
+
+	---------------------------------------------------
+	-----------------------BAJA------------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.BAJA_FACTURA(
+		@numero		numeric(18,0),
+		@empresa	nvarchar(50)
+	) 
+	AS
+	BEGIN TRY
+
+		UPDATE COCODRILOS_COMEBACK.FACTURA
+		SET habilitada = 0
+		WHERE numero = @numero AND empresa = @empresa
+
+		SELECT @@ROWCOUNT
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
+
+
+
+
+	---------------------------------------------------
+	-------------------MODIFICACION--------------------
+	---------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA(
+		@numero			numeric(18,0),
+		@empresa		nvarchar(50),
+		@cliente		numeric(18,0),
+		@fecha_emision	datetime,
+		@fecha_vto		datetime,
+		@total			numeric(18,2),
+		@pagada			bit,
+		@rendida		bit,
+		@habilitada		bit,
+		@items			nvarchar(max)
+	)
+	AS
+	BEGIN TRY
+
+		--MODIFICACION DE FACTURA, LA PK (NUMERO, EMPRESA) NO SE PUEDE MODIFICAR
+		UPDATE COCODRILOS_COMEBACK.FACTURA
+		SET cliente = @cliente,
+			fecha_emision = @fecha_emision,
+			fecha_vto = @fecha_vto,
+			total = @total,
+			pagada = @pagada,
+			rendida = @rendida,
+			habilitada = @habilitada
+		WHERE numero = @numero AND empresa = @empresa
+		
+
+		--MODIFICACION DE ITEMS DE LA FACTURA
+		--LA INFORMACION DE LOS ITEMS VIENE EN FORMATO 
+		--ITEMID1;NUEVOPRECIO1;NUEVACANTIDAD1&ITEMID2;NUEVOPRECIO2;NUEVACANTIDAD3...
+		
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO

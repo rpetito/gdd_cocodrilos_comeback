@@ -156,7 +156,7 @@ namespace PagoAgilFrba.Controller {
 		}
 
 
-		public void getRolByName(SQLResponse<SqlDataReader> listener, String name, DataGridView gridView) {
+		public void getAvailableRolByName(SQLResponse<SqlDataReader> listener, String name, DataGridView gridView) {
 
 			SQLExecutor sqlExecutor = new SQLExecutor();
 			sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>() {
@@ -164,11 +164,13 @@ namespace PagoAgilFrba.Controller {
 				getProcedureName = () => { return "OBTENER_ROLES"; },
 
 				addParams = (SqlCommand sqlCommand) => {
-					if(!name.Equals("")) {
+					if(!string.IsNullOrWhiteSpace(name)) {
 						sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
 						sqlCommand.Parameters["@nombre"].Value = name;
-					}
-				},
+                    }
+                    sqlCommand.Parameters.Add("@habilitado", SqlDbType.Bit);
+                    sqlCommand.Parameters["@habilitado"].Value = 1;
+                },
 
 				onReadData = (SqlDataReader result) => {
 					listener.onSuccess(result);
@@ -185,11 +187,101 @@ namespace PagoAgilFrba.Controller {
 
 		}
 
+        public void getAllRolByName(SQLResponse<SqlDataReader> listener, String name, DataGridView gridView)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
+            {
+
+                getProcedureName = () => { return "OBTENER_ROLES"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    if (!name.Equals(""))
+                    {
+                        sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@nombre"].Value = name;
+                    }
+                },
+
+                onReadData = (SqlDataReader result) => {
+                    listener.onSuccess(result);
+                },
+
+                onError = (Error error) => {
+                },
+
+                onDataProcessed = () => {
+
+                }
+
+            }, gridView);
+
+        }
+
+        public void obtenerFuncionalidades(SQLResponse<SqlDataReader> listener, Int32 idRol)
+        {
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
+            {
+                getProcedureName = () => { return "OBTENER_FUNCIONALIDADES_ROL"; },
+
+                addParams = (SqlCommand sqlCommand) =>
+                {
+                    sqlCommand.Parameters.Add("@idRol", SqlDbType.Int);
+                    sqlCommand.Parameters["@idRol"].Value = idRol;
+                },
+
+                onReadData = (SqlDataReader result) =>
+                {
+                    Rol.getInstance().addFuncionalidad(Convert.ToInt32(result[0]));
+                },
+
+                onError = (Error error) =>
+                {
+                },
+
+                onDataProcessed = () =>
+                {
+
+                }
+
+            });
+        }
+
+        public void modifyRol(SQLResponse<SqlDataReader> listener, String name, DataGridView gridView)
+        {
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
+            {
+
+                getProcedureName = () => { return "MODIFICAR_ROL"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+                    if (!name.Equals(""))
+                    {
+                        sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@nombre"].Value = name;
+                    }
+                },
+
+                onReadData = (SqlDataReader result) => {
+                    listener.onSuccess(result);
+                },
+
+                onError = (Error error) => {
+                },
+
+                onDataProcessed = () => {
+
+                }
+
+            }, gridView);
+
+        }
 
 
-	}
-
-
+    }
 
 
 }

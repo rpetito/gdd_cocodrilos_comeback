@@ -85,6 +85,7 @@
             this.FiltratButton.TabIndex = 2;
             this.FiltratButton.Text = "Filtrar";
             this.FiltratButton.UseVisualStyleBackColor = true;
+            this.FiltratButton.Click += new System.EventHandler(this.FiltratButton_Click);
             // 
             // ModificarRolGV
             // 
@@ -98,6 +99,7 @@
             this.ModificarRolGV.ReadOnly = true;
             this.ModificarRolGV.Size = new System.Drawing.Size(260, 183);
             this.ModificarRolGV.TabIndex = 3;
+            this.ModificarRolGV.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModificarRolGV_CellContentClick);
             // 
             // CancelarButton
             // 

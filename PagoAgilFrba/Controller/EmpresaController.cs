@@ -249,5 +249,37 @@ namespace PagoAgilFrba.Controller
             });
         }
 
+
+		public void getEmpresas(SQLResponse<SqlDataReader> listener, Int32 habilitado = -1) {
+
+			SQLExecutor sqlExecutor = new SQLExecutor();
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
+
+				getProcedureName = () => { return "OBTENER_EMPRESAS"; },
+
+				addParams = (SqlCommand command) => {
+					if(habilitado != -1) {
+						command.Parameters.Add("@habilitada", SqlDbType.Bit);
+						command.Parameters["@habilitada"].Value = habilitado;
+					}
+				},
+
+				onReadData = (SqlDataReader result) => {
+					listener.onSuccess(result);
+				},
+
+				onDataProcessed = () => {
+
+				},
+
+				onError = (Error error) => { 
+				
+				}
+
+			});
+
+		}
+
+
     }
 }

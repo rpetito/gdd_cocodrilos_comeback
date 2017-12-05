@@ -128,6 +128,12 @@
     <Compile Include="AbmFactura\AltaFactura.Designer.cs">
       <DependentUpon>AltaFactura.cs</DependentUpon>
     </Compile>
+    <Compile Include="AbmFactura\AltaItemFactura.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AbmFactura\AltaItemFactura.Designer.cs">
+      <DependentUpon>AltaItemFactura.cs</DependentUpon>
+    </Compile>
     <Compile Include="AbmFactura\BajaFactura.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -176,7 +182,6 @@
     <Compile Include="AbmRol\ModificarRol.Designer.cs">
       <DependentUpon>ModificarRol.cs</DependentUpon>
     </Compile>
-    <Compile Include="AbmRol\SqlRespose.cs" />
     <Compile Include="AbmSucursal\ABMSucursal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -210,12 +215,16 @@
     <Compile Include="BaseDeDatos.cs" />
     <Compile Include="Cliente.cs" />
     <Compile Include="Controller\ClienteController.cs" />
+    <Compile Include="Controller\FacturaController.cs" />
     <Compile Include="Controller\EmpresaController.cs" />
     <Compile Include="Controller\FuncionalidadController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
     <Compile Include="Controller\SucursalController.cs" />
     <Compile Include="Controller\UserController.cs" />
+    <Compile Include="CustomComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Devolucion\Devolucion.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,8 +232,13 @@
       <DependentUpon>Devolucion.cs</DependentUpon>
     </Compile>
     <Compile Include="Empresa.cs" />
+    <Compile Include="FilterComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MenuController.cs" />
     <Compile Include="Model\Error.cs" />
+    <Compile Include="Model\Factura.cs" />
+    <Compile Include="Model\ItemFactura.cs" />
     <Compile Include="Model\RolRequest.cs" />
     <Compile Include="Rol.cs" />
     <Compile Include="Usuario.cs" />
@@ -326,6 +340,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AbmFactura\AltaFactura.resx">
       <DependentUpon>AltaFactura.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AbmFactura\AltaItemFactura.resx">
+      <DependentUpon>AltaItemFactura.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AbmFactura\BajaFactura.resx">
       <DependentUpon>BajaFactura.cs</DependentUpon>
