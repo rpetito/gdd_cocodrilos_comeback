@@ -17,6 +17,14 @@ namespace PagoAgilFrba.RegistroPago
     public partial class AgregarFacturas : Form
     {
 
+		public String numeroFactura;
+		public String fechaVto;
+		public String fechaCobro;
+		public String cliente;
+		public String empresa;
+		public String importe;
+
+
 		EmpresaController empresaController = new EmpresaController();
 		FacturaController facturaController = new FacturaController();
 
@@ -44,7 +52,7 @@ namespace PagoAgilFrba.RegistroPago
             NumFacturaTB.Clear();
             FecCobroDP.ResetText();
             ClienteTB.Clear();
-			agregarFacturaPagoEmpresaCB.clear();
+			agregarFacturaPagoEmpresaCB.clearAll();
             FecVencimientoDP.ResetText();
             ImporteTB.Clear();
         }
@@ -58,18 +66,20 @@ namespace PagoAgilFrba.RegistroPago
 
 
 		private void AgregarButton_Click(object sender, EventArgs e) {
-			
-			if(!facturaVencida()) { 
-			
-			}
 
+			cliente = ClienteTB.Text.ToString();
+			fechaVto = FecVencimientoDP.Value.Date.ToShortDateString();
+			fechaCobro = FecCobroDP.Value.Date.ToShortDateString();
+			numeroFactura = NumFacturaTB.Text.ToString();
+			empresa = agregarFacturaPagoEmpresaCB.getSelectedItemID();
+			importe = ImporteTB.Text.ToString();
+			DialogResult = DialogResult.OK;
+			Close();
 		}
 
 
 
-		private Boolean facturaVencida() {
-			return false;
-		}
+		
 
     
     

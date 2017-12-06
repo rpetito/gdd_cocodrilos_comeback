@@ -2100,3 +2100,14 @@ BEGIN CATCH
 	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 END CATCH
 GO
+
+/*
+//TODO
+CREATE TYPE dbo.EmployeeList
+AS TABLE
+(
+  EmployeeID INT
+);
+GO
+
+*/

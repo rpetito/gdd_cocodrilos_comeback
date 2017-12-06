@@ -43,7 +43,7 @@ namespace PagoAgilFrba.RegistroPago
 			this.CancelarButton = new System.Windows.Forms.Button();
 			this.LimpiarButton = new System.Windows.Forms.Button();
 			this.AgregarButton = new System.Windows.Forms.Button();
-			this.agregarFacturaPagoEmpresaCB = new FilterComboBox<String>("");
+			this.agregarFacturaPagoEmpresaCB = new CustomComboBox<String>();
 			this.SuspendLayout();
 			// 
 			// NumFactura
@@ -75,6 +75,7 @@ namespace PagoAgilFrba.RegistroPago
 			// 
 			// Cliente
 			// 
+			this.Cliente.Enabled = true;
 			this.Cliente.AutoSize = true;
 			this.Cliente.Location = new System.Drawing.Point(26, 149);
 			this.Cliente.Name = "Cliente";
@@ -131,7 +132,7 @@ namespace PagoAgilFrba.RegistroPago
 			// 
 			// ClienteTB
 			// 
-			this.ClienteTB.Enabled = false;
+			this.ClienteTB.Enabled = true;
 			this.ClienteTB.Location = new System.Drawing.Point(118, 146);
 			this.ClienteTB.Name = "ClienteTB";
 			this.ClienteTB.Size = new System.Drawing.Size(116, 20);
@@ -219,6 +220,6 @@ namespace PagoAgilFrba.RegistroPago
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.Button LimpiarButton;
 		private System.Windows.Forms.Button AgregarButton;
-		private FilterComboBox<String> agregarFacturaPagoEmpresaCB;
+		private CustomComboBox<String> agregarFacturaPagoEmpresaCB;
     }
 }
