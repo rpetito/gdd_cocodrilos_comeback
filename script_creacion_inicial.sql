@@ -197,6 +197,13 @@ DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.RENDICION
+
+
 
 GO
 --###########################################################################
@@ -374,7 +381,7 @@ CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 
 
 CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
-	rendicion_nro		numeric(18,0) PRIMARY KEY,
+	rendicion_nro		numeric(18,0),
 	cant_facturas		int,
 	fecha_rendicion		int,
 	importe_bruto		numeric(18,2),
@@ -383,6 +390,7 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
 	porcentaje_comision	numeric(18,2),
 	fact_numero			numeric(18,0),
 	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
+	PRIMARY KEY(rendicion_nro, fact_numero, rendicion_empresa),
 	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
@@ -790,6 +798,21 @@ BEGIN CATCH
 END CATCH
 GO
 
+
+-----------------------------------------------------------------------------
+-------------------------OBTENER FACTURAS DE UN MES--------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES(@empresa nvarchar(50), @mes int)
+AS
+BEGIN TRY
+	SELECT rp.fact_numero, rp.fecha_pago, rp.empresa, rp.importe_pago, e.dia_rendicion
+	FROM COCODRILOS_COMEBACK.REGISTRO_PAGO rp join COCODRILOS_COMEBACK.EMPRESA e on rp.empresa = e.cuit
+	WHERE rp.empresa = @empresa AND MONTH(rp.fecha_pago) = @mes
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 --###########################################################################
 --###########################################################################
@@ -2032,3 +2055,63 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
+
+-----------------------------------------------------
+----------------RENDICION----------------------------
+-----------------------------------------------------
+/*CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
+	@cant_facturas			int,
+	@fecha_rendicion		int,
+	@importe_bruto			numeric(18,2),
+	@importe_neto			numeric(18,2),
+	@importe_comision		numeric(18,2),
+	@porcentaje_comision	numeric(18,2),
+	@rendicion_empresa		nvarchar(50)
+	) 
+	AS 
+	BEGIN TRY
+				
+			BEGIN
+				DECLARE @actualFact numeric(18,0)
+				DECLARE c_agregar_fact CURSOR FOR
+					SELECT rp.fact_numero
+					FROM COCODRILOS_COMEBACK.REGISTRO_PAGO rp
+					WHERE rp.empresa = @rendicion_empresa AND DAY(rp.fecha_pago) = @fecha_rendicion
+				OPEN c_agregar_fact
+				FETCH NEXT FROM c_agregar_fact INTO @actualFact
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+								INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO(
+										cant_facturas,
+										fecha_rendicion,
+										importe_bruto,
+										importe_neto,
+										importe_comision,
+										porcentaje_comision,
+										fact_numero,
+										rendicion_empresa
+									) VALUES (
+										@cant_facturas,
+										@fecha_rendicion,
+										@importe_bruto,
+										@importe_neto,
+										@importe_comision,
+										@porcentaje_comision,
+										@actualFact,
+										@rendicion_empresa
+									)
+
+						FETCH NEXT FROM c_agregar_fact INTO @actualFact
+					END
+				CLOSE c_agregar_fact
+				DEALLOCATE c_agregar_fact
+			END
+
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+	*/

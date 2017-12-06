@@ -29,51 +29,35 @@
         private void InitializeComponent()
         {
             this.Fecha = new System.Windows.Forms.Label();
-            this.FechaTB = new System.Windows.Forms.TextBox();
-            this.CantFacturasTB = new System.Windows.Forms.TextBox();
             this.CantFacturas = new System.Windows.Forms.Label();
             this.FacturasGV = new System.Windows.Forms.DataGridView();
-            this.TotalTB = new System.Windows.Forms.TextBox();
             this.Total = new System.Windows.Forms.Label();
             this.ComisionPorcentaje = new System.Windows.Forms.Label();
             this.ComisionPorcentajeTB = new System.Windows.Forms.TextBox();
-            this.RendicionTotalTB = new System.Windows.Forms.TextBox();
             this.RendicionTotal = new System.Windows.Forms.Label();
             this.Empresa = new System.Windows.Forms.Label();
             this.ComisionPesos = new System.Windows.Forms.Label();
             this.EmpresaTB = new System.Windows.Forms.TextBox();
-            this.ComisionPesosTB = new System.Windows.Forms.TextBox();
-            this.EmpresaButton = new System.Windows.Forms.Button();
-            this.AgregarFactButton = new System.Windows.Forms.Button();
             this.CancelarButton = new System.Windows.Forms.Button();
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.RendirButton = new System.Windows.Forms.Button();
+            this.FacturasButton = new System.Windows.Forms.Button();
+            this.FechaCB = new System.Windows.Forms.ComboBox();
+            this.CantidadLabel = new System.Windows.Forms.Label();
+            this.TotalLabel = new System.Windows.Forms.Label();
+            this.ComisionLabel = new System.Windows.Forms.Label();
+            this.RendicionLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.FacturasGV)).BeginInit();
             this.SuspendLayout();
             // 
             // Fecha
             // 
             this.Fecha.AutoSize = true;
-            this.Fecha.Location = new System.Drawing.Point(104, 22);
+            this.Fecha.Location = new System.Drawing.Point(76, 22);
             this.Fecha.Name = "Fecha";
             this.Fecha.Size = new System.Drawing.Size(40, 13);
             this.Fecha.TabIndex = 0;
             this.Fecha.Text = "Fecha:";
-            // 
-            // FechaTB
-            // 
-            this.FechaTB.Location = new System.Drawing.Point(150, 19);
-            this.FechaTB.Name = "FechaTB";
-            this.FechaTB.Size = new System.Drawing.Size(100, 20);
-            this.FechaTB.TabIndex = 1;
-            // 
-            // CantFacturasTB
-            // 
-            this.CantFacturasTB.Enabled = false;
-            this.CantFacturasTB.Location = new System.Drawing.Point(133, 260);
-            this.CantFacturasTB.Name = "CantFacturasTB";
-            this.CantFacturasTB.Size = new System.Drawing.Size(36, 20);
-            this.CantFacturasTB.TabIndex = 2;
             // 
             // CantFacturas
             // 
@@ -97,18 +81,10 @@
             this.FacturasGV.Size = new System.Drawing.Size(329, 150);
             this.FacturasGV.TabIndex = 4;
             // 
-            // TotalTB
-            // 
-            this.TotalTB.Enabled = false;
-            this.TotalTB.Location = new System.Drawing.Point(86, 286);
-            this.TotalTB.Name = "TotalTB";
-            this.TotalTB.Size = new System.Drawing.Size(100, 20);
-            this.TotalTB.TabIndex = 5;
-            // 
             // Total
             // 
             this.Total.AutoSize = true;
-            this.Total.Location = new System.Drawing.Point(46, 289);
+            this.Total.Location = new System.Drawing.Point(33, 289);
             this.Total.Name = "Total";
             this.Total.Size = new System.Drawing.Size(34, 13);
             this.Total.TabIndex = 6;
@@ -117,7 +93,7 @@
             // ComisionPorcentaje
             // 
             this.ComisionPorcentaje.AutoSize = true;
-            this.ComisionPorcentaje.Location = new System.Drawing.Point(11, 315);
+            this.ComisionPorcentaje.Location = new System.Drawing.Point(33, 315);
             this.ComisionPorcentaje.Name = "ComisionPorcentaje";
             this.ComisionPorcentaje.Size = new System.Drawing.Size(69, 13);
             this.ComisionPorcentaje.TabIndex = 7;
@@ -125,17 +101,10 @@
             // 
             // ComisionPorcentajeTB
             // 
-            this.ComisionPorcentajeTB.Location = new System.Drawing.Point(86, 312);
+            this.ComisionPorcentajeTB.Location = new System.Drawing.Point(114, 312);
             this.ComisionPorcentajeTB.Name = "ComisionPorcentajeTB";
-            this.ComisionPorcentajeTB.Size = new System.Drawing.Size(100, 20);
+            this.ComisionPorcentajeTB.Size = new System.Drawing.Size(30, 20);
             this.ComisionPorcentajeTB.TabIndex = 8;
-            // 
-            // RendicionTotalTB
-            // 
-            this.RendicionTotalTB.Location = new System.Drawing.Point(271, 356);
-            this.RendicionTotalTB.Name = "RendicionTotalTB";
-            this.RendicionTotalTB.Size = new System.Drawing.Size(100, 20);
-            this.RendicionTotalTB.TabIndex = 9;
             // 
             // RendicionTotal
             // 
@@ -149,7 +118,7 @@
             // Empresa
             // 
             this.Empresa.AutoSize = true;
-            this.Empresa.Location = new System.Drawing.Point(93, 59);
+            this.Empresa.Location = new System.Drawing.Point(65, 59);
             this.Empresa.Name = "Empresa";
             this.Empresa.Size = new System.Drawing.Size(51, 13);
             this.Empresa.TabIndex = 11;
@@ -166,37 +135,10 @@
             // 
             // EmpresaTB
             // 
-            this.EmpresaTB.Enabled = false;
-            this.EmpresaTB.Location = new System.Drawing.Point(150, 54);
+            this.EmpresaTB.Location = new System.Drawing.Point(122, 54);
             this.EmpresaTB.Name = "EmpresaTB";
             this.EmpresaTB.Size = new System.Drawing.Size(100, 20);
             this.EmpresaTB.TabIndex = 13;
-            // 
-            // ComisionPesosTB
-            // 
-            this.ComisionPesosTB.Enabled = false;
-            this.ComisionPesosTB.Location = new System.Drawing.Point(271, 312);
-            this.ComisionPesosTB.Name = "ComisionPesosTB";
-            this.ComisionPesosTB.Size = new System.Drawing.Size(100, 20);
-            this.ComisionPesosTB.TabIndex = 14;
-            // 
-            // EmpresaButton
-            // 
-            this.EmpresaButton.Location = new System.Drawing.Point(256, 54);
-            this.EmpresaButton.Name = "EmpresaButton";
-            this.EmpresaButton.Size = new System.Drawing.Size(29, 23);
-            this.EmpresaButton.TabIndex = 15;
-            this.EmpresaButton.Text = "...";
-            this.EmpresaButton.UseVisualStyleBackColor = true;
-            // 
-            // AgregarFactButton
-            // 
-            this.AgregarFactButton.Location = new System.Drawing.Point(261, 258);
-            this.AgregarFactButton.Name = "AgregarFactButton";
-            this.AgregarFactButton.Size = new System.Drawing.Size(99, 23);
-            this.AgregarFactButton.TabIndex = 17;
-            this.AgregarFactButton.Text = "Agregar Factura";
-            this.AgregarFactButton.UseVisualStyleBackColor = true;
             // 
             // CancelarButton
             // 
@@ -215,6 +157,7 @@
             this.LimpiarButton.TabIndex = 19;
             this.LimpiarButton.Text = "Limpiar";
             this.LimpiarButton.UseVisualStyleBackColor = true;
+            this.LimpiarButton.Click += new System.EventHandler(this.LimpiarButton_Click);
             // 
             // RendirButton
             // 
@@ -225,31 +168,86 @@
             this.RendirButton.TabIndex = 20;
             this.RendirButton.Text = "Rendir";
             this.RendirButton.UseVisualStyleBackColor = true;
+            this.RendirButton.Click += new System.EventHandler(this.RendirButton_Click);
+            // 
+            // FacturasButton
+            // 
+            this.FacturasButton.Location = new System.Drawing.Point(256, 71);
+            this.FacturasButton.Name = "FacturasButton";
+            this.FacturasButton.Size = new System.Drawing.Size(104, 23);
+            this.FacturasButton.TabIndex = 22;
+            this.FacturasButton.Text = "Buscar Facturas";
+            this.FacturasButton.UseVisualStyleBackColor = true;
+            this.FacturasButton.Click += new System.EventHandler(this.FacturasButton_Click);
+            // 
+            // FechaCB
+            // 
+            this.FechaCB.FormattingEnabled = true;
+            this.FechaCB.Location = new System.Drawing.Point(122, 19);
+            this.FechaCB.Name = "FechaCB";
+            this.FechaCB.Size = new System.Drawing.Size(100, 21);
+            this.FechaCB.TabIndex = 23;
+            // 
+            // CantidadLabel
+            // 
+            this.CantidadLabel.AutoSize = true;
+            this.CantidadLabel.Location = new System.Drawing.Point(133, 263);
+            this.CantidadLabel.Name = "CantidadLabel";
+            this.CantidadLabel.Size = new System.Drawing.Size(13, 13);
+            this.CantidadLabel.TabIndex = 24;
+            this.CantidadLabel.Text = "0";
+            // 
+            // TotalLabel
+            // 
+            this.TotalLabel.AutoSize = true;
+            this.TotalLabel.Location = new System.Drawing.Point(111, 289);
+            this.TotalLabel.Name = "TotalLabel";
+            this.TotalLabel.Size = new System.Drawing.Size(37, 13);
+            this.TotalLabel.TabIndex = 25;
+            this.TotalLabel.Text = "$ 0,00";
+            // 
+            // ComisionLabel
+            // 
+            this.ComisionLabel.AutoSize = true;
+            this.ComisionLabel.Location = new System.Drawing.Point(291, 315);
+            this.ComisionLabel.Name = "ComisionLabel";
+            this.ComisionLabel.Size = new System.Drawing.Size(37, 13);
+            this.ComisionLabel.TabIndex = 26;
+            this.ComisionLabel.Text = "$ 0,00";
+            // 
+            // RendicionLabel
+            // 
+            this.RendicionLabel.AutoSize = true;
+            this.RendicionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RendicionLabel.Location = new System.Drawing.Point(293, 363);
+            this.RendicionLabel.Name = "RendicionLabel";
+            this.RendicionLabel.Size = new System.Drawing.Size(43, 13);
+            this.RendicionLabel.TabIndex = 27;
+            this.RendicionLabel.Text = "$ 0,00";
             // 
             // Rendicion
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(396, 452);
+            this.Controls.Add(this.RendicionLabel);
+            this.Controls.Add(this.ComisionLabel);
+            this.Controls.Add(this.TotalLabel);
+            this.Controls.Add(this.CantidadLabel);
+            this.Controls.Add(this.FechaCB);
+            this.Controls.Add(this.FacturasButton);
             this.Controls.Add(this.RendirButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.CancelarButton);
-            this.Controls.Add(this.AgregarFactButton);
-            this.Controls.Add(this.EmpresaButton);
-            this.Controls.Add(this.ComisionPesosTB);
             this.Controls.Add(this.EmpresaTB);
             this.Controls.Add(this.ComisionPesos);
             this.Controls.Add(this.Empresa);
             this.Controls.Add(this.RendicionTotal);
-            this.Controls.Add(this.RendicionTotalTB);
             this.Controls.Add(this.ComisionPorcentajeTB);
             this.Controls.Add(this.ComisionPorcentaje);
             this.Controls.Add(this.Total);
-            this.Controls.Add(this.TotalTB);
             this.Controls.Add(this.FacturasGV);
             this.Controls.Add(this.CantFacturas);
-            this.Controls.Add(this.CantFacturasTB);
-            this.Controls.Add(this.FechaTB);
             this.Controls.Add(this.Fecha);
             this.Name = "Rendicion";
             this.Text = "Rendición";
@@ -263,24 +261,23 @@
         #endregion
 
         private System.Windows.Forms.Label Fecha;
-        private System.Windows.Forms.TextBox FechaTB;
-        private System.Windows.Forms.TextBox CantFacturasTB;
         private System.Windows.Forms.Label CantFacturas;
         private System.Windows.Forms.DataGridView FacturasGV;
-        private System.Windows.Forms.TextBox TotalTB;
         private System.Windows.Forms.Label Total;
         private System.Windows.Forms.Label ComisionPorcentaje;
         private System.Windows.Forms.TextBox ComisionPorcentajeTB;
-        private System.Windows.Forms.TextBox RendicionTotalTB;
         private System.Windows.Forms.Label RendicionTotal;
         private System.Windows.Forms.Label Empresa;
         private System.Windows.Forms.Label ComisionPesos;
         private System.Windows.Forms.TextBox EmpresaTB;
-        private System.Windows.Forms.TextBox ComisionPesosTB;
-        private System.Windows.Forms.Button EmpresaButton;
-        private System.Windows.Forms.Button AgregarFactButton;
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button RendirButton;
+        private System.Windows.Forms.Button FacturasButton;
+        private System.Windows.Forms.ComboBox FechaCB;
+        private System.Windows.Forms.Label CantidadLabel;
+        private System.Windows.Forms.Label TotalLabel;
+        private System.Windows.Forms.Label ComisionLabel;
+        private System.Windows.Forms.Label RendicionLabel;
     }
 }

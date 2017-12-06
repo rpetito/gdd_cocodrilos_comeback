@@ -218,6 +218,7 @@
     <Compile Include="Controller\FacturaController.cs" />
     <Compile Include="Controller\EmpresaController.cs" />
     <Compile Include="Controller\FuncionalidadController.cs" />
+    <Compile Include="Controller\RendicionController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
     <Compile Include="Controller\SucursalController.cs" />
