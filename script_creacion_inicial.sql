@@ -197,6 +197,12 @@ DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL
+
 
 GO
 --###########################################################################
@@ -725,6 +731,30 @@ BEGIN TRY
 			(@direccion IS NULL OR s.direccion = @direccion) AND
 			(@cod_postal IS NULL OR s.cod_postal = @cod_postal) AND
 			S.habilitado = 1
+
+
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+------------------------------------------------------------------------------
+--------------------BUSCAR SUCURSAL TOTALIDAD--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD(
+	@nombre nvarchar(255) = NULL,
+	@direccion nvarchar(255) = NULL, 
+	@cod_postal numeric(18,0) = NULL) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.SUCURSAL S
+	WHERE	(@nombre IS NULL OR S.nombre = @nombre) AND
+			(@direccion IS NULL OR s.direccion = @direccion) AND
+			(@cod_postal IS NULL OR s.cod_postal = @cod_postal)
+			
 
 
 END TRY 
@@ -1606,27 +1636,45 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
-/*
+
 	---------------------------------------------------
 	-------------------MODIFICACION--------------------
 	---------------------------------------------------
-	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA(
-		@cuit		nvarchar(50),
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL(
+		
 		@nombre		nvarchar(255),
 		@direccion	nvarchar(255),
-		@rubro		numeric(18,0),
-		@habilitado bit
+		@COD_POSTAL	numeric(18,0),
+		@habilitado bit,
+		@ID			INT
 	) 
 	AS
 	BEGIN TRY 
 
-		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		UPDATE COCODRILOS_COMEBACK.SUCURSAL
 		SET 
-			cuit = @cuit,
 			nombre = @nombre,
 			direccion = @direccion,
-			rubro = @rubro,
+			cod_postal = @COD_POSTAL,
 			habilitado = @habilitado
+			WHERE id = @ID
+
+		IF @habilitado = 0
+		BEGIN
+			UPDATE COCODRILOS_COMEBACK.USUARIO
+			SET habilitado = 0
+			WHERE DNI IN (SELECT user_dni 
+						  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
+						  WHERE sucursal_id = @ID)
+		END
+		ELSE 
+		BEGIN
+			UPDATE COCODRILOS_COMEBACK.USUARIO
+			SET habilitado = 1
+			WHERE DNI IN (SELECT user_dni 
+						  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
+						  WHERE sucursal_id = @ID)
+		END
 
 		SELECT @@ROWCOUNT
 
@@ -1635,7 +1683,7 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
-	*/
+	
 
 
 

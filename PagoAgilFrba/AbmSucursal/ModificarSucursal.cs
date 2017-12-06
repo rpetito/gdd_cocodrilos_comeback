@@ -20,7 +20,7 @@ namespace PagoAgilFrba.AbmSucursal
         public ModificarSucursal()
         {
             InitializeComponent();
-            Util.Util.addButtonColumnToGridView(ModificarSucursalGV, new DataGridViewCellEventHandler(this.ModificarSucursal_cellEventHandler), "Seleccionar");
+            Util.Util.addButtonColumnToGridView(ModificarSucursalGV, "Seleccionar", new DataGridViewCellEventHandler(this.ModificarSucursal_cellEventHandler));
         
         }
 
@@ -60,7 +60,7 @@ namespace PagoAgilFrba.AbmSucursal
                 Sucursal.getInstance().setNombre(this.ModificarSucursalGV.CurrentRow.Cells[2].Value.ToString());
                 Sucursal.getInstance().setDireccion(this.ModificarSucursalGV.CurrentRow.Cells[3].Value.ToString());
                 Sucursal.getInstance().setCodPostal(Convert.ToInt32(this.ModificarSucursalGV.CurrentRow.Cells[4].Value.ToString()));
-                Sucursal.getInstance().setHabilitado(Convert.ToInt32(this.ModificarSucursalGV.CurrentRow.Cells[5].Value == null ? 0 : 1));
+                Sucursal.getInstance().setHabilitado(((bool)this.ModificarSucursalGV.CurrentRow.Cells[5].Value) ? 1 : 0);
 
                 DatosSucursal datos = new PagoAgilFrba.AbmSucursal.DatosSucursal();
                 datos.FormClosed += new FormClosedEventHandler(ModificarSucursal_datosSucursalClosed);

@@ -39,7 +39,6 @@
             this.Direccion = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
             this.CancelarButton = new System.Windows.Forms.Button();
-            this.EliminarB = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.BajaSucursalGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
@@ -151,23 +150,11 @@
             this.CancelarButton.UseVisualStyleBackColor = true;
             this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
-            // EliminarB
-            // 
-            this.EliminarB.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.EliminarB.Location = new System.Drawing.Point(337, 377);
-            this.EliminarB.Name = "EliminarB";
-            this.EliminarB.Size = new System.Drawing.Size(75, 23);
-            this.EliminarB.TabIndex = 16;
-            this.EliminarB.Text = "Eliminar";
-            this.EliminarB.UseVisualStyleBackColor = true;
-            this.EliminarB.Click += new System.EventHandler(this.EliminarB_Click);
-            // 
             // BajaSucursal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(424, 406);
-            this.Controls.Add(this.EliminarB);
             this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
@@ -195,6 +182,5 @@
         private System.Windows.Forms.Label Direccion;
         private System.Windows.Forms.Label Nombre;
         private System.Windows.Forms.Button CancelarButton;
-        private System.Windows.Forms.Button EliminarB;
     }
 }
