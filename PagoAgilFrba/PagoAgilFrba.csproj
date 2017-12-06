@@ -215,6 +215,7 @@
     <Compile Include="BaseDeDatos.cs" />
     <Compile Include="Cliente.cs" />
     <Compile Include="Controller\ClienteController.cs" />
+    <Compile Include="Controller\DevolucionController.cs" />
     <Compile Include="Controller\FacturaController.cs" />
     <Compile Include="Controller\EmpresaController.cs" />
     <Compile Include="Controller\FuncionalidadController.cs" />
@@ -224,6 +225,12 @@
     <Compile Include="Controller\UserController.cs" />
     <Compile Include="CustomComboBox.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Devolucion\DatosDevolucion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Devolucion\DatosDevolucion.Designer.cs">
+      <DependentUpon>DatosDevolucion.cs</DependentUpon>
     </Compile>
     <Compile Include="Devolucion\Devolucion.cs">
       <SubType>Form</SubType>
@@ -236,6 +243,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MenuController.cs" />
+    <Compile Include="Model\Devoluciones.cs" />
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\Factura.cs" />
     <Compile Include="Model\ItemFactura.cs" />
@@ -383,6 +391,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AbmSucursal\ModificarSucursal.resx">
       <DependentUpon>ModificarSucursal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Devolucion\DatosDevolucion.resx">
+      <DependentUpon>DatosDevolucion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Devolucion\Devolucion.resx">
+      <DependentUpon>Devolucion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ListadoEstadistico\ListadoEstadistico.resx">
       <DependentUpon>ListadoEstadistico.cs</DependentUpon>

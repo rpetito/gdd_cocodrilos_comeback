@@ -203,6 +203,12 @@ DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD
 IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FACTURAS_PAGAS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_PAGAS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.HACER_DEVOLUCION') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.HACER_DEVOLUCION
+
 
 GO
 --###########################################################################
@@ -2062,3 +2068,58 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
+
+---------------------------------------------------
+-------------------DEVOLUCION----------------------
+---------------------------------------------------
+
+
+	---------------------------------------------------
+	-------------OBTENER FACTURAS PAGAS----------------
+	---------------------------------------------------
+
+
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_PAGAS(
+	@FACTURA numeric(18,0) = NULL,
+	@CLIENTE NUMERIC(18,0) = NULL, 
+	@EMPRESA nvarchar(50) = NULL) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.FACTURA F
+	WHERE	(@FACTURA IS NULL OR F.numero = @FACTURA) AND
+			(@CLIENTE IS NULL OR F.cliente = @CLIENTE) AND
+			(@EMPRESA IS NULL OR F.empresa = @EMPRESA) AND
+			F.habilitada = 1 AND 
+			F.pagada = 1 AND
+			F.rendida = 0
+			
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+	---------------------------------------------------
+	----------------HACER DEVOLUCION-------------------
+	---------------------------------------------------
+
+CREATE PROCEDURE COCODRILOS_COMEBACK.HACER_DEVOLUCION(
+			@FACTURA NUMERIC(18,0) = NULL,
+			@EMPRESA NVARCHAR(50) = NULL,
+			@MOTIVO NVARCHAR(250) = NULL,
+			@cliente NUMERIC(18,9))
+AS
+BEGIN TRY 
+	INSERT INTO COCODRILOS_COMEBACK.DEVOLUCION_FACTURA
+		VALUES (@FACTURA, @EMPRESA, @MOTIVO, @cliente,NULL)
+
+		UPDATE COCODRILOS_COMEBACK.FACTURA 
+		SET PAGADA = 0
+		WHERE numero = @FACTURA AND empresa = @EMPRESA AND cliente = @cliente and rendida = 0
+END TRY
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
