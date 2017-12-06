@@ -197,6 +197,9 @@ DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA
+
 
 GO
 --###########################################################################
@@ -373,8 +376,8 @@ CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 )
 
 
-CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
-	rendicion_nro		numeric(18,0) PRIMARY KEY,
+CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO (
+	rendicion_nro		numeric(18,0),
 	cant_facturas		int,
 	fecha_rendicion		int,
 	importe_bruto		numeric(18,2),
@@ -383,6 +386,7 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
 	porcentaje_comision	numeric(18,2),
 	fact_numero			numeric(18,0),
 	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
+	PRIMARY KEY(rendicion_nro, fact_numero, rendicion_empresa),
 	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
@@ -434,7 +438,7 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
 
 
 CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS(
-	incosistencia_id	int IDENTITY(1,1),
+	incosistencia_id	int PRIMARY KEY IDENTITY(1,1),
 	pago_id			numeric(18,0),
 	fecha_pago		datetime,
 	fact_numero		numeric(18,0),
@@ -2014,3 +2018,85 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
+
+
+-----------------------------------------------------
+-------------------REGISTRO PAGO---------------------
+-----------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA(
+	@numeroFactura		numeric(18,0),
+	@fechaCobro			datetime,
+	@fechaVto			datetime,
+	@empresa			nvarchar(50),
+	@cliente			numeric(18,0),
+	@importe			numeric(18,2),
+	@medioPago			int,
+	@sucursal			int
+)
+AS
+BEGIN TRY
+	
+	CREATE TABLE #errores (
+		errorMessage	nvarchar(255)
+	)
+	
+
+	--VERIFICO QUE LA EMPRESA ESTE DESHABILITADA Y ARROJA ERROR 
+	IF NOT EXISTS(	SELECT *
+					FROM COCODRILOS_COMEBACK.EMPRESA e
+					WHERE e.cuit = @empresa AND e.habilitado = 1)
+		INSERT INTO #errores VALUES ('La empresa se encuentre inhabilitada.')
+
+	--VERIFICO EXISTENCIA EN EL SISTEMA DE LA FACTURA QUE SE DESEA PAGAR
+	IF NOT EXISTS(	SELECT *
+				FROM COCODRILOS_COMEBACK.FACTURA f 
+				WHERE f.numero = @numeroFactura)
+		BEGIN
+			INSERT INTO #errores VALUES ('La factura no se encuentra cargada en sistema. Se deberà cargarla desde Alta de Factura primeramente.')
+			SELECT errorMessage FROM #errores
+		END
+	 ELSE
+		BEGIN
+
+			IF (SELECT f.fecha_vto FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @numeroFactura) <> @fechaVto
+				INSERT INTO #errores VALUES ('La fecha de vencimiento difiere con la cargada en sistema, por favor verifique el valor ingresado.')
+
+			IF(SELECT f.total FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @numeroFactura) <> @importe
+				INSERT INTO #errores VALUES ('El importe difiere con el cargado en el sistema, por favor verifique le valor ingresado.')
+		
+		
+			IF (SELECT COUNT(*) FROM #errores) = 0
+				BEGIN
+					INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO(
+						pago_id,
+						fact_numero,
+						fecha_pago,
+						fecha_vto,
+						empresa,
+						cliente,
+						importe_pago,
+						medio_pago_id,
+						sucursal
+					) VALUES (
+						(SELECT TOP 1 r.pago_id FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r ORDER BY r.pago_id DESC) + 1,
+						@numeroFactura,
+						@fechaCobro,
+						@fechaVto,
+						@empresa,
+						@cliente,
+						@importe,
+						@medioPago,
+						@sucursal
+					)
+
+					SELECT @@ERROR
+				END
+			ELSE
+				SELECT errorMessage FROM #errores
+		END
+
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
