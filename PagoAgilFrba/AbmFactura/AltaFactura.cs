@@ -32,8 +32,8 @@ namespace PagoAgilFrba.AbmFactura
 			this.ItemsFacturaGV.DataSource = itemsFacturaDataTable;
 			Util.Util.addButtonColumnToGridView(
 				ItemsFacturaGV,
-				new DataGridViewCellEventHandler(this.AltaFactura_EliminarItemHandler),
-				"Eliminar"
+				"Eliminar",
+				new DataGridViewCellEventHandler(this.AltaFactura_EliminarItemHandler)
 			);
 			TotalTB.Text = "$ 0.00";
 			EmpresaController empresaController = new EmpresaController();
@@ -58,7 +58,7 @@ namespace PagoAgilFrba.AbmFactura
             AltaDP.ResetText();
             VencimientoDP.ResetText();
 			itemsFacturaDataTable.Rows.Clear();
-			TotalTB.Text = "";
+			TotalTB.Text = "$ 0.00";
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)

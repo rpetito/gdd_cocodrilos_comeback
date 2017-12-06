@@ -194,6 +194,9 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FUNCIONALIDADES_FALTANTES_ROL
 IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA 
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA
+
 
 GO
 --###########################################################################
@@ -772,6 +775,21 @@ BEGIN CATCH
 END CATCH
 GO
 
+-----------------------------------------------------------------------------
+-------------------------OBTENER ITEMS DE FACTURA----------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA(@factura numeric(18,0), @empresa nvarchar(50))
+AS
+BEGIN TRY
+	SELECT i.item_id, i.precio_unitario, i.cantidad
+	FROM COCODRILOS_COMEBACK.ITEM_FACTURA i
+	WHERE i.fact_empresa = @empresa AND i.fact_numero = @factura
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
 
 --###########################################################################
 --###########################################################################
@@ -1184,7 +1202,7 @@ DECLARE @sum_monto_act		numeric(18,2)
 DECLARE @fact_numero_act	numeric(18,0)
 
 DECLARE c_items CURSOR FOR 
-	SELECT TOP 10 m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
+	SELECT TOP 500 m.Nro_Factura, m.Factura_Total, m.ItemFactura_Monto, m.ItemFactura_Cantidad, m.Empresa_Cuit
 	FROM gd_esquema.Maestra m
 	ORDER BY m.Nro_Factura
 
@@ -1898,7 +1916,7 @@ GO
 
 	END TRY
 	BEGIN CATCH
-
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
 
@@ -1922,7 +1940,6 @@ GO
 	)
 	AS
 	BEGIN TRY
-
 		--MODIFICACION DE FACTURA, LA PK (NUMERO, EMPRESA) NO SE PUEDE MODIFICAR
 		UPDATE COCODRILOS_COMEBACK.FACTURA
 		SET cliente = @cliente,
@@ -1938,10 +1955,62 @@ GO
 		--MODIFICACION DE ITEMS DE LA FACTURA
 		--LA INFORMACION DE LOS ITEMS VIENE EN FORMATO 
 		--ITEMID1;NUEVOPRECIO1;NUEVACANTIDAD1&ITEMID2;NUEVOPRECIO2;NUEVACANTIDAD3...
+		--LA INFORMACION DE LOS ITEMS VENDRA EN FORMATO PRECIO1;CANTIDAD1&PRECIO2;CANTIDAD2&....
+		DECLARE @itemInfo nvarchar(255)
+		DECLARE @itemCant nvarchar(50)
+		DECLARE @itemPrecio nvarchar(50)
+
+		DECLARE c_items_mod CURSOR FOR
+			SELECT *
+			FROM STRING_SPLIT(@items, '&')
+
+		OPEN c_items_mod
 		
+		FETCH NEXT FROM c_items_mod INTO @itemInfo
+
+		WHILE(@@FETCH_STATUS = 0)
+			BEGIN
+
+				--VOY A LEER EL PRECIO Y LA CANTIDAD DEL ITEM ACTUAL
+				DECLARE @id		nvarchar(20)
+				DECLARE @precio	nvarchar(50)
+				DECLARE @cant	nvarchar(50)
+
+				DECLARE c_item_info_mod CURSOR FOR
+					SELECT *
+					FROM STRING_SPLIT(@itemInfo, ';')
+				OPEN c_item_info_mod 
+				
+				--COMO SIEMPRE VIENEN EN TUPLAS DE LA FORMA (ID ,PRECIO , CANT) SIEMPRE SON TRES ELEMENTOS 
+				--EN EL CURSOR, LEO PRIMERO ID, PRECIO Y DESPUES CANTIDAD
+				FETCH NEXT FROM c_item_info_mod INTO @id
+				FETCH NEXT FROM c_item_info_mod INTO @precio
+				FETCH NEXT FROM c_item_info_mod INTO @cant
+
+				--ACTUALIZO EL ITEM DE LA FACTURA CON SU PRECIO Y CANTIDAD
+				UPDATE COCODRILOS_COMEBACK.ITEM_FACTURA
+				SET precio_unitario = CONVERT(numeric(18,5), @precio),
+					cantidad = CONVERT(int, @cant)
+				WHERE	item_id = CONVERT(int, @id) AND 
+						fact_empresa = @empresa AND 
+						fact_numero = @numero
+
+				
+				CLOSE c_item_info_mod 
+				DEALLOCATE c_item_info_mod 
+
+				--LEO SIGUIENTE REGISTRO PRECIO;CANTIDAD
+				FETCH NEXT FROM c_items_mod INTO @itemInfo
+				
+			END
+
+		CLOSE c_items_mod 
+		DEALLOCATE c_items_mod 
+
+		SELECT @@ERROR
 
 	END TRY
 	BEGIN CATCH
-
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
