@@ -240,6 +240,7 @@
     <Compile Include="Model\Factura.cs" />
     <Compile Include="Model\ItemFactura.cs" />
     <Compile Include="Model\RolRequest.cs" />
+    <Compile Include="Model\Sucursal.cs" />
     <Compile Include="Rol.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="Menu.cs">

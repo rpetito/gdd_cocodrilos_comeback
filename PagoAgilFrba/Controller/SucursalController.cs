@@ -170,5 +170,45 @@ namespace PagoAgilFrba.Controller
             }, dgv);
 
         }
+
+        public void modifySucursal(SQLResponse<Int32> listener, Int32 id, String nombre, String direccion, Decimal codPostal, Int32 habilitado)
+        {
+
+            SQLExecutor sqlExecutor = new SQLExecutor();
+            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            {
+
+                getProcedureName = () => { return "MODIFICAR_SUCURSAL"; },
+
+                addParams = (SqlCommand sqlCommand) => {
+
+                    sqlCommand.Parameters.Add("@id", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@id"].Value = id;
+                    sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@nombre"].Value = nombre;
+                    sqlCommand.Parameters.Add("@direccion", SqlDbType.NVarChar);
+                    sqlCommand.Parameters["@direccion"].Value = direccion;
+                    sqlCommand.Parameters.Add("@cod_postal", SqlDbType.Decimal);
+                    sqlCommand.Parameters["@cod_postal"].Value = codPostal;
+                    sqlCommand.Parameters.Add("@habilitado", SqlDbType.Bit);
+                    sqlCommand.Parameters["@habilitado"].Value = habilitado;
+                },
+
+
+
+                onReadData = (Int32 result) => {
+
+                    listener.onSuccess(result);
+
+                },
+
+                onError = (Error error) => {
+
+                },
+
+                onDataProcessed = () => { }
+
+            });
+        }
     }
 }

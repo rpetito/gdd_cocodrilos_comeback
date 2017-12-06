@@ -20,14 +20,8 @@ namespace PagoAgilFrba.AbmSucursal
         public ModificarSucursal()
         {
             InitializeComponent();
-
-            DataGridViewButtonColumn button = new DataGridViewButtonColumn();
-            button.HeaderText = "Seleccionar";
-            button.Name = "seleccionarButton";
-            button.Text = "Seleccionar";
-            button.UseColumnTextForButtonValue = true;
-            ModificarSucursalGV.Columns.Add(button);
-            button.Frozen = true;
+            Util.Util.addButtonColumnToGridView(ModificarSucursalGV, new DataGridViewCellEventHandler(this.ModificarSucursal_cellEventHandler), "Seleccionar");
+        
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -58,9 +52,26 @@ namespace PagoAgilFrba.AbmSucursal
             }, NombreTB.Text, DireccionTB.Text, CodigoPostalTB.Text, ModificarSucursalGV);
         }
 
-        private void ModificarSucursalGV_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void ModificarSucursal_cellEventHandler(object sender, DataGridViewCellEventArgs e)
         {
+            if (e.ColumnIndex == 0 && e.RowIndex >= 0)
+            {
+                Sucursal.getInstance().setId(Convert.ToInt32(this.ModificarSucursalGV.CurrentRow.Cells[1].Value.ToString()));
+                Sucursal.getInstance().setNombre(this.ModificarSucursalGV.CurrentRow.Cells[2].Value.ToString());
+                Sucursal.getInstance().setDireccion(this.ModificarSucursalGV.CurrentRow.Cells[3].Value.ToString());
+                Sucursal.getInstance().setCodPostal(Convert.ToInt32(this.ModificarSucursalGV.CurrentRow.Cells[4].Value.ToString()));
+                Sucursal.getInstance().setHabilitado(Convert.ToInt32(this.ModificarSucursalGV.CurrentRow.Cells[5].Value == null ? 0 : 1));
 
+                DatosSucursal datos = new PagoAgilFrba.AbmSucursal.DatosSucursal();
+                datos.FormClosed += new FormClosedEventHandler(ModificarSucursal_datosSucursalClosed);
+                datos.Show();
+            }
         }
+
+        void ModificarSucursal_datosSucursalClosed(object sender, FormClosedEventArgs e)
+        {
+            FiltrarButton.PerformClick();
+        }
+
     }
 }

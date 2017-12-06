@@ -1,4 +1,6 @@
-﻿using System;
+﻿using PagoAgilFrba.Controller;
+using PagoAgilFrba.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,11 +14,18 @@ namespace PagoAgilFrba.AbmSucursal
 {
     public partial class DatosSucursal : Form
     {
+        Int32 habilitado;
+        private SucursalController sucursalController = new SucursalController();
         public DatosSucursal()
         {
-            EstadoCB.Items.Add("Habilitado");
-            EstadoCB.Items.Add("Deshabilitado");
+            
             InitializeComponent();
+            NombreTB.Text = Model.Sucursal.getInstance().getNombre();
+            DireccionTB.Text = Model.Sucursal.getInstance().getDireccion();
+            CodigoPostalTB.Text = Convert.ToString(Model.Sucursal.getInstance().getCodPostal());
+            EstadoCB.Checked = Model.Sucursal.getInstance().getHabilitado();
+           
+
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -24,12 +33,44 @@ namespace PagoAgilFrba.AbmSucursal
             NombreTB.Clear();
             DireccionTB.Clear();
             CodigoPostalTB.Clear();
-            EstadoCB.ResetText();
+            EstadoCB.Checked = false;
+            ModificarButton.Enabled = false;
         }
 
         private void CancelarButton_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        private void ModificarButton_Click(object sender, EventArgs e)
+        {
+            habilitar();
+            sucursalController.modifySucursal(new Util.SQLResponse<Int32>
+            {
+                onSuccess = (Int32 result) =>
+                {
+                    Util.Util.showSuccessDialog();
+                    this.Close();
+                },
+                onError = (Error fail) =>
+                {
+
+                }
+
+            },
+            Model.Sucursal.getInstance().getId(),
+            NombreTB.Text,
+            DireccionTB.Text,
+            Convert.ToDecimal(CodigoPostalTB.Text),
+            habilitado);
+        }
+
+        private void habilitar()
+        {
+            if (EstadoCB.Checked == true)
+                habilitado = 1;
+            else habilitado = 0;
+        }
     }
+
 }
