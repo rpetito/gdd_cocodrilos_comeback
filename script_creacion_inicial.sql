@@ -221,6 +221,18 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_PAGAS
 IF OBJECT_ID('COCODRILOS_COMEBACK.HACER_DEVOLUCION') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.HACER_DEVOLUCION
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.PORCENTAJE_COBRADAS_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_COBRADAS_EMPRESA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES
+
 
 GO
 --###########################################################################
@@ -237,6 +249,12 @@ DROP FUNCTION COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.STRING_SPLIT') IS NOT NULL
 DROP FUNCTION COCODRILOS_COMEBACK.STRING_SPLIT
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MESES_TRIMESTRE') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.MESES_TRIMESTRE
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE
 
 
 
@@ -587,6 +605,50 @@ END
 GO
 
 
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+CREATE FUNCTION COCODRILOS_COMEBACK.MESES_TRIMESTRE(@trimestre int)
+RETURNS @list TABLE (firstMonth	int, secondMonth int, thirdMonth int)
+AS
+BEGIN
+
+
+	IF @trimestre = 1
+		INSERT INTO @list VALUES (1, 2, 3)
+	IF @trimestre = 2 
+		INSERT INTO @list VALUES (4, 5, 6)
+	IF @trimestre = 3
+		INSERT INTO @list VALUES (7, 8, 9)
+	IF @trimestre = 4
+		INSERT INTO @list VALUES (10, 11, 12)
+
+	RETURN
+
+END
+GO
+
+
+CREATE FUNCTION COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(@fecha datetime, @trimestre int)
+RETURNS BIT
+AS
+BEGIN
+
+	DECLARE @result bit
+
+	IF ((SELECT COUNT(*) 
+				 FROM COCODRILOS_COMEBACK.MESES_TRIMESTRE(@trimestre)
+				 WHERE	firstMonth = MONTH(@fecha) OR 
+						secondMonth = MONTH(@fecha) OR 
+						thirdMonth = MONTH(@fecha))) = 1 
+		SET @result = 1
+	ELSE 
+		SET @result = 0
+
+	RETURN @result
+END
+GO
+
 
 
 
@@ -597,7 +659,7 @@ GO
 --###########################################################################
 
 -----------------------------------------------------------------------------
------------------------------INHABILITAR USUARIO-----------------------------
+----------------------------INHABILITAR USUARIO------------------------------
 -----------------------------------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.INHABILITAR_USUARIO(@dni numeric(18,0)) 
 AS
@@ -2410,3 +2472,98 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	END CATCH*/
 	GO
 	
+
+
+
+---------------------------------------------------------------
+-------------------LISTADO ESTADISTICO-------------------------
+---------------------------------------------------------------
+
+	
+	---------------------------------------------------------------
+	-------------PROCENTAJE FACT COBRADAS POR EMPRESA--------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_COBRADAS_EMPRESA(
+		@año		int,
+		@trimestre	int
+	) 
+	AS
+	BEGIN TRY
+		SELECT TOP 5 rp.rendicion_empresa, 
+					(COUNT(rp.fact_numero) / (SELECT COUNT(*) 
+											 FROM COCODRILOS_COMEBACK.FACTURA f 
+											 WHERE	f.empresa = rp.rendicion_empresa AND 
+													COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(f.fecha_emision, @trimestre) = 1)) * 100
+		FROM COCODRILOS_COMEBACK.RENDICION_PAGO rp JOIN
+			 COCODRILOS_COMEBACK.EMPRESA e ON rp.rendicion_empresa = e.cuit
+		WHERE	YEAR(rp.fecha_rendicion) = @año AND
+				COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(rp.fecha_rendicion, @trimestre) = 1
+		GROUP BY rp.rendicion_empresa
+		ORDER BY (COUNT(rp.fact_numero) / (SELECT COUNT(*) 
+											FROM COCODRILOS_COMEBACK.FACTURA f 
+											WHERE	f.empresa = rp.rendicion_empresa AND 
+												COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(f.fecha_emision, @trimestre) = 1)) * 100 DESC
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO	
+
+
+	---------------------------------------------------------------
+	-------------PROCENTAJE FACT COBRADAS POR EMPRESA--------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO
+	AS
+	BEGIN TRY
+
+		SELECT TOP 5 r.rendicion_empresa, SUM(r.importe_bruto)
+		FROM COCODRILOS_COMEBACK.RENDICION_PAGO r
+		GROUP BY r.rendicion_empresa
+		ORDER BY SUM(r.importe_bruto) DESC
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
+
+
+	---------------------------------------------------------------
+	--------------------CLIENTES CON MAS PAGOS---------------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS
+	AS
+	BEGIN TRY
+
+		SELECT TOP 5 r.cliente, COUNT(r.fact_numero) AS Cantidad
+		FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r
+		GROUP BY r.cliente
+		ORDER BY COUNT(r.fact_numero) DESC
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
+
+
+	---------------------------------------------------------------
+	-----------CLIENTES MAYOR PORCENTAJE FACTURAS PAGAS------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES
+	AS
+	BEGIN TRY
+		
+		SELECT TOP 5 
+			r.cliente,
+			(COUNT(r.fact_numero) / (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = r.cliente)) * 100 as Porcentaje
+		FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r
+		GROUP BY r.cliente
+		ORDER BY (COUNT(r.fact_numero) / (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = r.cliente)) * 100 DESC
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
