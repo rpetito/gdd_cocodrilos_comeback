@@ -239,6 +239,7 @@
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\Factura.cs" />
     <Compile Include="Model\ItemFactura.cs" />
+    <Compile Include="Model\RegistroPagoRequest.cs" />
     <Compile Include="Model\RolRequest.cs" />
     <Compile Include="Rol.cs" />
     <Compile Include="Usuario.cs" />

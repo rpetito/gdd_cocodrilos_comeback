@@ -1,4 +1,7 @@
-﻿using System;
+﻿using PagoAgilFrba.Controller;
+using PagoAgilFrba.Model;
+using PagoAgilFrba.Util;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,10 +17,12 @@ namespace PagoAgilFrba.RegistroPago
     {
 
 		DataTable dataTable;
-        
+		FacturaController facturaController;
+   
 		public RegistroPago()
         {
 			InitializeComponent();
+			this.facturaController = new FacturaController();
 			this.registroPagoTotalLabel.Text = "$ 0.00";
 			this.dataTable = new DataTable();
 			dataTable.Columns.Add("Numero Factura");
@@ -56,6 +61,8 @@ namespace PagoAgilFrba.RegistroPago
 				String empresa = facturas.empresa;
 				String importe = facturas.importe;
 
+				//TODO cargar list de request
+
 				if(facturas.DialogResult == DialogResult.OK) {
 					dataTable.Rows.Add(numeroFactura, fechaCobro, fechaVto, cliente, empresa, importe);
 
@@ -70,6 +77,18 @@ namespace PagoAgilFrba.RegistroPago
 
 		private void RendirButton_Click(object sender, EventArgs e) {
 
+
+			facturaController.registrarPago(new SQLResponse<Int32>() {
+
+				onSuccess = (Int32) => {
+
+				},
+
+				onError = (Error error) => { 
+				
+				}
+
+			}, pago);
 		}
 
 

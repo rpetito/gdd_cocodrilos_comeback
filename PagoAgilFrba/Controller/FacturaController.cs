@@ -210,7 +210,48 @@ namespace PagoAgilFrba.Controller {
 
 			}, dataGridView);
 
-		} 
+		}
+
+
+
+		public void registrarPago(SQLResponse<Int32> listener, RegistroPagoRequest pago) {
+
+			SQLExecutor sqlExecutor = new SQLExecutor();
+			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
+
+				getProcedureName = () => { return "REGISTRAR_PAGO_FACTURA"; },
+
+				addParams = (SqlCommand command) => {
+					command.Parameters.Add("@numeroFactura", SqlDbType.Decimal);
+					command.Parameters["@numeroFactura"].Value = pago.factura;
+					command.Parameters.Add("@fechaCobro", SqlDbType.DateTime);
+					command.Parameters["@fechaCobro"].Value = pago.fechaPago;
+					command.Parameters.Add("@fechaVto", SqlDbType.DateTime);
+					command.Parameters["@fechaVto"].Value = pago.fechaVto;
+					command.Parameters.Add("@empresa", SqlDbType.NVarChar);
+					command.Parameters["@empresa"].Value = pago.empresa;
+					command.Parameters.Add("@cliente", SqlDbType.Decimal);
+					command.Parameters["@cliente"].Value = pago.cliente;
+					command.Parameters.Add("@medioPago", SqlDbType.Int);
+					command.Parameters["@medioPago"].Value = pago.medioPago;
+					command.Parameters.Add("@sucursal", SqlDbType.Int);
+					command.Parameters["@sucursal"].Value = pago.sucursal;
+				},
+
+				onReadData = (Int32 result) => {
+					listener.onSuccess(result);
+				},
+
+				onDataProcessed = () => {
+				},
+
+				onError = (Error error) => {
+
+				}
+
+			});
+		
+		}
 
 
 	
