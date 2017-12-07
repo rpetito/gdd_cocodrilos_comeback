@@ -55,6 +55,7 @@
             this.CancelarButton = new System.Windows.Forms.Button();
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.CrearButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.ClienteGB.SuspendLayout();
             this.DomicilioGB.SuspendLayout();
             this.SuspendLayout();
@@ -106,6 +107,7 @@
             this.PisoTB.Name = "PisoTB";
             this.PisoTB.Size = new System.Drawing.Size(33, 20);
             this.PisoTB.TabIndex = 17;
+            this.PisoTB.TextChanged += new System.EventHandler(this.PisoTB_TextChanged);
             // 
             // LocalidadTB
             // 
@@ -113,6 +115,7 @@
             this.LocalidadTB.Name = "LocalidadTB";
             this.LocalidadTB.Size = new System.Drawing.Size(100, 20);
             this.LocalidadTB.TabIndex = 16;
+            this.LocalidadTB.TextChanged += new System.EventHandler(this.LocalidadTB_TextChanged);
             // 
             // DireccionTB
             // 
@@ -120,6 +123,7 @@
             this.DireccionTB.Name = "DireccionTB";
             this.DireccionTB.Size = new System.Drawing.Size(100, 20);
             this.DireccionTB.TabIndex = 21;
+            this.DireccionTB.TextChanged += new System.EventHandler(this.DireccionTB_TextChanged);
             // 
             // DepartamentoTB
             // 
@@ -127,6 +131,7 @@
             this.DepartamentoTB.Name = "DepartamentoTB";
             this.DepartamentoTB.Size = new System.Drawing.Size(38, 20);
             this.DepartamentoTB.TabIndex = 19;
+            this.DepartamentoTB.TextChanged += new System.EventHandler(this.DepartamentoTB_TextChanged);
             // 
             // CodigoPostalTB
             // 
@@ -134,6 +139,7 @@
             this.CodigoPostalTB.Name = "CodigoPostalTB";
             this.CodigoPostalTB.Size = new System.Drawing.Size(100, 20);
             this.CodigoPostalTB.TabIndex = 20;
+            this.CodigoPostalTB.TextChanged += new System.EventHandler(this.CodigoPostalTB_TextChanged);
             // 
             // Localidad
             // 
@@ -193,6 +199,7 @@
             this.ApellidoTB.Name = "ApellidoTB";
             this.ApellidoTB.Size = new System.Drawing.Size(100, 20);
             this.ApellidoTB.TabIndex = 15;
+            this.ApellidoTB.TextChanged += new System.EventHandler(this.ApellidoTB_TextChanged);
             // 
             // MailTB
             // 
@@ -200,6 +207,7 @@
             this.MailTB.Name = "MailTB";
             this.MailTB.Size = new System.Drawing.Size(100, 20);
             this.MailTB.TabIndex = 14;
+            this.MailTB.TextChanged += new System.EventHandler(this.MailTB_TextChanged);
             // 
             // DniTB
             // 
@@ -207,6 +215,7 @@
             this.DniTB.Name = "DniTB";
             this.DniTB.Size = new System.Drawing.Size(100, 20);
             this.DniTB.TabIndex = 13;
+            this.DniTB.TextChanged += new System.EventHandler(this.DniTB_TextChanged);
             // 
             // TelefonoTB
             // 
@@ -214,6 +223,7 @@
             this.TelefonoTB.Name = "TelefonoTB";
             this.TelefonoTB.Size = new System.Drawing.Size(100, 20);
             this.TelefonoTB.TabIndex = 12;
+            this.TelefonoTB.TextChanged += new System.EventHandler(this.TelefonoTB_TextChanged);
             // 
             // NombreTB
             // 
@@ -221,6 +231,7 @@
             this.NombreTB.Name = "NombreTB";
             this.NombreTB.Size = new System.Drawing.Size(100, 20);
             this.NombreTB.TabIndex = 11;
+            this.NombreTB.TextChanged += new System.EventHandler(this.NombreTB_TextChanged);
             // 
             // Apellido
             // 
@@ -307,11 +318,21 @@
             this.CrearButton.UseVisualStyleBackColor = true;
             this.CrearButton.Click += new System.EventHandler(this.CrearButton_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(261, 247);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(176, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "* Todos los campos son obligatorios";
+            // 
             // AltaCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 311);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.CrearButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.CancelarButton);
@@ -323,6 +344,7 @@
             this.DomicilioGB.ResumeLayout(false);
             this.DomicilioGB.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -355,5 +377,6 @@
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button CrearButton;
+        private System.Windows.Forms.Label label1;
     }
 }

@@ -52,6 +52,7 @@
             this.FiltrarButton.TabIndex = 17;
             this.FiltrarButton.Text = "Filtrar";
             this.FiltrarButton.UseVisualStyleBackColor = true;
+            this.FiltrarButton.Click += new System.EventHandler(this.FiltrarButton_Click);
             // 
             // LimpiarButton
             // 
@@ -75,6 +76,7 @@
             this.ModificarSucursalGV.ReadOnly = true;
             this.ModificarSucursalGV.Size = new System.Drawing.Size(400, 199);
             this.ModificarSucursalGV.TabIndex = 18;
+          //  this.ModificarSucursalGV.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.ModificarSucursalGV_CellContentClick);
             // 
             // FiltroGB
             // 

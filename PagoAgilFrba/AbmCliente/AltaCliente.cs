@@ -18,6 +18,7 @@ namespace PagoAgilFrba.AbmCliente
         public AltaCliente()
         {
             InitializeComponent();
+            CrearButton.Enabled = false;
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -79,6 +80,69 @@ namespace PagoAgilFrba.AbmCliente
             departamento,
             localidad,
             codPostal);
+        }
+
+        private void NombreTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+        }
+
+        private Boolean TBCompletos() {
+            return (!string.IsNullOrWhiteSpace(this.NombreTB.Text) && !string.IsNullOrWhiteSpace(this.ApellidoTB.Text) && !string.IsNullOrWhiteSpace(this.DniTB.Text) && !string.IsNullOrWhiteSpace(this.MailTB.Text) && !string.IsNullOrWhiteSpace(this.TelefonoTB.Text) && !string.IsNullOrWhiteSpace(this.DireccionTB.Text) && !string.IsNullOrWhiteSpace(this.LocalidadTB.Text) && !string.IsNullOrWhiteSpace(this.PisoTB.Text) && !string.IsNullOrWhiteSpace(this.DepartamentoTB.Text) && !string.IsNullOrWhiteSpace(this.CodigoPostalTB.Text));
+        }
+
+        private void ApellidoTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void DniTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void TelefonoTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void MailTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void DireccionTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void LocalidadTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void PisoTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void DepartamentoTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
+        }
+
+        private void CodigoPostalTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = TBCompletos();
+
         }
     }
 }

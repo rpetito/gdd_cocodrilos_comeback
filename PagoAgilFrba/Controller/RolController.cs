@@ -219,7 +219,7 @@ namespace PagoAgilFrba.Controller {
 
         }
 
-        public void obtenerFuncionalidades(SQLResponse<SqlDataReader> listener, Int32 idRol)
+        public void obtenerFuncionalidades(SQLResponse<SqlDataReader> listener, Int32 idRol, RolRequest rolRequest)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
@@ -234,6 +234,7 @@ namespace PagoAgilFrba.Controller {
 
                 onReadData = (SqlDataReader result) =>
                 {
+                    //rolRequest.addFuncionalidad(Convert.ToInt32(result[0]));
                     Rol.getInstance().addFuncionalidad(Convert.ToInt32(result[0]));
                 },
 
@@ -249,23 +250,38 @@ namespace PagoAgilFrba.Controller {
             });
         }
 
-        public void modifyRol(SQLResponse<SqlDataReader> listener, String name, DataGridView gridView)
+        public void modifyRol(SQLResponse<Int32> listener, Int32 idRol, String descripcion, String funcionalities, Int32 habilitado)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
+            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
             {
 
                 getProcedureName = () => { return "MODIFICAR_ROL"; },
 
                 addParams = (SqlCommand sqlCommand) => {
-                    if (!name.Equals(""))
+                    if (!idRol.Equals(""))
                     {
-                        sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
-                        sqlCommand.Parameters["@nombre"].Value = name;
+                        sqlCommand.Parameters.Add("@idRol", SqlDbType.Int);
+                        sqlCommand.Parameters["@idRol"].Value = idRol;
+                    }
+                    if (!descripcion.Equals(""))
+                    {
+                        sqlCommand.Parameters.Add("@descripcion", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@descripcion"].Value = descripcion;
+                    }
+                    if (!funcionalities.Equals(""))
+                    {
+                        sqlCommand.Parameters.Add("@funcionalities", SqlDbType.NVarChar);
+                        sqlCommand.Parameters["@funcionalities"].Value = funcionalities;
+                    }
+                    if (!habilitado.Equals(""))
+                    {
+                        sqlCommand.Parameters.Add("@habilitado", SqlDbType.Bit);
+                        sqlCommand.Parameters["@habilitado"].Value = habilitado;
                     }
                 },
 
-                onReadData = (SqlDataReader result) => {
+                onReadData = (Int32 result) => {
                     listener.onSuccess(result);
                 },
 
@@ -276,7 +292,7 @@ namespace PagoAgilFrba.Controller {
 
                 }
 
-            }, gridView);
+            });
 
         }
 
