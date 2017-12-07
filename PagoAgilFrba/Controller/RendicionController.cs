@@ -52,7 +52,7 @@ namespace PagoAgilFrba.Controller
             return dt;
         }
 
-        public void rendir(SQLResponse<Int32> listener, Int32 cantidadFacturas, Int32 fechaRendicion, Decimal importeBruto, Decimal importeNeto, Decimal importeComision, Decimal porcentajeComision, Decimal factura, String empresa)
+        public void rendir(SQLResponse<Int32> listener, Int32 cantidadFacturas, Int32 fechaRendicion, Decimal importeBruto, Decimal importeNeto, Decimal importeComision, Decimal porcentajeComision, String empresa, Int32 mes)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
@@ -65,8 +65,8 @@ namespace PagoAgilFrba.Controller
                 {
                     sqlCommand.Parameters.Add("@cant_facturas", SqlDbType.Int);
                     sqlCommand.Parameters["@cant_facturas"].Value = cantidadFacturas;
-                    sqlCommand.Parameters.Add("@fechaRendicion", SqlDbType.Int);
-                    sqlCommand.Parameters["@fechaRendicion"].Value = fechaRendicion;
+                    sqlCommand.Parameters.Add("@fecha_rendicion", SqlDbType.Int);
+                    sqlCommand.Parameters["@fecha_rendicion"].Value = fechaRendicion;
                     sqlCommand.Parameters.Add("@importe_bruto", SqlDbType.Decimal);
                     sqlCommand.Parameters["@importe_bruto"].Value = importeBruto;
                     sqlCommand.Parameters.Add("@importe_neto", SqlDbType.Decimal);
@@ -75,10 +75,10 @@ namespace PagoAgilFrba.Controller
                     sqlCommand.Parameters["@importe_comision"].Value = importeComision;
                     sqlCommand.Parameters.Add("@porcentaje_comision", SqlDbType.Decimal);
                     sqlCommand.Parameters["@porcentaje_comision"].Value = porcentajeComision;
-                    sqlCommand.Parameters.Add("@fact_numero", SqlDbType.Decimal);
-                    sqlCommand.Parameters["@fact_numero"].Value = factura;
                     sqlCommand.Parameters.Add("@rendicion_empresa", SqlDbType.NVarChar);
                     sqlCommand.Parameters["@rendicion_empresa"].Value = empresa;
+                    sqlCommand.Parameters.Add("@mes_rendicion", SqlDbType.Int);
+                    sqlCommand.Parameters["@mes_rendicion"].Value = mes;
                 },
 
                 onReadData = (Int32 result) =>

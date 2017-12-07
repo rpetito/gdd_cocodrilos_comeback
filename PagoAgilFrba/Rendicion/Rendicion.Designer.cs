@@ -1,4 +1,5 @@
-﻿namespace PagoAgilFrba.Rendicion
+﻿using System;
+namespace PagoAgilFrba.Rendicion
 {
     partial class Rendicion
     {
@@ -42,7 +43,7 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.RendirButton = new System.Windows.Forms.Button();
             this.FacturasButton = new System.Windows.Forms.Button();
-            this.FechaCB = new System.Windows.Forms.ComboBox();
+            this.FechaCB = new CustomComboBox<Int32>();
             this.CantidadLabel = new System.Windows.Forms.Label();
             this.TotalLabel = new System.Windows.Forms.Label();
             this.ComisionLabel = new System.Windows.Forms.Label();
@@ -105,6 +106,7 @@
             this.ComisionPorcentajeTB.Name = "ComisionPorcentajeTB";
             this.ComisionPorcentajeTB.Size = new System.Drawing.Size(30, 20);
             this.ComisionPorcentajeTB.TabIndex = 8;
+            this.ComisionPorcentajeTB.TextChanged += new System.EventHandler(this.ComisionPorcentajeTB_TextChanged);
             // 
             // RendicionTotal
             // 
@@ -118,11 +120,11 @@
             // Empresa
             // 
             this.Empresa.AutoSize = true;
-            this.Empresa.Location = new System.Drawing.Point(65, 59);
+            this.Empresa.Location = new System.Drawing.Point(45, 59);
             this.Empresa.Name = "Empresa";
             this.Empresa.Size = new System.Drawing.Size(51, 13);
             this.Empresa.TabIndex = 11;
-            this.Empresa.Text = "Empresa:";
+            this.Empresa.Text = "Cuit Empresa:";
             // 
             // ComisionPesos
             // 
@@ -274,7 +276,7 @@
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.Button RendirButton;
         private System.Windows.Forms.Button FacturasButton;
-        private System.Windows.Forms.ComboBox FechaCB;
+        private CustomComboBox<Int32> FechaCB;
         private System.Windows.Forms.Label CantidadLabel;
         private System.Windows.Forms.Label TotalLabel;
         private System.Windows.Forms.Label ComisionLabel;

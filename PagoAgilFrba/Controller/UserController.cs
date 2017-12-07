@@ -45,7 +45,7 @@ namespace PagoAgilFrba.Controller {
 						} else {
 							if(result.GetInt32(0) == 999)
 								MessageBox.Show("Usuario inhabilitado", "hola");
-							else
+							if(result.GetInt32(0) == 1001)
 								MessageBox.Show("Usuario o Contraseña incorrecto/s");
 						}
 					},
@@ -57,7 +57,7 @@ namespace PagoAgilFrba.Controller {
 						} else if(Usuario.getInstance().hasMultipleRoles()) {
 							listener.onMultipleRoles();
 						} else {
-							MessageBox.Show("El usuario no tiene roles disponibles");
+							MessageBox.Show("Usuario inhabilitado");
 						}
 					}
 

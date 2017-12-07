@@ -21,6 +21,7 @@ namespace PagoAgilFrba.AbmSucursal
         public BajaSucursal()
         {
             InitializeComponent();
+            Util.Util.addButtonColumnToGridView(BajaSucursalGV, "Eliminar", new DataGridViewCellEventHandler(this.BajaSucursal_cellEventHandler));
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -76,6 +77,28 @@ namespace PagoAgilFrba.AbmSucursal
             else
             {
                 MessageBox.Show("Debe seleccionar al menos una fila completa.", "Selección vacía");
+            }
+        }
+        private void BajaSucursal_cellEventHandler(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0 && e.RowIndex >= 0)
+            {
+                Int32 idSucursal = (int)BajaSucursalGV.Rows[e.RowIndex].Cells[1].Value;
+                sucursalController.removeSucursal(new SQLResponse<Int32>()
+                {
+
+                    onSuccess = (Int32 result) =>
+                    {
+                        Util.Util.showSuccessDialog();
+                        this.FiltrarButton.PerformClick();
+                    },
+
+                    onError = (Error error) =>
+                    {
+
+                    }
+
+                }, idSucursal);
             }
         }
     }

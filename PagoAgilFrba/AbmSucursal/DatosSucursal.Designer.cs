@@ -38,8 +38,8 @@
             this.DireccionTB = new System.Windows.Forms.TextBox();
             this.CodigoPostalTB = new System.Windows.Forms.TextBox();
             this.NombreTB = new System.Windows.Forms.TextBox();
-            this.Estado = new System.Windows.Forms.Label();
-            this.EstadoCB = new System.Windows.Forms.ComboBox();
+            this.EstadoCB = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SucursalGB.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,6 +52,7 @@
             this.ModificarButton.TabIndex = 13;
             this.ModificarButton.Text = "Modificar";
             this.ModificarButton.UseVisualStyleBackColor = true;
+            this.ModificarButton.Click += new System.EventHandler(this.ModificarButton_Click);
             // 
             // LimpiarButton
             // 
@@ -136,30 +137,32 @@
             this.NombreTB.Size = new System.Drawing.Size(100, 20);
             this.NombreTB.TabIndex = 3;
             // 
-            // Estado
-            // 
-            this.Estado.AutoSize = true;
-            this.Estado.Location = new System.Drawing.Point(36, 167);
-            this.Estado.Name = "Estado";
-            this.Estado.Size = new System.Drawing.Size(43, 13);
-            this.Estado.TabIndex = 14;
-            this.Estado.Text = "Estado:";
-            // 
             // EstadoCB
             // 
-            this.EstadoCB.FormattingEnabled = true;
-            this.EstadoCB.Location = new System.Drawing.Point(117, 164);
+            this.EstadoCB.AutoSize = true;
+            this.EstadoCB.Location = new System.Drawing.Point(128, 168);
             this.EstadoCB.Name = "EstadoCB";
-            this.EstadoCB.Size = new System.Drawing.Size(100, 21);
+            this.EstadoCB.Size = new System.Drawing.Size(73, 17);
             this.EstadoCB.TabIndex = 15;
+            this.EstadoCB.Text = "Habilitado";
+            this.EstadoCB.UseVisualStyleBackColor = true;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(36, 168);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(43, 13);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Estado:";
             // 
             // DatosSucursal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(266, 267);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.EstadoCB);
-            this.Controls.Add(this.Estado);
             this.Controls.Add(this.ModificarButton);
             this.Controls.Add(this.LimpiarButton);
             this.Controls.Add(this.CancelarButton);
@@ -185,7 +188,7 @@
         private System.Windows.Forms.TextBox DireccionTB;
         private System.Windows.Forms.TextBox CodigoPostalTB;
         private System.Windows.Forms.TextBox NombreTB;
-        private System.Windows.Forms.Label Estado;
-        private System.Windows.Forms.ComboBox EstadoCB;
+        private System.Windows.Forms.CheckBox EstadoCB;
+        private System.Windows.Forms.Label label1;
     }
 }

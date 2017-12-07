@@ -22,11 +22,23 @@ namespace PagoAgilFrba.Rendicion
         Decimal monto = 0;
         Decimal rendicion = 0;
         Int32 dia = 0;
+        Int32 mes = 0;
 
         public Rendicion()
         {
             InitializeComponent();
-            
+            FechaCB.addItem(1, "Enero");
+            FechaCB.addItem(2, "Febrero");
+            FechaCB.addItem(3, "Marzo");
+            FechaCB.addItem(4, "Abril");
+            FechaCB.addItem(5, "Mayo");
+            FechaCB.addItem(6, "Junio");
+            FechaCB.addItem(7, "Julio");
+            FechaCB.addItem(8, "Agosto");
+            FechaCB.addItem(9, "Septiembre");
+            FechaCB.addItem(10, "Octubre");
+            FechaCB.addItem(11, "Noviembre");
+            FechaCB.addItem(12, "Diciembre");
 
         }
 
@@ -38,7 +50,6 @@ namespace PagoAgilFrba.Rendicion
         private void FacturasButton_Click(object sender, EventArgs e)
         {
 
-            Int32 mes;//definir sobre la combobox
             DataTable dt = rendicionController.getFacturasMes(new SQLResponse<SqlDataReader>()
             {
 
@@ -54,8 +65,6 @@ namespace PagoAgilFrba.Rendicion
 
             }, EmpresaTB.Text, 2/*mescombobox*/, FacturasGV);
 
-            dia = Convert.ToInt32(FacturasGV[4, 1].Value);
-
             CantidadLabel.Text = dt.Rows.Count.ToString();
 
             for (int i = 0; i < FacturasGV.Rows.Count; ++i)
@@ -64,12 +73,6 @@ namespace PagoAgilFrba.Rendicion
             }
             TotalLabel.Text = "$ " + sum.ToString();
 
-            porcentaje = Convert.ToDecimal(ComisionPorcentajeTB.Text);
-            monto = ((porcentaje) * (sum)) / 100;
-            ComisionLabel.Text = "$ " + monto.ToString();
-
-            rendicion = sum - monto;
-            RendicionLabel.Text = "$ " + rendicion;
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -81,6 +84,10 @@ namespace PagoAgilFrba.Rendicion
 
         private void RendirButton_Click(object sender, EventArgs e)
         {
+
+
+            dia = Convert.ToInt32(FacturasGV[4, 1].Value);
+            mes = FechaCB.getSelectedItemID();
             rendicionController.rendir(new SQLResponse<Int32>()
             {
 
@@ -96,7 +103,25 @@ namespace PagoAgilFrba.Rendicion
 
                 }
 
-            }, Convert.ToInt32(CantidadLabel.Text), dia, sum, rendicion, monto, Convert.ToDecimal(ComisionPorcentajeTB.Text), 10/*poner las facturas*/ , EmpresaTB.Text );
+            }, Convert.ToInt32(CantidadLabel.Text), dia, sum, rendicion, monto, Convert.ToDecimal(ComisionPorcentajeTB.Text), EmpresaTB.Text, mes);
+        }
+
+        private void ComisionPorcentajeTB_TextChanged(object sender, EventArgs e)
+        {
+            if ((ComisionPorcentajeTB.Text) != "")
+            {
+                porcentaje = Convert.ToDecimal(ComisionPorcentajeTB.Text);
+                monto = ((porcentaje) * (sum)) / 100;
+                ComisionLabel.Text = "$ " + monto.ToString();
+
+                rendicion = sum - monto;
+                RendicionLabel.Text = "$ " + rendicion;
+            }
+            else
+            {
+                ComisionLabel.Text = "$ 0.00";
+                RendicionLabel.Text = "$ " + sum;
+            }
         }
     }
 }

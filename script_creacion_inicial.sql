@@ -203,6 +203,11 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES
 IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.RENDICION
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL
 
 
 GO
@@ -733,6 +738,30 @@ BEGIN TRY
 			(@direccion IS NULL OR s.direccion = @direccion) AND
 			(@cod_postal IS NULL OR s.cod_postal = @cod_postal) AND
 			S.habilitado = 1
+
+
+END TRY 
+BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
+
+------------------------------------------------------------------------------
+--------------------BUSCAR SUCURSAL TOTALIDAD--------------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD(
+	@nombre nvarchar(255) = NULL,
+	@direccion nvarchar(255) = NULL, 
+	@cod_postal numeric(18,0) = NULL) 
+AS
+BEGIN TRY
+	
+	SELECT *
+	FROM COCODRILOS_COMEBACK.SUCURSAL S
+	WHERE	(@nombre IS NULL OR S.nombre = @nombre) AND
+			(@direccion IS NULL OR s.direccion = @direccion) AND
+			(@cod_postal IS NULL OR s.cod_postal = @cod_postal)
+			
 
 
 END TRY 
@@ -1629,27 +1658,45 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
-/*
+
 	---------------------------------------------------
 	-------------------MODIFICACION--------------------
 	---------------------------------------------------
-	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_EMPRESA(
-		@cuit		nvarchar(50),
+	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL(
+		
 		@nombre		nvarchar(255),
 		@direccion	nvarchar(255),
-		@rubro		numeric(18,0),
-		@habilitado bit
+		@COD_POSTAL	numeric(18,0),
+		@habilitado bit,
+		@ID			INT
 	) 
 	AS
 	BEGIN TRY 
 
-		UPDATE COCODRILOS_COMEBACK.EMPRESA
+		UPDATE COCODRILOS_COMEBACK.SUCURSAL
 		SET 
-			cuit = @cuit,
 			nombre = @nombre,
 			direccion = @direccion,
-			rubro = @rubro,
+			cod_postal = @COD_POSTAL,
 			habilitado = @habilitado
+			WHERE id = @ID
+
+		IF @habilitado = 0
+		BEGIN
+			UPDATE COCODRILOS_COMEBACK.USUARIO
+			SET habilitado = 0
+			WHERE DNI IN (SELECT user_dni 
+						  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
+						  WHERE sucursal_id = @ID)
+		END
+		ELSE 
+		BEGIN
+			UPDATE COCODRILOS_COMEBACK.USUARIO
+			SET habilitado = 1
+			WHERE DNI IN (SELECT user_dni 
+						  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
+						  WHERE sucursal_id = @ID)
+		END
 
 		SELECT @@ROWCOUNT
 
@@ -1658,7 +1705,7 @@ GO
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
-	*/
+	
 
 
 
@@ -2059,47 +2106,51 @@ GO
 -----------------------------------------------------
 ----------------RENDICION----------------------------
 -----------------------------------------------------
-/*CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
+CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	@cant_facturas			int,
 	@fecha_rendicion		int,
 	@importe_bruto			numeric(18,2),
 	@importe_neto			numeric(18,2),
 	@importe_comision		numeric(18,2),
 	@porcentaje_comision	numeric(18,2),
-	@rendicion_empresa		nvarchar(50)
+	@rendicion_empresa		nvarchar(50),
+	@mes_rendicion			int
 	) 
 	AS 
-	BEGIN TRY
-				
+	BEGIN 
+		DECLARE @inserted_rendicion int = (select TOP 1 rp.rendicion_nro from COCODRILOS_COMEBACK.RENDICION_PAGO rp order by rp.rendicion_nro desc) + 1
+
 			BEGIN
 				DECLARE @actualFact numeric(18,0)
 				DECLARE c_agregar_fact CURSOR FOR
 					SELECT rp.fact_numero
 					FROM COCODRILOS_COMEBACK.REGISTRO_PAGO rp
-					WHERE rp.empresa = @rendicion_empresa AND DAY(rp.fecha_pago) = @fecha_rendicion
+					WHERE rp.empresa = @rendicion_empresa AND MONTH(rp.fecha_pago) = @mes_rendicion
 				OPEN c_agregar_fact
 				FETCH NEXT FROM c_agregar_fact INTO @actualFact
 				WHILE(@@FETCH_STATUS = 0)
 					BEGIN
-								INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO(
-										cant_facturas,
-										fecha_rendicion,
-										importe_bruto,
-										importe_neto,
-										importe_comision,
-										porcentaje_comision,
-										fact_numero,
-										rendicion_empresa
-									) VALUES (
-										@cant_facturas,
-										@fecha_rendicion,
-										@importe_bruto,
-										@importe_neto,
-										@importe_comision,
-										@porcentaje_comision,
-										@actualFact,
-										@rendicion_empresa
-									)
+							INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO(
+							rendicion_nro,
+							cant_facturas,
+							fecha_rendicion,
+							importe_bruto,
+							importe_neto,
+							importe_comision,
+							porcentaje_comision,
+							fact_numero,
+							rendicion_empresa
+						) VALUES (
+							@inserted_rendicion,
+							@cant_facturas,
+							@fecha_rendicion,
+							@importe_bruto,
+							@importe_neto,
+							@importe_comision,
+							@porcentaje_comision,
+							@actualFact,
+							@rendicion_empresa
+						)
 
 						FETCH NEXT FROM c_agregar_fact INTO @actualFact
 					END
@@ -2109,9 +2160,9 @@ GO
 
 		SELECT @@ERROR
 
-	END TRY
-	BEGIN CATCH
+	END 
+	/*BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	END CATCH
+	END CATCH*/
 	GO
-	*/
+	
