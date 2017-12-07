@@ -15,155 +15,20 @@ namespace PagoAgilFrba.Controller
     class EstadisticoController
     {
 
-        public void porcentajeFacturasCobradas(SQLResponse<SqlDataReader> listener, Int32 anio, Int32 trimestre, DataGridView dgv)
+        public void ejecutarEstadistica(SQLResponse<SqlDataReader> listener, Int32 año, Int32 trimestre, DataGridView dgv, String procedureName)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "PORCENTAJE_COBRADAS_EMPRESA"; },
+                getProcedureName = () => { return procedureName; },
 
                 addParams = (SqlCommand sqlCommand) =>
                 {
-                    if (!string.IsNullOrWhiteSpace(anio.ToString()))
+                    if (!string.IsNullOrWhiteSpace(año.ToString()))
                     {
-                        sqlCommand.Parameters.Add("@anio", SqlDbType.Int);
-                        sqlCommand.Parameters["@anio"].Value = anio;
-                    }
-                    if (!string.IsNullOrWhiteSpace(trimestre.ToString()))
-                    {
-                        sqlCommand.Parameters.Add("@trimestre", SqlDbType.Int);
-                        sqlCommand.Parameters["@trimestre"].Value = trimestre;
-                    }
-                },
-
-
-
-                onReadData = (SqlDataReader result) =>
-                {
-
-                    listener.onSuccess(result);
-
-                },
-
-                onError = (Error error) =>
-                {
-
-                },
-
-                onDataProcessed = () =>
-                {
-
-                }
-
-            }, dgv);
-
-        }
-
-        public void empresasMayorMontoRend(SQLResponse<SqlDataReader> listener, Int32 anio, Int32 trimestre, DataGridView dgv)
-        {
-            SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
-            {
-
-                getProcedureName = () => { return "EMPRESAS_MAYOR_MONTO_RENDIDO"; },
-
-                addParams = (SqlCommand sqlCommand) =>
-                {
-                    if (!string.IsNullOrWhiteSpace(anio.ToString()))
-                    {
-                        sqlCommand.Parameters.Add("@anio", SqlDbType.Int);
-                        sqlCommand.Parameters["@anio"].Value = anio;
-                    }
-                    if (!string.IsNullOrWhiteSpace(trimestre.ToString()))
-                    {
-                        sqlCommand.Parameters.Add("@trimestre", SqlDbType.Int);
-                        sqlCommand.Parameters["@trimestre"].Value = trimestre;
-                    }
-                },
-
-
-
-                onReadData = (SqlDataReader result) =>
-                {
-
-                    listener.onSuccess(result);
-
-                },
-
-                onError = (Error error) =>
-                {
-
-                },
-
-                onDataProcessed = () =>
-                {
-
-                }
-
-            }, dgv);
-
-        }
-
-        public void clienteMasPagos(SQLResponse<SqlDataReader> listener, Int32 anio, Int32 trimestre, DataGridView dgv)
-        {
-            SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
-            {
-
-                getProcedureName = () => { return "CLIENTES_MAS_PAGOS"; },
-
-                addParams = (SqlCommand sqlCommand) =>
-                {
-                    if (!string.IsNullOrWhiteSpace(anio.ToString()))
-                    {
-                        sqlCommand.Parameters.Add("@anio", SqlDbType.Int);
-                        sqlCommand.Parameters["@anio"].Value = anio;
-                    }
-                    if (!string.IsNullOrWhiteSpace(trimestre.ToString()))
-                    {
-                        sqlCommand.Parameters.Add("@trimestre", SqlDbType.Int);
-                        sqlCommand.Parameters["@trimestre"].Value = trimestre;
-                    }
-                },
-
-
-
-                onReadData = (SqlDataReader result) =>
-                {
-
-                    listener.onSuccess(result);
-
-                },
-
-                onError = (Error error) =>
-                {
-
-                },
-
-                onDataProcessed = () =>
-                {
-
-                }
-
-            }, dgv);
-
-        }
-
-        public void clienteMayorPorcentajePagas(SQLResponse<SqlDataReader> listener, Int32 anio, Int32 trimestre, DataGridView dgv)
-        {
-            SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
-            {
-
-                getProcedureName = () => { return "CLIENTES_MAS_CUMPLIDORES"; },
-
-                addParams = (SqlCommand sqlCommand) =>
-                {
-                    if (!string.IsNullOrWhiteSpace(anio.ToString()))
-                    {
-                        sqlCommand.Parameters.Add("@anio", SqlDbType.Int);
-                        sqlCommand.Parameters["@anio"].Value = anio;
+                        sqlCommand.Parameters.Add("@año", SqlDbType.Int);
+                        sqlCommand.Parameters["@año"].Value = año;
                     }
                     if (!string.IsNullOrWhiteSpace(trimestre.ToString()))
                     {

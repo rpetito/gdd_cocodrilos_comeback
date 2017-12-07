@@ -2582,11 +2582,11 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	) 
 	AS
 	BEGIN TRY
-		SELECT TOP 5 rp.rendicion_empresa, 
+		SELECT TOP 5 rp.rendicion_empresa as Empresa, 
 					(COUNT(rp.fact_numero) / (SELECT COUNT(*) 
 											 FROM COCODRILOS_COMEBACK.FACTURA f 
 											 WHERE	f.empresa = rp.rendicion_empresa AND 
-													COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(f.fecha_emision, @trimestre) = 1)) * 100
+													COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(f.fecha_emision, @trimestre) = 1)) * 100 as Porcentaje_Facturas_Cobradas
 		FROM COCODRILOS_COMEBACK.RENDICION_PAGO rp JOIN
 			 COCODRILOS_COMEBACK.EMPRESA e ON rp.rendicion_empresa = e.cuit
 		WHERE	YEAR(rp.fecha_rendicion) = @año AND
@@ -2604,14 +2604,19 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 
 
 	---------------------------------------------------------------
-	-------------PROCENTAJE FACT COBRADAS POR EMPRESA--------------
+	-------------EMPRESAS CON MAYOR MONTO RENDIDO-------------------
 	---------------------------------------------------------------
-	CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO
+	CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO(
+			@año int,
+			@trimestre int
+	)
 	AS
 	BEGIN TRY
 
-		SELECT TOP 5 r.rendicion_empresa, SUM(r.importe_bruto)
+		SELECT TOP 5 r.rendicion_empresa as Empresa, SUM(r.importe_bruto) as Monto_Rendido
 		FROM COCODRILOS_COMEBACK.RENDICION_PAGO r
+		WHERE	YEAR(r.fecha_rendicion) = @año AND
+				COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(r.fecha_rendicion, @trimestre) = 1
 		GROUP BY r.rendicion_empresa
 		ORDER BY SUM(r.importe_bruto) DESC
 
@@ -2625,12 +2630,17 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	---------------------------------------------------------------
 	--------------------CLIENTES CON MAS PAGOS---------------------
 	---------------------------------------------------------------
-	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS
+	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS(
+			@año int,
+			@trimestre int
+	)
 	AS
 	BEGIN TRY
 
-		SELECT TOP 5 r.cliente, COUNT(r.fact_numero) AS Cantidad
+		SELECT TOP 5 r.cliente as Cliente, COUNT(r.fact_numero) AS Cantidad
 		FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r
+		WHERE	YEAR(r.fecha_pago) = @año AND
+				COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(r.fecha_pago, @trimestre) = 1
 		GROUP BY r.cliente
 		ORDER BY COUNT(r.fact_numero) DESC
 
@@ -2644,14 +2654,19 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	---------------------------------------------------------------
 	-----------CLIENTES MAYOR PORCENTAJE FACTURAS PAGAS------------
 	---------------------------------------------------------------
-	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES
+	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES(
+			@año int,
+			@trimestre int
+	)
 	AS
 	BEGIN TRY
 		
 		SELECT TOP 5 
-			r.cliente,
+			r.cliente as Cliente,
 			(COUNT(r.fact_numero) / (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = r.cliente)) * 100 as Porcentaje
 		FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r
+		WHERE	YEAR(r.fecha_pago) = @año AND
+				COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(r.fecha_pago, @trimestre) = 1
 		GROUP BY r.cliente
 		ORDER BY (COUNT(r.fact_numero) / (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = r.cliente)) * 100 DESC
 
@@ -2661,25 +2676,3 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	END CATCH
 	GO
 
-	-----------------------------------------------------------------
-	---------------EMPRESAS MAYOR MONTO RENDIDO----------------------
-	-----------------------------------------------------------------
-	/*CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO(
-		@anio int,
-		@trimestre int
-		)
-		AS
-		BEGIN TRY
-			SELECT TOP 5 rp.rendicion_empresa as Empresa, 
-						SUM(rp.importe_neto) as Monto_Rendido
-			 FROM COCODRILOS_COMEBACK.RENDICION_PAGO rp
-			 WHERE YEAR(rp.fecha_rendicion) = @anio AND  ((@trimestre = 1 and  MONTH(rp.fecha_rendicion) BETWEEN 1 and 3) or
-													 (@trimestre = 2 and  MONTH(rp.fecha_rendicion) BETWEEN 4 and 6) or
-													 (@trimestre = 3 and  MONTH(rp.fecha_rendicion) BETWEEN 7 and 9) or
-													 (@trimestre = 4 and  MONTH(rp.fecha_rendicion) BETWEEN 10 and 12))
-			GROUP BY rp.rendicion_empresa
-		END TRY
-		BEGIN CATCH
-			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-		END CATCH
-		GO*/

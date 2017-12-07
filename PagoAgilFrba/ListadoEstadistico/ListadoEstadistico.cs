@@ -57,7 +57,7 @@ namespace PagoAgilFrba.ListadoEstadistico
             {
                 case 1:
                     {
-                        estadisticoController.porcentajeFacturasCobradas(new SQLResponse<SqlDataReader>()
+                        estadisticoController.ejecutarEstadistica(new SQLResponse<SqlDataReader>()
                         {
 
                             onSuccess = (SqlDataReader result) =>
@@ -70,12 +70,12 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV, "PORCENTAJE_COBRADAS_EMPRESA");
                         break;
                     }
                 case 2:
                     {
-                        estadisticoController.empresasMayorMontoRend(new SQLResponse<SqlDataReader>()
+                        estadisticoController.ejecutarEstadistica(new SQLResponse<SqlDataReader>()
                         {
 
                             onSuccess = (SqlDataReader result) =>
@@ -88,12 +88,12 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV, "EMPRESAS_MAYOR_MONTO_RENDIDO");
                         break;
                     }
                 case 3:
                     {
-                        estadisticoController.clienteMasPagos(new SQLResponse<SqlDataReader>()
+                        estadisticoController.ejecutarEstadistica(new SQLResponse<SqlDataReader>()
                         {
 
                             onSuccess = (SqlDataReader result) =>
@@ -106,12 +106,12 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV, "CLIENTES_MAS_PAGOS");
                         break;
                     }
                 case 4:
                     {
-                        estadisticoController.clienteMayorPorcentajePagas(new SQLResponse<SqlDataReader>()
+                        estadisticoController.ejecutarEstadistica(new SQLResponse<SqlDataReader>()
                         {
 
                             onSuccess = (SqlDataReader result) =>
@@ -124,7 +124,7 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV, "CLIENTES_MAS_CUMPLIDORES");
                         break;
                     }
                 default:
