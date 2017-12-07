@@ -10,8 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using PagoAgilFrba.Controller;
-using PagoAgilFrba.Util;
-using PagoAgilFrba.Model;
 using System.Data.SqlClient; 
 
 namespace PagoAgilFrba.AbmFactura

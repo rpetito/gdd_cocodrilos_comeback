@@ -38,7 +38,7 @@ namespace PagoAgilFrba.AbmRol
 
                 onSuccess = (SqlDataReader result) =>
                 {
-                    
+                   
                 },
 
                 onError = (Error error) =>
@@ -47,17 +47,6 @@ namespace PagoAgilFrba.AbmRol
                 }
 
             }, FuncionalidadesGV);
-
-            
-            foreach(DataGridViewRow row in this.FuncionalidadesGV.Rows)
-            {
-
-                if (Rol.getInstance().getFuncionalidades().Contains(Convert.ToInt32(row.Cells[1].Value)))
-                {
-                    //FuncionalidadesGV.Rows[i].Cells[0].Value = true; .... checkear...
-                }
-                
-            }
 
         }
 
@@ -71,5 +60,42 @@ namespace PagoAgilFrba.AbmRol
             this.Close();
         }
 
+        private void ModificarButton_Click(object sender, EventArgs e)
+        {
+            RolController rolController = new RolController();
+            RolRequest rolRequest = new RolRequest();
+            rolRequest.descripcion = NombreTB.Text.ToString();
+            Int32 habilitado = -1;
+            if (HabilitadoCB.Checked == true)
+                habilitado = 1;
+            else habilitado = 0;
+
+            foreach (DataGridViewRow row in this.FuncionalidadesGV.Rows)
+            {
+                Boolean selected = row.Cells[0].Value == null ? false : true;
+                if (selected)
+                {
+                    rolRequest.addFuncionalidad((Int32)row.Cells[1].Value);
+                }
+            }
+
+            rolController.modifyRol(new SQLResponse<Int32>()
+            {
+
+                onSuccess = (Int32 result) =>
+                {
+
+                },
+
+                onError = (Error error) =>
+                {
+
+                }
+
+            }, Rol.getInstance().getID(), Rol.getInstance().getDetalle(), rolRequest.funcionalidades, habilitado);
+
+            Util.Util.showSuccessDialog();
+            this.Close();
+        }
     }
 }

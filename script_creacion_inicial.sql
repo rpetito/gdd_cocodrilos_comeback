@@ -197,6 +197,12 @@ DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.RENDICION') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.RENDICION
+
 IF OBJECT_ID('COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.BUSCAR_SUCURSAL_TOTALIDAD
 
@@ -386,7 +392,7 @@ CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 
 
 CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
-	rendicion_nro		numeric(18,0) PRIMARY KEY,
+	rendicion_nro		numeric(18,0),
 	cant_facturas		int,
 	fecha_rendicion		int,
 	importe_bruto		numeric(18,2),
@@ -395,6 +401,7 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
 	porcentaje_comision	numeric(18,2),
 	fact_numero			numeric(18,0),
 	rendicion_empresa	nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
+	PRIMARY KEY(rendicion_nro, fact_numero, rendicion_empresa),
 	FOREIGN KEY(fact_numero, rendicion_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
 
@@ -824,6 +831,21 @@ BEGIN CATCH
 END CATCH
 GO
 
+
+-----------------------------------------------------------------------------
+-------------------------OBTENER FACTURAS DE UN MES--------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES(@empresa nvarchar(50), @mes int)
+AS
+BEGIN TRY
+	SELECT rp.fact_numero, rp.fecha_pago, rp.empresa, rp.importe_pago, e.dia_rendicion
+	FROM COCODRILOS_COMEBACK.REGISTRO_PAGO rp join COCODRILOS_COMEBACK.EMPRESA e on rp.empresa = e.cuit
+	WHERE rp.empresa = @empresa AND MONTH(rp.fecha_pago) = @mes
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 --###########################################################################
 --###########################################################################
@@ -1349,7 +1371,7 @@ BEGIN
 			SET @status = 1002; --USUARIO NO REGISTRADO
 
 	IF(@status = 0) --USUARIO EXISTE Y DEVUELVE LISTADO DE ROLES HABILITADOS
-		SELECT r.ID_USUARIO, r.ID_ROL, rol.DESCRIPCION
+		SELECT r.ID_USUARIO, r.ID_ROL, rol.DESCRIPCION, r.habilitado
 		FROM COCODRILOS_COMEBACK.ROL_USUARIO r JOIN COCODRILOS_COMEBACK.ROL rol ON r.ID_ROL = rol.ID
 		WHERE r.ID_USUARIO = (SELECT u.DNI
 									FROM COCODRILOS_COMEBACK.USUARIO u 
@@ -1769,6 +1791,7 @@ GO
 
 		DECLARE @insertedRolID int = (SELECT IDENT_CURRENT('COCODRILOS_COMEBACK.ROL'))
 		IF @funcionalities IS NOT NULL
+
 			BEGIN
 				DECLARE @actualFunID nvarchar(255)
 				DECLARE c_agregar_func CURSOR FOR
@@ -1796,45 +1819,62 @@ GO
 	GO
 
 
-	---------------------------------------------------
-	-------------------MODIFICACION--------------------
-	---------------------------------------------------
+	-------------------------------------------------------
+	-------------------MODIFICACION ROL--------------------
+	-------------------------------------------------------
 	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_ROL(
-		@rolID			int,
+		@idRol			int,
 		@descripcion	nvarchar(255),
-		@funToRemoveID	int = NULL,
-		@funToAddID		nvarchar(255) = NULL
+		@funcionalities	nvarchar(255) = NULL,
+		@habilitado		bit
 	) 
-	AS
-	BEGIN TRY 
+	AS 
+	BEGIN TRY
 
 		UPDATE COCODRILOS_COMEBACK.ROL
 		SET 
-			descripcion = @descripcion
-		WHERE id = @rolID
+			descripcion = @descripcion,
+			habilitado = @habilitado
 
-		IF @funToRemoveID IS NOT NULL
-			EXEC COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL @rolID, @funToRemoveID
+		WHERE id = @idRol
 
-		IF @funToAddID IS NOT NULL
+		IF @funcionalities IS NOT NULL
+			BEGIN
+				DECLARE @actualFunID1 nvarchar(255)
+				DECLARE c_agregar_func1 CURSOR FOR
+					SELECT rf.id_funcionalidad
+					FROM COCODRILOS_COMEBACK.ROL_FUNCIONALIDAD rf
+					WHERE rf.id_rol = @idRol
+				OPEN c_agregar_func1
+				FETCH NEXT FROM c_agregar_func1 INTO @actualFunID1
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+						DECLARE @funIdInt1 INT = (SELECT (CONVERT(int, @actualFunID1)))
+						EXEC COCODRILOS_COMEBACK.REMOVER_FUNCIONALIDAD_ROL @idRol, @funIdInt1
+						FETCH NEXT FROM c_agregar_func1 INTO @actualFunID1
+					END
+				CLOSE c_agregar_func1
+				DEALLOCATE c_agregar_func1
+			END
 			BEGIN
 				DECLARE @actualFunID nvarchar(255)
 				DECLARE c_agregar_func CURSOR FOR
 					SELECT *
-					FROM COCODRILOS_COMEBACK.STRING_SPLIT(@funToAddID, '&')
+					FROM COCODRILOS_COMEBACK.STRING_SPLIT(@funcionalities, '&')
 				OPEN c_agregar_func
 				FETCH NEXT FROM c_agregar_func INTO @actualFunID
 				WHILE(@@FETCH_STATUS = 0)
 					BEGIN
 						DECLARE @funIdInt INT = (SELECT (CONVERT(int, @actualFunID)))
-						EXEC COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL @rolID, @funIdInt
+						EXEC COCODRILOS_COMEBACK.AGREGAR_FUNCIONALIDAD_ROL @idRol, @funIdInt
 						FETCH NEXT FROM c_agregar_func INTO @actualFunID
 					END
 				CLOSE c_agregar_func
 				DEALLOCATE c_agregar_func
 			END
 
-		SELECT @@ROWCOUNT
+
+		SELECT @@ERROR
 
 	END TRY
 	BEGIN CATCH
@@ -2067,6 +2107,7 @@ GO
 	END CATCH
 	GO
 
+<<<<<<< HEAD
 ---------------------------------------------------
 -------------------DEVOLUCION----------------------
 ---------------------------------------------------
@@ -2131,3 +2172,68 @@ END CATCH
 GO
 
  
+=======
+-----------------------------------------------------
+----------------RENDICION----------------------------
+-----------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
+	@cant_facturas			int,
+	@fecha_rendicion		int,
+	@importe_bruto			numeric(18,2),
+	@importe_neto			numeric(18,2),
+	@importe_comision		numeric(18,2),
+	@porcentaje_comision	numeric(18,2),
+	@rendicion_empresa		nvarchar(50),
+	@mes_rendicion			int
+	) 
+	AS 
+	BEGIN 
+		DECLARE @inserted_rendicion int = (select TOP 1 rp.rendicion_nro from COCODRILOS_COMEBACK.RENDICION_PAGO rp order by rp.rendicion_nro desc) + 1
+
+			BEGIN
+				DECLARE @actualFact numeric(18,0)
+				DECLARE c_agregar_fact CURSOR FOR
+					SELECT rp.fact_numero
+					FROM COCODRILOS_COMEBACK.REGISTRO_PAGO rp
+					WHERE rp.empresa = @rendicion_empresa AND MONTH(rp.fecha_pago) = @mes_rendicion
+				OPEN c_agregar_fact
+				FETCH NEXT FROM c_agregar_fact INTO @actualFact
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+							INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO(
+							rendicion_nro,
+							cant_facturas,
+							fecha_rendicion,
+							importe_bruto,
+							importe_neto,
+							importe_comision,
+							porcentaje_comision,
+							fact_numero,
+							rendicion_empresa
+						) VALUES (
+							@inserted_rendicion,
+							@cant_facturas,
+							@fecha_rendicion,
+							@importe_bruto,
+							@importe_neto,
+							@importe_comision,
+							@porcentaje_comision,
+							@actualFact,
+							@rendicion_empresa
+						)
+
+						FETCH NEXT FROM c_agregar_fact INTO @actualFact
+					END
+				CLOSE c_agregar_fact
+				DEALLOCATE c_agregar_fact
+			END
+
+		SELECT @@ERROR
+
+	END 
+	/*BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH*/
+	GO
+	
+>>>>>>> e158157abb78e3557485cf47c7fe4d674cda3f8b

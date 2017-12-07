@@ -34,11 +34,12 @@ namespace PagoAgilFrba.Controller {
 						if(hasCompleteData(result)) {
 
 							Usuario.getInstance().setDNI(result.GetDecimal(0));
-
+                            
 							Rol rol = new Rol();
 							rol.setID(result.GetInt32(1));
 							rol.setDetalle(result.GetString(2));
-
+                            rol.setHabilitado(result.GetBoolean(3));
+                            if(rol.getHabilitado() == true)
 							Usuario.getInstance().addRol(rol);
 
 						} else {
@@ -67,7 +68,7 @@ namespace PagoAgilFrba.Controller {
 
 
 		private Boolean hasCompleteData(SqlDataReader result) {
-			return result.VisibleFieldCount == 3;
+			return result.VisibleFieldCount == 4;
 		}
 
 
