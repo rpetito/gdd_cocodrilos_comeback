@@ -1519,33 +1519,49 @@ GO
 	AS 
 	BEGIN TRY
 
-		INSERT INTO COCODRILOS_COMEBACK.CLIENTE (
-			dni,
-			nombre,
-			apellido,
-			fecha_nac,
-			mail,
-			direccion,
-			telefono,
-			piso,
-			dpto,
-			localidad,
-			cod_postal
-		) VALUES (
-			@dni,
-			@nombre,
-			@apellido,
-			@fecha_nac,
-			@mail,
-			@direccion,
-			@telefono,
-			@piso,
-			@dpto,
-			@localidad,
-			@cod_postal
+		CREATE TABLE #errores (
+			message nvarchar(255)
 		)
+		INSERT INTO #errores VALUES ('Errores')
 
-		SELECT @@ERROR
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @dni) > 0
+			INSERT INTO #errores VALUES (CONCAT('Cliente con DNI ', @dni, ' ya existente.'))
+
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.mail = @mail) > 0
+			INSERT INTO #errores VALUES (CONCAT('Cliente con mail ', @mail, ' ya existente.'))
+
+		IF(SELECT COUNT(*) FROM #errores) = 1
+			BEGIN
+				INSERT INTO COCODRILOS_COMEBACK.CLIENTE (
+					dni,
+					nombre,
+					apellido,
+					fecha_nac,
+					mail,
+					direccion,
+					telefono,
+					piso,
+					dpto,
+					localidad,
+					cod_postal
+				) VALUES (
+					@dni,
+					@nombre,
+					@apellido,
+					@fecha_nac,
+					@mail,
+					@direccion,
+					@telefono,
+					@piso,
+					@dpto,
+					@localidad,
+					@cod_postal
+				)
+
+			SELECT @@ERROR
+		END
+	ELSE
+		SELECT * FROM #errores
 
 	END TRY
 	BEGIN CATCH
@@ -1591,32 +1607,47 @@ GO
 		@habilitado bit
 	) 
 	AS
-	--BEGIN TRY 
-	BEGIN
+	BEGIN TRY 
 
-		UPDATE COCODRILOS_COMEBACK.CLIENTE
-		SET 
-			dni = @newDni,
-			nombre = @nombre,
-			apellido = @apellido,
-			fecha_nac = @fecha_nac,
-			mail = @mail,
-			direccion = @direccion,
-			telefono = @telefono,
-			piso = @piso,
-			dpto = @dpto,
-			localidad = @localidad,
-			cod_postal = @cod_postal,
-			habilitado = @habilitado
-		WHERE dni = @oldDni
+		CREATE TABLE #errores (
+			message nvarchar(255)
+		)
 
-		SELECT @@ROWCOUNT
+		INSERT INTO #errores VALUES ('Errores')
 
-	--END TRY
-	END
-	--BEGIN CATCH
-	--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	--END CATCH
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @newDni) > 0
+			INSERT INTO #errores VALUES (CONCAT('Cliente con DNI ', @newDni, ' ya existente.'))
+
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.mail = @mail) > 0
+			INSERT INTO #errores VALUES (CONCAT('Cliente con mail ', @mail, ' ya existente.'))
+
+		IF(SELECT COUNT(*) FROM #errores) = 1
+			BEGIN
+				UPDATE COCODRILOS_COMEBACK.CLIENTE
+				SET 
+					dni = @newDni,
+					nombre = @nombre,
+					apellido = @apellido,
+					fecha_nac = @fecha_nac,
+					mail = @mail,
+					direccion = @direccion,
+					telefono = @telefono,
+					piso = @piso,
+					dpto = @dpto,
+					localidad = @localidad,
+					cod_postal = @cod_postal,
+					habilitado = @habilitado
+				WHERE dni = @oldDni
+
+				SELECT @@ROWCOUNT
+			END
+		ELSE
+			SELECT * FROM #errores
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
 
 	GO
 
