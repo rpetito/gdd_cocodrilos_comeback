@@ -220,6 +220,7 @@
     <Compile Include="Controller\FacturaController.cs" />
     <Compile Include="Controller\EmpresaController.cs" />
     <Compile Include="Controller\FuncionalidadController.cs" />
+    <Compile Include="Controller\MedioPagoController.cs" />
     <Compile Include="Controller\RendicionController.cs" />
     <Compile Include="Controller\RolController.cs" />
     <Compile Include="Controller\SQLExecutor.cs" />
@@ -249,6 +250,7 @@
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\Factura.cs" />
     <Compile Include="Model\ItemFactura.cs" />
+    <Compile Include="Model\RegistroPagoRequest.cs" />
     <Compile Include="Model\RolRequest.cs" />
     <Compile Include="Model\Sucursal.cs" />
     <Compile Include="Rol.cs" />

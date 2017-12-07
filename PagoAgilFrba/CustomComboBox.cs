@@ -28,6 +28,11 @@ namespace PagoAgilFrba {
 		}
 
 
+		public void clearAll() {
+			Text = "";
+		}
+
+
 	}
 
 

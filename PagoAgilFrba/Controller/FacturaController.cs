@@ -210,7 +210,56 @@ namespace PagoAgilFrba.Controller {
 
 			}, dataGridView);
 
-		} 
+		}
+
+
+
+		public void registrarPago(SQLResponse<SqlDataReader> listener, DataTable listaRegistros) {
+
+			Boolean firstTime = true;
+			bool withErrores = false;
+			String message = ""; 
+
+			SQLExecutor sqlExecutor = new SQLExecutor();
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
+
+				getProcedureName = () => { return "REGISTRAR_PAGO_FACTURA"; },
+
+				addParams = (SqlCommand command) => {
+					command.Parameters.Add("@list", SqlDbType.Structured);
+					command.Parameters["@list"].Value = listaRegistros;
+				},
+
+				onReadData = (SqlDataReader result) => {
+					try {
+						if(firstTime) {
+							if(result.GetString(0).Equals("Errores")) {
+								withErrores = true;
+							}
+							firstTime = false;
+						} else if(withErrores) {
+							message += result.GetString(0) + '\n';
+						}
+					} catch(Exception e) {
+						firstTime = false;
+					}
+				},
+
+				onDataProcessed = () => {
+					if(withErrores) {
+						MessageBox.Show(message);
+					} else {
+						listener.onSuccess(null);
+					}
+				},
+
+				onError = (Error error) => {
+
+				}
+
+			});
+		
+		}
 
 
 	

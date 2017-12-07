@@ -22,7 +22,16 @@ namespace PagoAgilFrba.ListadoEstadistico
         public ListadoEstadistico()
         {
             InitializeComponent();
-           
+
+            ListadoCB.addItem(1, "Porcentaje de facturas cobradas por empresa.");
+            ListadoCB.addItem(2, "Empresas con mayor monto rendido.");
+            ListadoCB.addItem(3, "Clientes con mas pagos.");
+            ListadoCB.addItem(4, "Clientes cumplidores");
+
+            TrimestreCB.addItem(1, "Primero");
+            TrimestreCB.addItem(2, "Segundo");
+            TrimestreCB.addItem(3, "Tercero");
+            TrimestreCB.addItem(4, "Cuarto");
         }
 
         private void Cancelar_Click(object sender, EventArgs e)
@@ -44,7 +53,7 @@ namespace PagoAgilFrba.ListadoEstadistico
 
         private void FiltrarButton_Click(object sender, EventArgs e)
         {
-            /*switch(combitoboxestadistico.getitemselected)
+            switch(ListadoCB.getSelectedItemID())
             {
                 case 1:
                     {
@@ -61,7 +70,7 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), combotrimestre.getselected, ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
                         break;
                     }
                 case 2:
@@ -79,7 +88,7 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), combotrimestre.getselected, ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
                         break;
                     }
                 case 3:
@@ -97,7 +106,7 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), combotrimestre.getselected, ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
                         break;
                     }
                 case 4:
@@ -115,13 +124,13 @@ namespace PagoAgilFrba.ListadoEstadistico
 
                             }
 
-                        }, Convert.ToInt32(AñoTB.Text), combotrimestre.getselected, ListadoGV);
+                        }, Convert.ToInt32(AñoTB.Text), TrimestreCB.getSelectedItemID(), ListadoGV);
                         break;
                     }
                 default:
                     
                     break;
-            }*/
+            }
             
         }
     }

@@ -21,7 +21,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "PORCENTAJE_FACTURAS_COBRADAS"; },
+                getProcedureName = () => { return "PORCENTAJE_COBRADAS_EMPRESA"; },
 
                 addParams = (SqlCommand sqlCommand) =>
                 {
@@ -111,7 +111,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "CLIENTE_MAS_PAGOS"; },
+                getProcedureName = () => { return "CLIENTES_MAS_PAGOS"; },
 
                 addParams = (SqlCommand sqlCommand) =>
                 {
@@ -156,7 +156,7 @@ namespace PagoAgilFrba.Controller
             sqlExecutor.executeDataGridViewRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
-                getProcedureName = () => { return "CLIENTE_MAYOR_PORCENTAJE_PAGAS"; },
+                getProcedureName = () => { return "CLIENTES_MAS_CUMPLIDORES"; },
 
                 addParams = (SqlCommand sqlCommand) =>
                 {

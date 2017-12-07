@@ -197,6 +197,12 @@ DROP PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_FACTURA
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_MEDIOS_PAGO') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_MEDIOS_PAGO
+
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES
 
@@ -221,12 +227,6 @@ DROP PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_FACTURAS_COBRADAS
 IF OBJECT_ID('COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO
 
-IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTE_MAS_PAGOS') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAS_PAGOS
-
-IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTE_MAYOR_PORCENTAJE_PAGAS') IS NOT NULL
-DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAYOR_PORCENTAJE_PAGAS
-
 IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_SUCURSAL_DNI') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_SUCURSAL_DNI
 
@@ -235,6 +235,16 @@ DROP PROCEDURE COCODRILOS_COMEBACK.ASIGNAR_USUARIO_SUCURSAL
 
 IF OBJECT_ID('COCODRILOS_COMEBACK.ASIGNAR_USUARIO_ROL') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.ASIGNAR_USUARIO_ROL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.PORCENTAJE_COBRADAS_EMPRESA') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_COBRADAS_EMPRESA
+
 
 
 GO
@@ -253,6 +263,12 @@ DROP FUNCTION COCODRILOS_COMEBACK.CANT_INTENTOS_LOGIN_FALLIDOS
 IF OBJECT_ID('COCODRILOS_COMEBACK.STRING_SPLIT') IS NOT NULL
 DROP FUNCTION COCODRILOS_COMEBACK.STRING_SPLIT
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.MESES_TRIMESTRE') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.MESES_TRIMESTRE
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE') IS NOT NULL
+DROP FUNCTION COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE
+
 
 
 
@@ -266,6 +282,15 @@ GO
 
 
 
+
+--###########################################################################
+	----------------------------------TYPES----------------------------------
+--###########################################################################
+DROP TYPE COCODRILOS_COMEBACK.LISTA_REGISTRO
+
+
+
+GO
 --###########################################################################
 --###########################################################################
 		---------------------CREACION DE SCHEMA----------------------
@@ -472,7 +497,7 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO(
 
 
 CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS(
-	incosistencia_id	int IDENTITY(1,1),
+	incosistencia_id	int PRIMARY KEY IDENTITY(1,1),
 	pago_id			numeric(18,0),
 	fecha_pago		datetime,
 	fact_numero		numeric(18,0),
@@ -489,6 +514,28 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS(
 
 
 GO
+
+
+--###########################################################################
+--###########################################################################
+--------------------------CREACION DE TIPOS LISTA----------------------------
+--###########################################################################
+--###########################################################################
+CREATE TYPE COCODRILOS_COMEBACK.LISTA_REGISTRO
+AS TABLE(
+	fact_numero		numeric(18,0),
+	fecha_pago		datetime,
+	fecha_vto		datetime,
+	cliente			numeric(18,0),
+	empresa			nvarchar(50),
+	importe_pago	numeric(20,2),
+	sucursal		int,
+	medio_pago_id	int
+);
+GO
+
+
+
 --###########################################################################
 --###########################################################################
 ---------------------------CREACION DE FUNCIONES-----------------------------
@@ -571,6 +618,50 @@ END
 GO
 
 
+----------------------------------------------------------------------------
+
+----------------------------------------------------------------------------
+CREATE FUNCTION COCODRILOS_COMEBACK.MESES_TRIMESTRE(@trimestre int)
+RETURNS @list TABLE (firstMonth	int, secondMonth int, thirdMonth int)
+AS
+BEGIN
+
+
+	IF @trimestre = 1
+		INSERT INTO @list VALUES (1, 2, 3)
+	IF @trimestre = 2 
+		INSERT INTO @list VALUES (4, 5, 6)
+	IF @trimestre = 3
+		INSERT INTO @list VALUES (7, 8, 9)
+	IF @trimestre = 4
+		INSERT INTO @list VALUES (10, 11, 12)
+
+	RETURN
+
+END
+GO
+
+
+CREATE FUNCTION COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(@fecha datetime, @trimestre int)
+RETURNS BIT
+AS
+BEGIN
+
+	DECLARE @result bit
+
+	IF ((SELECT COUNT(*) 
+				 FROM COCODRILOS_COMEBACK.MESES_TRIMESTRE(@trimestre)
+				 WHERE	firstMonth = MONTH(@fecha) OR 
+						secondMonth = MONTH(@fecha) OR 
+						thirdMonth = MONTH(@fecha))) = 1 
+		SET @result = 1
+	ELSE 
+		SET @result = 0
+
+	RETURN @result
+END
+GO
+
 
 
 
@@ -581,7 +672,7 @@ GO
 --###########################################################################
 
 -----------------------------------------------------------------------------
------------------------------INHABILITAR USUARIO-----------------------------
+----------------------------INHABILITAR USUARIO------------------------------
 -----------------------------------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.INHABILITAR_USUARIO(@dni numeric(18,0)) 
 AS
@@ -854,6 +945,18 @@ GO
 
 
 -----------------------------------------------------------------------------
+-------------------------OBTENER ITEMS DE FACTURA----------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_MEDIOS_PAGO
+AS
+BEGIN TRY
+	SELECT * FROM COCODRILOS_COMEBACK.MEDIO_PAGO
+END TRY
+BEGIN CATCH
+
+END CATCH
+GO
+
 -------------------------OBTENER FACTURAS DE UN MES--------------------------
 -----------------------------------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_MES(@empresa nvarchar(50), @mes int)
@@ -2210,6 +2313,131 @@ GO
 	GO
 
 
+
+-----------------------------------------------------
+-------------------REGISTRO PAGO---------------------
+-----------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA (
+	@list AS COCODRILOS_COMEBACK.LISTA_REGISTRO READONLY
+)
+AS
+--BEGIN TRY
+begin
+	CREATE TABLE #errores (
+		errorMessage	nvarchar(255)
+	)
+
+	INSERT INTO #errores VALUES ('Errores')
+
+
+	DECLARE @fecha_pago datetime
+	DECLARE @fact_numero numeric(18,0)
+	DECLARE @empresa nvarchar(50)
+	DECLARE @cliente numeric(18,0)
+	DECLARE @medio_pago int
+	DECLARE @fecha_vto datetime
+	DECLARE @importe numeric(20,2)
+	DECLARE @sucursal int
+
+	DECLARE c_registro_pago CURSOR FOR 
+		SELECT * FROM @list
+	
+	OPEN c_registro_pago
+	FETCH NEXT FROM c_registro_pago INTO
+		@fact_numero,
+		@fecha_pago,
+		@fecha_vto,
+		@cliente,
+		@empresa,
+		@importe,
+		@sucursal,
+		@medio_pago
+		
+	WHILE(@@FETCH_STATUS = 0)
+		BEGIN
+
+			--VERIFICO QUE LA EMPRESA ESTE DESHABILITADA Y ARROJA ERROR 
+		IF(	SELECT COUNT(*)
+			FROM COCODRILOS_COMEBACK.EMPRESA e
+			WHERE e.cuit = @empresa AND e.habilitado = 1) = 0
+			BEGIN
+				INSERT INTO #errores VALUES ('La empresa se encuentre inhabilitada.')
+				BREAK
+			END
+
+		--VERIFICO EXISTENCIA EN EL SISTEMA DE LA FACTURA QUE SE DESEA PAGAR
+		IF NOT EXISTS(	SELECT *
+					FROM COCODRILOS_COMEBACK.FACTURA f 
+					WHERE f.numero = @fact_numero)
+			BEGIN
+				INSERT INTO #errores VALUES ('La factura no se encuentra cargada en sistema. Se deberà cargarla desde Alta de Factura primeramente.')
+				BREAK
+				--SELECT errorMessage FROM #errores
+			END
+		 ELSE
+			BEGIN
+
+				IF (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r WHERE r.fact_numero = @fact_numero) > 0
+					INSERT INTO #errores VALUES (CONCAT('La factura numero ', @fact_numero, ' ya se encuentra pagada. Eliminela de la selección.'))
+
+				--IF (SELECT f.fecha_vto FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @fact_numero) <> @fecha_vto
+				--	INSERT INTO #errores VALUES ('La fecha de vencimiento difiere con la cargada en sistema, por favor verifique el valor ingresado.')
+					
+
+				IF(SELECT f.total FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @fact_numero) <> @importe
+					INSERT INTO #errores VALUES ('El importe difiere con el cargado en el sistema, por favor verifique le valor ingresado.')
+		
+				IF (SELECT COUNT(*) FROM #errores) = 1
+					BEGIN
+						INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO(
+							pago_id,
+							fact_numero,
+							fecha_pago,
+							fecha_vto,
+							empresa,
+							cliente,
+							importe_pago,
+							medio_pago_id,
+							sucursal
+						) VALUES (
+							(SELECT TOP 1 r.pago_id FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r ORDER BY r.pago_id DESC) + 1,
+							@fact_numero,
+							@fecha_pago,
+							@fecha_vto,
+							@empresa,
+							@cliente,
+							@importe,
+							@medio_pago,
+							@sucursal
+						)
+
+					END
+				ELSE
+					BREAK
+			END
+
+			FETCH NEXT FROM c_registro_pago INTO
+				@fact_numero,
+				@fecha_pago,
+				@fecha_vto,
+				@cliente,
+				@empresa,
+				@importe,
+				@sucursal,
+				@medio_pago
+		END
+	
+		IF(SELECT COUNT(*) FROM #errores) > 1
+			SELECT errorMessage FROM #errores
+		ELSE
+			SELECT @@ERROR
+	
+	end
+--END TRY
+--BEGIN CATCH
+--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+--END CATCH
+GO
 ---------------------------------------------------
 -------------------DEVOLUCION----------------------
 ---------------------------------------------------
@@ -2338,55 +2566,105 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	END CATCH
 	GO
 	
------------------------------------------------------------------
------------------LISTADO ESTADISTICO-----------------------------
------------------------------------------------------------------
-	-----------------------------------------------------------------
-	---------------PORCENTAJE FACTURAS COBRADAS----------------------
-	-----------------------------------------------------------------
-	/*CREATE PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_FACTURAS_COBRADAS(
-		@anio int,
-		@trimestre int
-		)
-		AS
-		BEGIN TRY
-			SELECT TOP 5 rp.rendicion_empresa as Empresa, 
-						(select count(rg3.fact_numero) 
-							from COCODRILOS_COMEBACK.REGISTRO_PAGO rg3
-							where rg3.empresa = rp.rendicion_empresa
-									AND YEAR(rg3.fecha_pago) = @anio
-									AND ((@trimestre = 1 and  MONTH(rg3.fecha_pago) BETWEEN 1 and 3) or
-											(@trimestre = 2 and  MONTH(rg3.fecha_pago) BETWEEN 4 and 6) or
-											(@trimestre = 3 and  MONTH(rg3.fecha_pago) BETWEEN 7 and 9) or
-											(@trimestre = 4 and  MONTH(rg3.fecha_pago) BETWEEN 10 and 12))) as Total_Facturas,
-						(select count(rp2.fact_numero) 
-							from COCODRILOS_COMEBACK.RENDICION_PAGO rp2 
-							where rp2.rendicion_empresa = rp.rendicion_empresa
-									AND YEAR(rp2.fecha_rendicion) = @anio
-									AND ((@trimestre = 1 and  MONTH(rp2.fecha_rendicion) BETWEEN 1 and 3) or
-											(@trimestre = 2 and  MONTH(rp2.fecha_rendicion) BETWEEN 4 and 6) or
-											(@trimestre = 3 and  MONTH(rp2.fecha_rendicion) BETWEEN 7 and 9) or
-											(@trimestre = 4 and  MONTH(rp2.fecha_rendicion) BETWEEN 10 and 12))) * 100.00 / (select count(rg3.fact_numero) 
-																																from COCODRILOS_COMEBACK.REGISTRO_PAGO rg3
-																																where rg3.empresa = rp.rendicion_empresa
-																																		AND YEAR(rg3.fecha_pago) = @anio
-																																		AND ((@trimestre = 1 and  MONTH(rg3.fecha_pago) BETWEEN 1 and 3) or
-																																				(@trimestre = 2 and  MONTH(rg3.fecha_pago) BETWEEN 4 and 6) or
-																																				(@trimestre = 3 and  MONTH(rg3.fecha_pago) BETWEEN 7 and 9) or
-																																				(@trimestre = 4 and  MONTH(rg3.fecha_pago) BETWEEN 10 and 12))) as Porcentaje_Facturas_Cobradas
 
-			 FROM COCODRILOS_COMEBACK.RENDICION_PAGO rp
-			 GROUP BY rp.rendicion_empresa
-		END TRY
-		BEGIN CATCH
-			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-		END CATCH
-		GO
-		*/
+
+---------------------------------------------------------------
+-------------------LISTADO ESTADISTICO-------------------------
+---------------------------------------------------------------
+
+	
+	---------------------------------------------------------------
+	-------------PROCENTAJE FACT COBRADAS POR EMPRESA--------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_COBRADAS_EMPRESA(
+		@año		int,
+		@trimestre	int
+	) 
+	AS
+	BEGIN TRY
+		SELECT TOP 5 rp.rendicion_empresa, 
+					(COUNT(rp.fact_numero) / (SELECT COUNT(*) 
+											 FROM COCODRILOS_COMEBACK.FACTURA f 
+											 WHERE	f.empresa = rp.rendicion_empresa AND 
+													COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(f.fecha_emision, @trimestre) = 1)) * 100
+		FROM COCODRILOS_COMEBACK.RENDICION_PAGO rp JOIN
+			 COCODRILOS_COMEBACK.EMPRESA e ON rp.rendicion_empresa = e.cuit
+		WHERE	YEAR(rp.fecha_rendicion) = @año AND
+				COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(rp.fecha_rendicion, @trimestre) = 1
+		GROUP BY rp.rendicion_empresa
+		ORDER BY (COUNT(rp.fact_numero) / (SELECT COUNT(*) 
+											FROM COCODRILOS_COMEBACK.FACTURA f 
+											WHERE	f.empresa = rp.rendicion_empresa AND 
+												COCODRILOS_COMEBACK.PERTENECE_A_TRIMESTRE(f.fecha_emision, @trimestre) = 1)) * 100 DESC
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO	
+
+
+	---------------------------------------------------------------
+	-------------PROCENTAJE FACT COBRADAS POR EMPRESA--------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO
+	AS
+	BEGIN TRY
+
+		SELECT TOP 5 r.rendicion_empresa, SUM(r.importe_bruto)
+		FROM COCODRILOS_COMEBACK.RENDICION_PAGO r
+		GROUP BY r.rendicion_empresa
+		ORDER BY SUM(r.importe_bruto) DESC
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
+
+
+	---------------------------------------------------------------
+	--------------------CLIENTES CON MAS PAGOS---------------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_PAGOS
+	AS
+	BEGIN TRY
+
+		SELECT TOP 5 r.cliente, COUNT(r.fact_numero) AS Cantidad
+		FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r
+		GROUP BY r.cliente
+		ORDER BY COUNT(r.fact_numero) DESC
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
+
+
+	---------------------------------------------------------------
+	-----------CLIENTES MAYOR PORCENTAJE FACTURAS PAGAS------------
+	---------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTES_MAS_CUMPLIDORES
+	AS
+	BEGIN TRY
+		
+		SELECT TOP 5 
+			r.cliente,
+			(COUNT(r.fact_numero) / (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = r.cliente)) * 100 as Porcentaje
+		FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r
+		GROUP BY r.cliente
+		ORDER BY (COUNT(r.fact_numero) / (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = r.cliente)) * 100 DESC
+
+	END TRY
+	BEGIN CATCH
+
+	END CATCH
+	GO
+
 	-----------------------------------------------------------------
 	---------------EMPRESAS MAYOR MONTO RENDIDO----------------------
 	-----------------------------------------------------------------
-	CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO(
+	/*CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO(
 		@anio int,
 		@trimestre int
 		)
@@ -2404,87 +2682,4 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 		BEGIN CATCH
 			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 		END CATCH
-		GO
-
-	-----------------------------------------------------------------
-	-------------------CLIENTE CON MAS PAGOS-------------------------
-	-----------------------------------------------------------------
-	/*CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAS_PAGOS(
-		@anio int,
-		@trimestre int
-		)
-		AS
-		BEGIN TRY
-			SELECT TOP 5 c.nombre + ' ' + c.apellido as Cliente, 
-						 count(*) as Cantidad_Pagos
-				FROM COCODRILOS_COMEBACK.REGISTRO_PAGO rp join COCODRILOS_COMEBACK.CLIENTE c on rp.cliente = c.dni
-				WHERE YEAR(rp.fecha_pago) = @anio AND  ((@trimestre = 1 and  MONTH(rp.fecha_pago) BETWEEN 1 and 3) or
-													 (@trimestre = 2 and  MONTH(rp.fecha_pago) BETWEEN 4 and 6) or
-													 (@trimestre = 3 and  MONTH(rp.fecha_pago) BETWEEN 7 and 9) or
-													 (@trimestre = 4 and  MONTH(rp.fecha_pago) BETWEEN 10 and 12))
-				GROUP BY c.dni, c.nombre, c.apellido
-				ORDER BY count(*) desc
-		END TRY
-		BEGIN CATCH
-			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-		END CATCH
 		GO*/
-
-	------------------------------------------------------------------------------
-	-------CLIENTE CON MAYOR PORCENTAJE DE FACTURAS PAGAS-------------------------
-	------------------------------------------------------------------------------
-	/*CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAYOR_PORCENTAJE_PAGAS(
-		@anio int,
-		@trimestre int
-		)
-		AS
-		BEGIN TRY
-			
-			SELECT TOP 5 c.nombre + ' ' + c.apellido as Nombre,
-					c.dni as DNI,
-					(select count(f.numero) 
-						from COCODRILOS_COMEBACK.FACTURA f 
-						where f.cliente = c.dni 
-								AND YEAR(f.fecha_vto) = @anio 
-								AND  ((@trimestre = 1 and  MONTH(f.fecha_vto) BETWEEN 1 and 3) or
-										(@trimestre = 2 and  MONTH(f.fecha_vto) BETWEEN 4 and 6) or
-										(@trimestre = 3 and  MONTH(f.fecha_vto) BETWEEN 7 and 9) or
-										(@trimestre = 4 and  MONTH(f.fecha_vto) BETWEEN 10 and 12))) as Total_Facturas,
-					(select count(reg.fact_numero)
-						from COCODRILOS_COMEBACK.REGISTRO_PAGO reg 
-						where reg.cliente = c.dni
-								AND YEAR(reg.fecha_pago) = @anio 
-								AND  ((@trimestre = 1 and  MONTH(reg.fecha_pago) BETWEEN 1 and 3) or
-										(@trimestre = 2 and  MONTH(reg.fecha_pago) BETWEEN 4 and 6) or
-										(@trimestre = 3 and  MONTH(reg.fecha_pago) BETWEEN 7 and 9) or
-										(@trimestre = 4 and  MONTH(reg.fecha_pago) BETWEEN 10 and 12))) * 100.00 / (select count(f.numero) 
-																														from COCODRILOS_COMEBACK.FACTURA f 
-																														where f.cliente = c.dni  
-																														AND YEAR(f.fecha_vto) = @anio 
-																														AND  ((@trimestre = 1 and  MONTH(f.fecha_vto) BETWEEN 1 and 3) or
-																																(@trimestre = 2 and  MONTH(f.fecha_vto) BETWEEN 4 and 6) or
-																																(@trimestre = 3 and  MONTH(f.fecha_vto) BETWEEN 7 and 9) or
-																																(@trimestre = 4 and  MONTH(f.fecha_vto) BETWEEN 10 and 12))) as Porcentaje_Facturas_Pagadas
-				FROM COCODRILOS_COMEBACK.CLIENTE c
-				ORDER BY (select count(reg.fact_numero)
-						from COCODRILOS_COMEBACK.REGISTRO_PAGO reg 
-						where reg.cliente = c.dni
-								AND YEAR(reg.fecha_pago) = @anio 
-								AND  ((@trimestre = 1 and  MONTH(reg.fecha_pago) BETWEEN 1 and 3) or
-										(@trimestre = 2 and  MONTH(reg.fecha_pago) BETWEEN 4 and 6) or
-										(@trimestre = 3 and  MONTH(reg.fecha_pago) BETWEEN 7 and 9) or
-										(@trimestre = 4 and  MONTH(reg.fecha_pago) BETWEEN 10 and 12))) * 100.00 / (select count(f.numero) 
-																														from COCODRILOS_COMEBACK.FACTURA f 
-																														where f.cliente = c.dni  
-																														AND YEAR(f.fecha_vto) = @anio 
-																														AND  ((@trimestre = 1 and  MONTH(f.fecha_vto) BETWEEN 1 and 3) or
-																																(@trimestre = 2 and  MONTH(f.fecha_vto) BETWEEN 4 and 6) or
-																																(@trimestre = 3 and  MONTH(f.fecha_vto) BETWEEN 7 and 9) or
-																																(@trimestre = 4 and  MONTH(f.fecha_vto) BETWEEN 10 and 12))) DESC
-		END TRY
-		BEGIN CATCH
-			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-		END CATCH
-		GO*/
-
-

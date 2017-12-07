@@ -1,4 +1,5 @@
-﻿namespace PagoAgilFrba.ListadoEstadistico
+﻿using System;
+namespace PagoAgilFrba.ListadoEstadistico
 {
     partial class ListadoEstadistico
     {
@@ -33,8 +34,8 @@
             this.LimpiarButton = new System.Windows.Forms.Button();
             this.ListadoGV = new System.Windows.Forms.DataGridView();
             this.FiltroGB = new System.Windows.Forms.GroupBox();
-            this.ListadoCB = new System.Windows.Forms.ComboBox();
-            this.TrimestreCB = new System.Windows.Forms.ComboBox();
+            this.ListadoCB = new CustomComboBox<Int32>();
+            this.TrimestreCB = new CustomComboBox<Int32>();
             this.AñoTB = new System.Windows.Forms.TextBox();
             this.Año = new System.Windows.Forms.Label();
             this.Trimestre = new System.Windows.Forms.Label();
@@ -178,8 +179,8 @@
         private System.Windows.Forms.Button LimpiarButton;
         private System.Windows.Forms.DataGridView ListadoGV;
         private System.Windows.Forms.GroupBox FiltroGB;
-        private System.Windows.Forms.ComboBox ListadoCB;
-        private System.Windows.Forms.ComboBox TrimestreCB;
+        private CustomComboBox<Int32> ListadoCB;
+        private CustomComboBox<Int32> TrimestreCB;
         private System.Windows.Forms.TextBox AñoTB;
         private System.Windows.Forms.Label Año;
         private System.Windows.Forms.Label Trimestre;

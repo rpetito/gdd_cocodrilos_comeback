@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -76,6 +77,23 @@ namespace PagoAgilFrba.Util {
             gridView.CellContentClick += listener;
             button.Frozen = true;
         }
+
+
+		public static void CopyDataTable(DataTable to, DataTable from) { 
+			foreach(DataColumn column in from.Columns) {
+				to.Columns.Add(column);
+			}
+			foreach(DataRow row in from.Rows) {
+				to.Rows.Add(row);
+			}
+		}
+
+		public static void AddColumnWithValue(DataTable dataTable, String columnName, Int32 value) {
+			dataTable.Columns.Add(columnName);
+			foreach(DataRow row in dataTable.Rows) {
+				row.ItemArray[dataTable.Rows.Count - 1] = value;
+			}
+		}
 
     }
 
