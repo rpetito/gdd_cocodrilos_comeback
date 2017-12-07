@@ -64,6 +64,7 @@
             this.MotivoTB.Name = "MotivoTB";
             this.MotivoTB.Size = new System.Drawing.Size(265, 20);
             this.MotivoTB.TabIndex = 3;
+            this.MotivoTB.TextChanged += new System.EventHandler(this.MotivoTB_TextChanged);
             // 
             // label4
             // 

@@ -71,6 +71,7 @@
             this.NombreTB.Name = "NombreTB";
             this.NombreTB.Size = new System.Drawing.Size(100, 20);
             this.NombreTB.TabIndex = 2;
+            this.NombreTB.TextChanged += new System.EventHandler(this.NombreTB_TextChanged);
             // 
             // label2
             // 

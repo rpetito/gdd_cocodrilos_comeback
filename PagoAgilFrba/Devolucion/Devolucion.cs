@@ -50,6 +50,7 @@ namespace PagoAgilFrba.Devolucion
 
 
                 DatosDevolucion datos = new PagoAgilFrba.Devolucion.DatosDevolucion();
+                datos.FormClosed += new FormClosedEventHandler(DatosDevolucionClosed);
                 datos.Show();
             }
         }
@@ -57,6 +58,11 @@ namespace PagoAgilFrba.Devolucion
         private void CancelarButton_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        void DatosDevolucionClosed(object sender, FormClosedEventArgs e)
+        {
+            FiltrarButton.PerformClick();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace PagoAgilFrba.Controller
                     }
                     if (!string.IsNullOrWhiteSpace(cliente))
                     {
-                        sqlCommand.Parameters.Add("@cliete", SqlDbType.Decimal);
+                        sqlCommand.Parameters.Add("@cliente", SqlDbType.Decimal);
                         sqlCommand.Parameters["@cliente"].Value = Convert.ToDecimal(cliente);
                     }
                     if (!string.IsNullOrWhiteSpace(empresa))
@@ -60,14 +60,12 @@ namespace PagoAgilFrba.Controller
 
         }
 
-        public void hacerDevolucion(SQLResponse<Int32> listener, String factura, String cliente, String empresa, String motivo)
+        public void hacerDevolucion(SQLResponse<Int32> listener, String factura, String empresa, String motivo)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
             sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
             {
-                /*
-                 * TODO: hacer el insert en la tabla devolucion y ver como afecta a Facturas
-                 */
+
                 getProcedureName = () => { return "HACER_DEVOLUCION"; },
 
                 addParams = (SqlCommand sqlCommand) => {
@@ -75,11 +73,6 @@ namespace PagoAgilFrba.Controller
                     {
                         sqlCommand.Parameters.Add("@factura", SqlDbType.Decimal);
                         sqlCommand.Parameters["@factura"].Value = Convert.ToDecimal(factura);
-                    }
-                    if (!string.IsNullOrWhiteSpace(cliente))
-                    {
-                        sqlCommand.Parameters.Add("@cliete", SqlDbType.Decimal);
-                        sqlCommand.Parameters["@cliente"].Value = Convert.ToDecimal(cliente);
                     }
                     if (!string.IsNullOrWhiteSpace(empresa))
                     {

@@ -24,6 +24,7 @@ namespace PagoAgilFrba.AbmRol
         public AltaRol()
         {
             InitializeComponent();
+            CrearButton.Enabled = false;
 
 			DataGridViewCheckBoxColumn checkbox = new DataGridViewCheckBoxColumn();
 			checkbox.HeaderText = "Agregar";
@@ -87,8 +88,10 @@ namespace PagoAgilFrba.AbmRol
 			}, rolRequest);
 		}
 
-		
-
+        private void NombreTB_TextChanged(object sender, EventArgs e)
+        {
+            this.CrearButton.Enabled = !string.IsNullOrWhiteSpace(this.NombreTB.Text);
+        }
     }
 
 }

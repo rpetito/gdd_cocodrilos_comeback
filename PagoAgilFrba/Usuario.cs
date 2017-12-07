@@ -30,6 +30,7 @@ namespace PagoAgilFrba
             this.dni = dni;
         }
 
+
         public void addRol(Rol rol)
         {
             if (!this.roles.Contains(rol))

@@ -417,9 +417,7 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS(
 CREATE TABLE COCODRILOS_COMEBACK.DEVOLUCION_FACTURA(
 	fact_numero				numeric(18,0),
 	fact_empresa			nvarchar(50) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.EMPRESA ON UPDATE CASCADE,
-	dev_motivo				nvarchar(250) DEFAULT 'No especifica',
-	dev_usuario_aceptante	numeric(18,0) FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.USUARIO,
-	dev_tipo_devolucion		nvarchar(50) NOT NULL,
+	dev_motivo				nvarchar(250) DEFAULT 'No especifica'
 	PRIMARY KEY(fact_numero, fact_empresa),
 	FOREIGN KEY(fact_numero, fact_empresa) REFERENCES COCODRILOS_COMEBACK.FACTURA
 )
@@ -2108,18 +2106,28 @@ GO
 CREATE PROCEDURE COCODRILOS_COMEBACK.HACER_DEVOLUCION(
 			@FACTURA NUMERIC(18,0) = NULL,
 			@EMPRESA NVARCHAR(50) = NULL,
-			@MOTIVO NVARCHAR(250) = NULL,
-			@cliente NUMERIC(18,9))
+			@MOTIVO NVARCHAR(250) = NULL
+			)
 AS
 BEGIN TRY 
-	INSERT INTO COCODRILOS_COMEBACK.DEVOLUCION_FACTURA
-		VALUES (@FACTURA, @EMPRESA, @MOTIVO, @cliente,NULL)
+
+	INSERT INTO COCODRILOS_COMEBACK.DEVOLUCION_FACTURA (
+		fact_numero,
+		fact_empresa,
+		dev_motivo
+		)
+		VALUES (@FACTURA, @EMPRESA, @MOTIVO)
 
 		UPDATE COCODRILOS_COMEBACK.FACTURA 
 		SET PAGADA = 0
-		WHERE numero = @FACTURA AND empresa = @EMPRESA AND cliente = @cliente and rendida = 0
+		WHERE numero = @FACTURA AND empresa = @EMPRESA  and rendida = 0
+		
+		select @@ERROR
+
 END TRY
 BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 END CATCH
 GO
+
+ 

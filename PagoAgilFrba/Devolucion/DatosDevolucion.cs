@@ -19,6 +19,7 @@ namespace PagoAgilFrba.Devolucion
         public DatosDevolucion()
         {
             InitializeComponent();
+            this.Aceptar.Enabled = false;
             FacturaTB.Text = Convert.ToString(Model.Devoluciones.getInstance().getFactura());
             ClienteTB.Text = Convert.ToString(Model.Devoluciones.getInstance().getUsuario());
             EmpresaTB.Text = Model.Devoluciones.getInstance().getEmpresa();
@@ -28,21 +29,27 @@ namespace PagoAgilFrba.Devolucion
         {
             this.Close();
         }
-
+        
         private void Aceptar_Click(object sender, EventArgs e)
         {
-            devolucionController.hacerDevolucion(new Util.SQLResponse<SqlDataReader>
+            devolucionController.hacerDevolucion(new Util.SQLResponse<Int32>
             {
-                onSuccess = (SqlDataReader result) =>
+                onSuccess = (Int32 result) =>
                 {
-
+                    Util.Util.showSuccessDialog();
+                    this.Close();
                 },
                 onError = (Error fail) =>
                 {
 
                 }
 
-            }, FacturaTB.Text, ClienteTB.Text, EmpresaTB.Text, MotivoTB.Text);
+            }, FacturaTB.Text, EmpresaTB.Text, MotivoTB.Text);
+        }
+
+        private void MotivoTB_TextChanged(object sender, EventArgs e)
+        {
+            this.Aceptar.Enabled = !string.IsNullOrWhiteSpace(this.MotivoTB.Text);
         }
     }
 }
