@@ -651,7 +651,7 @@ BEGIN TRY
 	WHERE	(@nombre IS NULL OR c.nombre = @nombre) AND
 			(@apellido IS NULL OR c.apellido = @apellido) AND
 			(@dni IS NULL OR c.dni = @dni) AND
-			@habilitado IS NULL OR c.habilitado = @habilitado
+			(@habilitado IS NULL OR c.habilitado = @habilitado)
 
 END TRY 
 BEGIN CATCH
@@ -676,7 +676,7 @@ BEGIN TRY
 	WHERE	(@nombre IS NULL OR e.nombre = @nombre) AND
 			(@rubro IS NULL OR e.rubro = @rubro) AND
 			(@cuit IS NULL OR e.cuit = @cuit) AND
-			@habilitada IS NULL OR e.habilitado = @habilitada
+			(@habilitada IS NULL OR e.habilitado = @habilitada)
 END TRY 
 BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
@@ -778,7 +778,7 @@ BEGIN TRY
 	WHERE	(@nombre IS NULL OR S.nombre = @nombre) AND
 			(@direccion IS NULL OR s.direccion = @direccion) AND
 			(@cod_postal IS NULL OR s.cod_postal = @cod_postal) AND
-			S.habilitado = 1
+			(S.habilitado = 1)
 
 
 END TRY 

@@ -39,7 +39,6 @@
             this.FiltrarButton = new System.Windows.Forms.Button();
             this.BajaClienteGV = new System.Windows.Forms.DataGridView();
             this.CancelarButton = new System.Windows.Forms.Button();
-            this.eliminarCliente = new System.Windows.Forms.Button();
             this.FiltroGB.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BajaClienteGV)).BeginInit();
             this.SuspendLayout();
@@ -151,23 +150,11 @@
             this.CancelarButton.UseVisualStyleBackColor = true;
             this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
-            // eliminarCliente
-            // 
-            this.eliminarCliente.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.eliminarCliente.Location = new System.Drawing.Point(336, 376);
-            this.eliminarCliente.Name = "eliminarCliente";
-            this.eliminarCliente.Size = new System.Drawing.Size(75, 23);
-            this.eliminarCliente.TabIndex = 8;
-            this.eliminarCliente.Text = "Eliminar";
-            this.eliminarCliente.UseVisualStyleBackColor = true;
-            this.eliminarCliente.Click += new System.EventHandler(this.eliminarCliente_Click);
-            // 
             // BajaCliente
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(424, 406);
-            this.Controls.Add(this.eliminarCliente);
             this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
@@ -195,6 +182,5 @@
         private System.Windows.Forms.Button FiltrarButton;
         private System.Windows.Forms.DataGridView BajaClienteGV;
         private System.Windows.Forms.Button CancelarButton;
-		private System.Windows.Forms.Button eliminarCliente;
     }
 }

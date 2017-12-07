@@ -50,7 +50,15 @@ namespace PagoAgilFrba.AbmRol
         private void LimpiarButton_Click(object sender, EventArgs e)
         {
             NombreTB.Clear();
-            FuncionalidadesGV.Rows.Clear();
+            FuncionalidadesGV.ClearSelection();
+            foreach (DataGridViewRow row in FuncionalidadesGV.Rows)
+            {
+                DataGridViewCheckBoxCell chk = (DataGridViewCheckBoxCell)row.Cells[0];
+               
+                chk.Value = chk.FalseValue;
+                
+
+            }
         }
 
 

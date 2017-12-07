@@ -24,8 +24,9 @@ namespace PagoAgilFrba.AbmEmpresa
         public BajaEmpresa()
         {
             InitializeComponent();
+            Util.Util.addButtonColumnToGridView(BajaEmpresaGV, "Eliminar", new DataGridViewCellEventHandler(this.BajaEmpresa_cellEventHandler));
 
-            
+
             empresaController.fillRubros(new SQLResponse<SqlDataReader>()
             {
 
@@ -69,31 +70,25 @@ namespace PagoAgilFrba.AbmEmpresa
             }, CuitTB.Text, NombreTB.Text, idRubro, BajaEmpresaGV);
         }
 
-        private void EliminarButton_Click(object sender, EventArgs e)
+
+        private void BajaEmpresa_cellEventHandler(object sender, DataGridViewCellEventArgs e)
         {
-            if (BajaEmpresaGV.SelectedRows.Count > 0)
+            if (e.ColumnIndex == 0 && e.RowIndex >= 0)
             {
-                foreach (DataGridViewRow row in BajaEmpresaGV.SelectedRows)
+                String cuit = (String)BajaEmpresaGV.Rows[e.RowIndex].Cells[1].Value;
+                empresaController.removeEmpresa(new SQLResponse<Int32>()
                 {
-                    String cuit = (String)row.Cells[0].Value;
-                    empresaController.removeEmpresa(new SQLResponse<Int32>()
-                    {
 
-                        onSuccess = (Int32 result) => {
-                            Util.Util.showSuccessDialog();
-                            this.FiltrarButton.PerformClick();
-                        },
+                    onSuccess = (Int32 result) => {
+                        Util.Util.showSuccessDialog();
+                        this.FiltrarButton.PerformClick();
+                    },
 
-                        onError = (Error error) => {
+                    onError = (Error error) => {
 
-                        }
+                    }
 
-                    }, cuit);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Debe seleccionar al menos una fila completa.", "Selección vacía");
+                }, cuit);
             }
         }
     }
