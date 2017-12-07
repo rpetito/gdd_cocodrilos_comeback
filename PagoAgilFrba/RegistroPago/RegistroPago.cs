@@ -74,16 +74,19 @@ namespace PagoAgilFrba.RegistroPago
 
 				facturas.ShowDialog();
 
-				String numeroFactura = facturas.numeroFactura;
-				DateTime fechaCobro = facturas.fechaCobro;
-				DateTime fechaVto = facturas.fechaVto;
-				Decimal cliente = Decimal.Parse(facturas.cliente);
-				String empresa = facturas.empresa;
-				String importe = facturas.importe;
+			
 
 				//TODO cargar list de request
 
 				if(facturas.DialogResult == DialogResult.OK) {
+
+					String numeroFactura = facturas.numeroFactura;
+					DateTime fechaCobro = facturas.fechaCobro;
+					DateTime fechaVto = facturas.fechaVto;
+					Decimal cliente = Decimal.Parse(facturas.cliente);
+					String empresa = facturas.empresa;
+					String importe = facturas.importe;
+
 					dataTable.Rows.Add(numeroFactura, fechaCobro, fechaVto, cliente, empresa, importe, 1, 1);
 
 					Decimal total = Decimal.Parse(Util.Util.getPlainTextFromCurrency(registroPagoTotalLabel.Text.ToString()));
