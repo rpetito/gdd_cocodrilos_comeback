@@ -215,6 +215,27 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_FACTURAS_PAGAS
 IF OBJECT_ID('COCODRILOS_COMEBACK.HACER_DEVOLUCION') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.HACER_DEVOLUCION
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.PORCENTAJE_FACTURAS_COBRADAS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_FACTURAS_COBRADAS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTE_MAS_PAGOS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAS_PAGOS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.CLIENTE_MAYOR_PORCENTAJE_PAGAS') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAYOR_PORCENTAJE_PAGAS
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_SUCURSAL_DNI') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_SUCURSAL_DNI
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.ASIGNAR_USUARIO_SUCURSAL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ASIGNAR_USUARIO_SUCURSAL
+
+IF OBJECT_ID('COCODRILOS_COMEBACK.ASIGNAR_USUARIO_ROL') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.ASIGNAR_USUARIO_ROL
+
 
 GO
 --###########################################################################
@@ -330,7 +351,7 @@ CREATE TABLE COCODRILOS_COMEBACK.USUARIO_SUCURSAL (
 	user_dni		numeric(18,0),
 	user_rol_id		int,
 	sucursal_id		int FOREIGN KEY REFERENCES COCODRILOS_COMEBACK.SUCURSAL,
-	PRIMARY KEY(user_dni, sucursal_id),
+	PRIMARY KEY(user_dni, user_rol_id, sucursal_id),
 	FOREIGN KEY(user_dni, user_rol_id) REFERENCES COCODRILOS_COMEBACK.ROL_USUARIO
 ) 
 
@@ -394,7 +415,7 @@ CREATE TABLE COCODRILOS_COMEBACK.ITEM_FACTURA (
 CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO(
 	rendicion_nro		numeric(18,0),
 	cant_facturas		int,
-	fecha_rendicion		int,
+	fecha_rendicion		datetime,
 	importe_bruto		numeric(18,2),
 	importe_neto		numeric(18,2),
 	importe_comision	numeric(18,2),
@@ -410,7 +431,7 @@ CREATE TABLE COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS(
 	inconsistencia_id	int IDENTITY(1,1) PRIMARY KEY,
 	rendicion_nro		numeric(18,0),
 	cant_facturas		int,
-	fecha_rendicion		int,
+	fecha_rendicion		datetime,
 	importe_bruto		numeric(18,2),
 	importe_neto		numeric(18,2),
 	importe_comision	numeric(18,2),
@@ -847,6 +868,81 @@ BEGIN CATCH
 END CATCH
 GO
 
+-------------------------------------------------------------------------
+-------------------------OBTENER SUCURSALES POR USUARIO------------------
+-------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_SUCURSAL_DNI(
+		@user_dni decimal(18,0)
+		)
+		AS
+		BEGIN TRY
+			SELECT s.id, s.nombre, s.direccion, s.cod_postal, s.habilitado FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL us JOIN COCODRILOS_COMEBACK.SUCURSAL s on us.sucursal_id = s.id  WHERE us.user_dni = @user_dni AND s.habilitado = 1
+		END TRY
+		BEGIN CATCH
+			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+		END CATCH
+		GO
+
+-------------------------------------------------------------------------
+-------------------------ASIGNAR USUARIO A SUCURSAL------------------
+-------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.ASIGNAR_USUARIO_SUCURSAL(
+		@user_dni decimal(18,0),
+		@user_rol_id int,
+		@sucursa_id int
+		)
+		AS
+		BEGIN TRY
+
+		INSERT INTO COCODRILOS_COMEBACK.USUARIO_SUCURSAL(
+			user_dni,
+			user_rol_id,
+			sucursal_id
+		) VALUES (
+			@user_dni,
+			@user_rol_id,
+			@sucursa_id
+		)
+		
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+-------------------------------------------------------------------------
+-------------------------ASIGNAR USUARIO A ROL---------------------------
+-------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.ASIGNAR_USUARIO_ROL(
+		@id_usuario decimal(18,0),
+		@id_rol int,
+		@habilitado bit
+		)
+		AS
+		BEGIN TRY
+
+		INSERT INTO COCODRILOS_COMEBACK.ROL_USUARIO(
+			id_usuario,
+			id_rol,
+			habilitado
+		) VALUES (
+			@id_usuario,
+			@id_rol,
+			@habilitado
+		)
+
+		SELECT @@ERROR
+
+	END TRY
+	BEGIN CATCH
+		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+	END CATCH
+	GO
+
+
+
 --###########################################################################
 --###########################################################################
 ----------------------------CREACION DE TRIGGERS-----------------------------
@@ -1200,7 +1296,7 @@ INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO (
 			 WHERE m2.Rendicion_Nro = m.Rendicion_Nro 
 			 GROUP BY m2.Rendicion_Nro),
 			m.Nro_Factura,
-			(SELECT e.dia_rendicion FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = m.Empresa_Cuit),
+			m.Factura_Fecha_Vencimiento,
 			SUM(m.Factura_Total),
 			SUM(m.Factura_Total) - SUM(m.ItemRendicion_Importe), 
 			SUM(m.ItemRendicion_Importe),
@@ -1213,7 +1309,7 @@ INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO (
 			m.Factura_Total IS NOT NULL AND
 			m.ItemRendicion_Importe IS NOT NULL AND
 			m.Empresa_Cuit IS NOT NULL
-	GROUP BY m.Rendicion_Nro, MONTH(m.Rendicion_Fecha), m.Empresa_Cuit, m.Nro_Factura
+	GROUP BY m.Rendicion_Nro, MONTH(m.Rendicion_Fecha), m.Empresa_Cuit, m.Nro_Factura, m.Factura_Fecha_Vencimiento
 
 
 ----------------------------------------------------------------------------
@@ -1235,14 +1331,14 @@ INSERT INTO COCODRILOS_COMEBACK.RENDICION_PAGO_INCONSISTENCIAS (
 					 WHERE m2.Rendicion_Nro = m.Rendicion_Nro 
 					 GROUP BY m2.Rendicion_Nro), 0),
 					 m.Nro_Factura,
-			(SELECT e.dia_rendicion FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = m.Empresa_Cuit),
+			m.Factura_Fecha_Vencimiento,
 			SUM(ISNULL(m.Factura_Total,0)),
 			SUM(ISNULL(m.Factura_Total,0)) - SUM(ISNULL(m.ItemRendicion_Importe,0)), 
 			SUM(ISNULL(m.ItemRendicion_Importe,0)),
 			(SUM(ISNULL(m.ItemRendicion_Importe,0)) / SUM(ISNULL(m.Factura_Total,1))) * 100,
 			m.Empresa_Cuit Empresa
 	FROM gd_esquema.Maestra m
-	GROUP BY m.Rendicion_Nro, MONTH(m.Rendicion_Fecha), m.Empresa_Cuit, m.Nro_Factura
+	GROUP BY m.Rendicion_Nro, MONTH(m.Rendicion_Fecha), m.Empresa_Cuit, m.Nro_Factura, m.Factura_Fecha_Vencimiento
 	HAVING m.Nro_Factura NOT IN (SELECT r.fact_numero FROM COCODRILOS_COMEBACK.RENDICION_PAGO r)
 
 
@@ -1655,6 +1751,12 @@ GO
 		WHERE id_usuario IN (SELECT U.dni
 					  FROM USUARIO_SUCURSAL US JOIN USUARIO U ON US.user_dni = U.dni JOIN ROL_USUARIO RU ON RU.id_usuario = U.dni
 					  WHERE US.sucursal_id = @idSucursal)
+
+		UPDATE COCODRILOS_COMEBACK.USUARIO
+		set habilitado = 0
+		WHERE dni IN (SELECT u.dni
+						FROM USUARIO_SUCURSAL us JOIN USUARIO u ON us.user_dni = u.dni
+						WHERE us.sucursal_id = @idSucursal)
 		
 		SELECT @@ROWCOUNT
 	END TRY
@@ -2178,7 +2280,7 @@ GO
 -----------------------------------------------------
 CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	@cant_facturas			int,
-	@fecha_rendicion		int,
+	@fecha_rendicion		datetime,
 	@importe_bruto			numeric(18,2),
 	@importe_neto			numeric(18,2),
 	@importe_comision		numeric(18,2),
@@ -2187,7 +2289,7 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 	@mes_rendicion			int
 	) 
 	AS 
-	BEGIN 
+	BEGIN TRY
 		DECLARE @inserted_rendicion int = (select TOP 1 rp.rendicion_nro from COCODRILOS_COMEBACK.RENDICION_PAGO rp order by rp.rendicion_nro desc) + 1
 
 			BEGIN
@@ -2230,10 +2332,159 @@ CREATE PROCEDURE COCODRILOS_COMEBACK.RENDICION(
 
 		SELECT @@ERROR
 
-	END 
-	/*BEGIN CATCH
+	END TRY
+	BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-	END CATCH*/
+	END CATCH
 	GO
 	
+-----------------------------------------------------------------
+-----------------LISTADO ESTADISTICO-----------------------------
+-----------------------------------------------------------------
+	-----------------------------------------------------------------
+	---------------PORCENTAJE FACTURAS COBRADAS----------------------
+	-----------------------------------------------------------------
+	/*CREATE PROCEDURE COCODRILOS_COMEBACK.PORCENTAJE_FACTURAS_COBRADAS(
+		@anio int,
+		@trimestre int
+		)
+		AS
+		BEGIN TRY
+			SELECT TOP 5 rp.rendicion_empresa as Empresa, 
+						(select count(rg3.fact_numero) 
+							from COCODRILOS_COMEBACK.REGISTRO_PAGO rg3
+							where rg3.empresa = rp.rendicion_empresa
+									AND YEAR(rg3.fecha_pago) = @anio
+									AND ((@trimestre = 1 and  MONTH(rg3.fecha_pago) BETWEEN 1 and 3) or
+											(@trimestre = 2 and  MONTH(rg3.fecha_pago) BETWEEN 4 and 6) or
+											(@trimestre = 3 and  MONTH(rg3.fecha_pago) BETWEEN 7 and 9) or
+											(@trimestre = 4 and  MONTH(rg3.fecha_pago) BETWEEN 10 and 12))) as Total_Facturas,
+						(select count(rp2.fact_numero) 
+							from COCODRILOS_COMEBACK.RENDICION_PAGO rp2 
+							where rp2.rendicion_empresa = rp.rendicion_empresa
+									AND YEAR(rp2.fecha_rendicion) = @anio
+									AND ((@trimestre = 1 and  MONTH(rp2.fecha_rendicion) BETWEEN 1 and 3) or
+											(@trimestre = 2 and  MONTH(rp2.fecha_rendicion) BETWEEN 4 and 6) or
+											(@trimestre = 3 and  MONTH(rp2.fecha_rendicion) BETWEEN 7 and 9) or
+											(@trimestre = 4 and  MONTH(rp2.fecha_rendicion) BETWEEN 10 and 12))) * 100.00 / (select count(rg3.fact_numero) 
+																																from COCODRILOS_COMEBACK.REGISTRO_PAGO rg3
+																																where rg3.empresa = rp.rendicion_empresa
+																																		AND YEAR(rg3.fecha_pago) = @anio
+																																		AND ((@trimestre = 1 and  MONTH(rg3.fecha_pago) BETWEEN 1 and 3) or
+																																				(@trimestre = 2 and  MONTH(rg3.fecha_pago) BETWEEN 4 and 6) or
+																																				(@trimestre = 3 and  MONTH(rg3.fecha_pago) BETWEEN 7 and 9) or
+																																				(@trimestre = 4 and  MONTH(rg3.fecha_pago) BETWEEN 10 and 12))) as Porcentaje_Facturas_Cobradas
+
+			 FROM COCODRILOS_COMEBACK.RENDICION_PAGO rp
+			 GROUP BY rp.rendicion_empresa
+		END TRY
+		BEGIN CATCH
+			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+		END CATCH
+		GO
+		*/
+	-----------------------------------------------------------------
+	---------------EMPRESAS MAYOR MONTO RENDIDO----------------------
+	-----------------------------------------------------------------
+	CREATE PROCEDURE COCODRILOS_COMEBACK.EMPRESAS_MAYOR_MONTO_RENDIDO(
+		@anio int,
+		@trimestre int
+		)
+		AS
+		BEGIN TRY
+			SELECT TOP 5 rp.rendicion_empresa as Empresa, 
+						SUM(rp.importe_neto) as Monto_Rendido
+			 FROM COCODRILOS_COMEBACK.RENDICION_PAGO rp
+			 WHERE YEAR(rp.fecha_rendicion) = @anio AND  ((@trimestre = 1 and  MONTH(rp.fecha_rendicion) BETWEEN 1 and 3) or
+													 (@trimestre = 2 and  MONTH(rp.fecha_rendicion) BETWEEN 4 and 6) or
+													 (@trimestre = 3 and  MONTH(rp.fecha_rendicion) BETWEEN 7 and 9) or
+													 (@trimestre = 4 and  MONTH(rp.fecha_rendicion) BETWEEN 10 and 12))
+			GROUP BY rp.rendicion_empresa
+		END TRY
+		BEGIN CATCH
+			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+		END CATCH
+		GO
+
+	-----------------------------------------------------------------
+	-------------------CLIENTE CON MAS PAGOS-------------------------
+	-----------------------------------------------------------------
+	/*CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAS_PAGOS(
+		@anio int,
+		@trimestre int
+		)
+		AS
+		BEGIN TRY
+			SELECT TOP 5 c.nombre + ' ' + c.apellido as Cliente, 
+						 count(*) as Cantidad_Pagos
+				FROM COCODRILOS_COMEBACK.REGISTRO_PAGO rp join COCODRILOS_COMEBACK.CLIENTE c on rp.cliente = c.dni
+				WHERE YEAR(rp.fecha_pago) = @anio AND  ((@trimestre = 1 and  MONTH(rp.fecha_pago) BETWEEN 1 and 3) or
+													 (@trimestre = 2 and  MONTH(rp.fecha_pago) BETWEEN 4 and 6) or
+													 (@trimestre = 3 and  MONTH(rp.fecha_pago) BETWEEN 7 and 9) or
+													 (@trimestre = 4 and  MONTH(rp.fecha_pago) BETWEEN 10 and 12))
+				GROUP BY c.dni, c.nombre, c.apellido
+				ORDER BY count(*) desc
+		END TRY
+		BEGIN CATCH
+			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+		END CATCH
+		GO*/
+
+	------------------------------------------------------------------------------
+	-------CLIENTE CON MAYOR PORCENTAJE DE FACTURAS PAGAS-------------------------
+	------------------------------------------------------------------------------
+	/*CREATE PROCEDURE COCODRILOS_COMEBACK.CLIENTE_MAYOR_PORCENTAJE_PAGAS(
+		@anio int,
+		@trimestre int
+		)
+		AS
+		BEGIN TRY
+			
+			SELECT TOP 5 c.nombre + ' ' + c.apellido as Nombre,
+					c.dni as DNI,
+					(select count(f.numero) 
+						from COCODRILOS_COMEBACK.FACTURA f 
+						where f.cliente = c.dni 
+								AND YEAR(f.fecha_vto) = @anio 
+								AND  ((@trimestre = 1 and  MONTH(f.fecha_vto) BETWEEN 1 and 3) or
+										(@trimestre = 2 and  MONTH(f.fecha_vto) BETWEEN 4 and 6) or
+										(@trimestre = 3 and  MONTH(f.fecha_vto) BETWEEN 7 and 9) or
+										(@trimestre = 4 and  MONTH(f.fecha_vto) BETWEEN 10 and 12))) as Total_Facturas,
+					(select count(reg.fact_numero)
+						from COCODRILOS_COMEBACK.REGISTRO_PAGO reg 
+						where reg.cliente = c.dni
+								AND YEAR(reg.fecha_pago) = @anio 
+								AND  ((@trimestre = 1 and  MONTH(reg.fecha_pago) BETWEEN 1 and 3) or
+										(@trimestre = 2 and  MONTH(reg.fecha_pago) BETWEEN 4 and 6) or
+										(@trimestre = 3 and  MONTH(reg.fecha_pago) BETWEEN 7 and 9) or
+										(@trimestre = 4 and  MONTH(reg.fecha_pago) BETWEEN 10 and 12))) * 100.00 / (select count(f.numero) 
+																														from COCODRILOS_COMEBACK.FACTURA f 
+																														where f.cliente = c.dni  
+																														AND YEAR(f.fecha_vto) = @anio 
+																														AND  ((@trimestre = 1 and  MONTH(f.fecha_vto) BETWEEN 1 and 3) or
+																																(@trimestre = 2 and  MONTH(f.fecha_vto) BETWEEN 4 and 6) or
+																																(@trimestre = 3 and  MONTH(f.fecha_vto) BETWEEN 7 and 9) or
+																																(@trimestre = 4 and  MONTH(f.fecha_vto) BETWEEN 10 and 12))) as Porcentaje_Facturas_Pagadas
+				FROM COCODRILOS_COMEBACK.CLIENTE c
+				ORDER BY (select count(reg.fact_numero)
+						from COCODRILOS_COMEBACK.REGISTRO_PAGO reg 
+						where reg.cliente = c.dni
+								AND YEAR(reg.fecha_pago) = @anio 
+								AND  ((@trimestre = 1 and  MONTH(reg.fecha_pago) BETWEEN 1 and 3) or
+										(@trimestre = 2 and  MONTH(reg.fecha_pago) BETWEEN 4 and 6) or
+										(@trimestre = 3 and  MONTH(reg.fecha_pago) BETWEEN 7 and 9) or
+										(@trimestre = 4 and  MONTH(reg.fecha_pago) BETWEEN 10 and 12))) * 100.00 / (select count(f.numero) 
+																														from COCODRILOS_COMEBACK.FACTURA f 
+																														where f.cliente = c.dni  
+																														AND YEAR(f.fecha_vto) = @anio 
+																														AND  ((@trimestre = 1 and  MONTH(f.fecha_vto) BETWEEN 1 and 3) or
+																																(@trimestre = 2 and  MONTH(f.fecha_vto) BETWEEN 4 and 6) or
+																																(@trimestre = 3 and  MONTH(f.fecha_vto) BETWEEN 7 and 9) or
+																																(@trimestre = 4 and  MONTH(f.fecha_vto) BETWEEN 10 and 12))) DESC
+		END TRY
+		BEGIN CATCH
+			THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+		END CATCH
+		GO*/
+
 

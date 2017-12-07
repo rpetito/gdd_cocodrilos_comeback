@@ -9,9 +9,10 @@ namespace PagoAgilFrba.Model {
 
 
 	class RolRequest {
-
+        public int id { get; set; }
 		public String descripcion { get; set; }
 		public String funcionalidades {get; set;}
+        public bool habilitado { get;set; }
 
 
 		public RolRequest() {

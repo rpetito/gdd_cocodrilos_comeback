@@ -214,6 +214,7 @@
     </Compile>
     <Compile Include="BaseDeDatos.cs" />
     <Compile Include="Cliente.cs" />
+    <Compile Include="Controller\EstadisticoController.cs" />
     <Compile Include="Controller\ClienteController.cs" />
     <Compile Include="Controller\DevolucionController.cs" />
     <Compile Include="Controller\FacturaController.cs" />
@@ -251,6 +252,14 @@
     <Compile Include="Model\RolRequest.cs" />
     <Compile Include="Model\Sucursal.cs" />
     <Compile Include="Rol.cs" />
+    <Compile Include="RolLogeo.cs" />
+    <Compile Include="SeleccionSucursal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SeleccionSucursal.Designer.cs">
+      <DependentUpon>SeleccionSucursal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SucursalLogeo.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="Menu.cs">
       <SubType>Form</SubType>
@@ -428,6 +437,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SeleccionRol.resx">
       <DependentUpon>SeleccionRol.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SeleccionSucursal.resx">
+      <DependentUpon>SeleccionSucursal.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="GD2C2017DataSet.xsc">
       <DependentUpon>GD2C2017DataSet.xsd</DependentUpon>

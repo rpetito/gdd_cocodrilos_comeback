@@ -21,7 +21,6 @@ namespace PagoAgilFrba.Rendicion
         Decimal porcentaje = 0;
         Decimal monto = 0;
         Decimal rendicion = 0;
-        Int32 dia = 0;
         Int32 mes = 0;
 
         public Rendicion()
@@ -84,9 +83,6 @@ namespace PagoAgilFrba.Rendicion
 
         private void RendirButton_Click(object sender, EventArgs e)
         {
-
-
-            dia = Convert.ToInt32(FacturasGV[4, 1].Value);
             mes = FechaCB.getSelectedItemID();
             rendicionController.rendir(new SQLResponse<Int32>()
             {
@@ -103,7 +99,7 @@ namespace PagoAgilFrba.Rendicion
 
                 }
 
-            }, Convert.ToInt32(CantidadLabel.Text), dia, sum, rendicion, monto, Convert.ToDecimal(ComisionPorcentajeTB.Text), EmpresaTB.Text, mes);
+            }, Convert.ToInt32(CantidadLabel.Text), DateTime.Now, sum, rendicion, monto, Convert.ToDecimal(ComisionPorcentajeTB.Text), EmpresaTB.Text, mes);
         }
 
         private void ComisionPorcentajeTB_TextChanged(object sender, EventArgs e)
