@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace PagoAgilFrba.RegistroPago
 		public RegistroPago()
         {
 			InitializeComponent();
+			fillMediosPago();
 			this.facturaController = new FacturaController();
 			this.registroPagoTotalLabel.Text = "$ 0.00";
 			this.dataTable = new DataTable();
@@ -31,8 +33,26 @@ namespace PagoAgilFrba.RegistroPago
 			dataTable.Columns.Add("Cliente");
 			dataTable.Columns.Add("Empresa");
 			dataTable.Columns.Add("Importe");
+			dataTable.Columns.Add("Sucursal");
+			dataTable.Columns.Add("Medio de Pago");
 			FacturasGV.DataSource = dataTable;
         }
+
+
+		private void fillMediosPago() {
+			MedioPagoController controller = new MedioPagoController();
+			controller.obtenerMediosDePago(new SQLResponse<SqlDataReader>() {
+
+				onSuccess = (SqlDataReader result) => {
+					medioDePagoCB.addItem(result.GetInt32(0), result.GetString(1));
+				},
+
+				onError = (Error error) => {
+
+				}
+
+			});
+		}
 
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -55,19 +75,19 @@ namespace PagoAgilFrba.RegistroPago
 				facturas.ShowDialog();
 
 				String numeroFactura = facturas.numeroFactura;
-				String fechaCobro = facturas.fechaCobro;
-				String fechaVto = facturas.fechaVto;
-				String cliente = facturas.cliente;
+				DateTime fechaCobro = facturas.fechaCobro;
+				DateTime fechaVto = facturas.fechaVto;
+				Decimal cliente = Decimal.Parse(facturas.cliente);
 				String empresa = facturas.empresa;
 				String importe = facturas.importe;
 
 				//TODO cargar list de request
 
 				if(facturas.DialogResult == DialogResult.OK) {
-					dataTable.Rows.Add(numeroFactura, fechaCobro, fechaVto, cliente, empresa, importe);
+					dataTable.Rows.Add(numeroFactura, fechaCobro, fechaVto, cliente, empresa, importe, 1, 1);
 
 					Decimal total = Decimal.Parse(Util.Util.getPlainTextFromCurrency(registroPagoTotalLabel.Text.ToString()));
-					Decimal importeNuevo = Decimal.Parse(importe);
+					Decimal importeNuevo = Decimal.Parse(importe.Replace(".", ","));
 					registroPagoTotalLabel.Text = "$ " + (total + importeNuevo).ToString(); 
 				}
 
@@ -77,18 +97,25 @@ namespace PagoAgilFrba.RegistroPago
 
 		private void RendirButton_Click(object sender, EventArgs e) {
 
+			//DataTable requestTable = new DataTable();
+			//Util.Util.CopyDataTable(requestTable, dataTable);
+			//Util.Util.AddColumnWithValue(requestTable, "Sucursal", 1);
+			//Util.Util.AddColumnWithValue(requestTable, "Medio de pago", 1);
 
-			facturaController.registrarPago(new SQLResponse<Int32>() {
+			facturaController.registrarPago(new SQLResponse<SqlDataReader>() {
 
-				onSuccess = (Int32) => {
-
+				onSuccess = (SqlDataReader result) => {
+				
+						Util.Util.showSuccessDialog();
+						Close();
+					
 				},
 
 				onError = (Error error) => { 
 				
 				}
 
-			}, pago);
+			}, dataTable);
 		}
 
 

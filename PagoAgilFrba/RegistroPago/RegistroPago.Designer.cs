@@ -1,4 +1,5 @@
-﻿namespace PagoAgilFrba.RegistroPago
+﻿using System;
+namespace PagoAgilFrba.RegistroPago
 {
     partial class RegistroPago
     {
@@ -35,12 +36,14 @@
 			this.RendirButton = new System.Windows.Forms.Button();
 			this.Total = new System.Windows.Forms.Label();
 			this.registroPagoTotalLabel = new System.Windows.Forms.Label();
+			this.medioDePagoCB = new CustomComboBox<Int32>();
+			this.label1 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.FacturasGV)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// CancelarButton
 			// 
-			this.CancelarButton.Location = new System.Drawing.Point(12, 306);
+			this.CancelarButton.Location = new System.Drawing.Point(12, 351);
 			this.CancelarButton.Name = "CancelarButton";
 			this.CancelarButton.Size = new System.Drawing.Size(75, 23);
 			this.CancelarButton.TabIndex = 16;
@@ -74,7 +77,7 @@
 			// 
 			// LimpiarButton
 			// 
-			this.LimpiarButton.Location = new System.Drawing.Point(176, 306);
+			this.LimpiarButton.Location = new System.Drawing.Point(176, 351);
 			this.LimpiarButton.Name = "LimpiarButton";
 			this.LimpiarButton.Size = new System.Drawing.Size(75, 23);
 			this.LimpiarButton.TabIndex = 19;
@@ -85,7 +88,7 @@
 			// RendirButton
 			// 
 			this.RendirButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.RendirButton.Location = new System.Drawing.Point(337, 306);
+			this.RendirButton.Location = new System.Drawing.Point(337, 351);
 			this.RendirButton.Name = "RendirButton";
 			this.RendirButton.Size = new System.Drawing.Size(75, 23);
 			this.RendirButton.TabIndex = 20;
@@ -116,11 +119,30 @@
 			this.registroPagoTotalLabel.TabIndex = 22;
 			this.registroPagoTotalLabel.Text = "9999999";
 			// 
+			// medioDePagoCB
+			// 
+			this.medioDePagoCB.FormattingEnabled = true;
+			this.medioDePagoCB.Location = new System.Drawing.Point(282, 272);
+			this.medioDePagoCB.Name = "medioDePagoCB";
+			this.medioDePagoCB.Size = new System.Drawing.Size(121, 21);
+			this.medioDePagoCB.TabIndex = 23;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(194, 275);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(82, 13);
+			this.label1.TabIndex = 24;
+			this.label1.Text = "Medio de Pago:";
+			// 
 			// RegistroPago
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(424, 340);
+			this.ClientSize = new System.Drawing.Size(424, 386);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.medioDePagoCB);
 			this.Controls.Add(this.registroPagoTotalLabel);
 			this.Controls.Add(this.Total);
 			this.Controls.Add(this.RendirButton);
@@ -146,5 +168,7 @@
         private System.Windows.Forms.Button RendirButton;
 		private System.Windows.Forms.Label Total;
 		private System.Windows.Forms.Label registroPagoTotalLabel;
+		private CustomComboBox<Int32> medioDePagoCB;
+		private System.Windows.Forms.Label label1;
     }
 }

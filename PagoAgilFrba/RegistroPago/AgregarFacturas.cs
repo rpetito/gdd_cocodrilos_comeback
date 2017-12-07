@@ -18,8 +18,8 @@ namespace PagoAgilFrba.RegistroPago
     {
 
 		public String numeroFactura;
-		public String fechaVto;
-		public String fechaCobro;
+		public DateTime fechaVto;
+		public DateTime fechaCobro;
 		public String cliente;
 		public String empresa;
 		public String importe;
@@ -31,10 +31,16 @@ namespace PagoAgilFrba.RegistroPago
         public AgregarFacturas()
         {
             InitializeComponent();
+			fillEmpresas();
+
+        }
+
+
+		private void fillEmpresas() {
 			empresaController.getEmpresas(new SQLResponse<SqlDataReader>() {
 
 				onSuccess = (SqlDataReader result) => {
-					agregarFacturaPagoEmpresaCB.addItem(result.GetString(0), result.GetString(1));
+					agregarFacturaEmpresaTB.addItem(result.GetString(0), result.GetString(1));
 				},
 
 				onError = (Error error) => {
@@ -42,8 +48,11 @@ namespace PagoAgilFrba.RegistroPago
 				}
 
 			}, 1);
+		}
 
-        }
+
+		
+
 
 
 
@@ -52,7 +61,7 @@ namespace PagoAgilFrba.RegistroPago
             NumFacturaTB.Clear();
             FecCobroDP.ResetText();
             ClienteTB.Clear();
-			agregarFacturaPagoEmpresaCB.clearAll();
+			agregarFacturaEmpresaTB.clearAll();
             FecVencimientoDP.ResetText();
             ImporteTB.Clear();
         }
@@ -68,15 +77,16 @@ namespace PagoAgilFrba.RegistroPago
 		private void AgregarButton_Click(object sender, EventArgs e) {
 
 			cliente = ClienteTB.Text.ToString();
-			fechaVto = FecVencimientoDP.Value.Date.ToShortDateString();
-			fechaCobro = FecCobroDP.Value.Date.ToShortDateString();
+			fechaVto = FecVencimientoDP.Value.Date;
+			fechaCobro = FecCobroDP.Value.Date;
 			numeroFactura = NumFacturaTB.Text.ToString();
-			empresa = agregarFacturaPagoEmpresaCB.getSelectedItemID();
+			empresa = agregarFacturaEmpresaTB.getSelectedItemID();
 			importe = ImporteTB.Text.ToString();
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
+		
 
 
 		

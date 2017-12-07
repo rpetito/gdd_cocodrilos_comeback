@@ -200,6 +200,10 @@ DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_ITEMS_FACTURA
 IF OBJECT_ID('COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA') IS NOT NULL
 DROP PROCEDURE COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA
 
+IF OBJECT_ID('COCODRILOS_COMEBACK.OBTENER_MEDIOS_PAGO') IS NOT NULL
+DROP PROCEDURE COCODRILOS_COMEBACK.OBTENER_MEDIOS_PAGO
+
+
 
 GO
 --###########################################################################
@@ -230,6 +234,15 @@ GO
 
 
 
+
+--###########################################################################
+	----------------------------------TYPES----------------------------------
+--###########################################################################
+DROP TYPE COCODRILOS_COMEBACK.LISTA_REGISTRO
+
+
+
+GO
 --###########################################################################
 --###########################################################################
 		---------------------CREACION DE SCHEMA----------------------
@@ -455,6 +468,28 @@ CREATE TABLE COCODRILOS_COMEBACK.REGISTRO_PAGO_INCONSISTENCIAS(
 
 
 GO
+
+
+--###########################################################################
+--###########################################################################
+--------------------------CREACION DE TIPOS LISTA----------------------------
+--###########################################################################
+--###########################################################################
+CREATE TYPE COCODRILOS_COMEBACK.LISTA_REGISTRO
+AS TABLE(
+	fact_numero		numeric(18,0),
+	fecha_pago		datetime,
+	fecha_vto		datetime,
+	cliente			numeric(18,0),
+	empresa			nvarchar(50),
+	importe_pago	numeric(20,2),
+	sucursal		int,
+	medio_pago_id	int
+);
+GO
+
+
+
 --###########################################################################
 --###########################################################################
 ---------------------------CREACION DE FUNCIONES-----------------------------
@@ -794,6 +829,19 @@ BEGIN CATCH
 END CATCH
 GO
 
+
+-----------------------------------------------------------------------------
+-------------------------OBTENER ITEMS DE FACTURA----------------------------
+-----------------------------------------------------------------------------
+CREATE PROCEDURE COCODRILOS_COMEBACK.OBTENER_MEDIOS_PAGO
+AS
+BEGIN TRY
+	SELECT * FROM COCODRILOS_COMEBACK.MEDIO_PAGO
+END TRY
+BEGIN CATCH
+	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+END CATCH
+GO
 
 --###########################################################################
 --###########################################################################
@@ -2023,91 +2071,124 @@ GO
 -----------------------------------------------------
 -------------------REGISTRO PAGO---------------------
 -----------------------------------------------------
-CREATE PROCEDURE COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA(
-	@numeroFactura		numeric(18,0),
-	@fechaCobro			datetime,
-	@fechaVto			datetime,
-	@empresa			nvarchar(50),
-	@cliente			numeric(18,0),
-	@importe			numeric(18,2),
-	@medioPago			int,
-	@sucursal			int
+CREATE PROCEDURE COCODRILOS_COMEBACK.REGISTRAR_PAGO_FACTURA (
+	@list AS COCODRILOS_COMEBACK.LISTA_REGISTRO READONLY
 )
 AS
-BEGIN TRY
-	
+--BEGIN TRY
+begin
 	CREATE TABLE #errores (
 		errorMessage	nvarchar(255)
 	)
+
+	INSERT INTO #errores VALUES ('Errores')
+
+
+	DECLARE @fecha_pago datetime
+	DECLARE @fact_numero numeric(18,0)
+	DECLARE @empresa nvarchar(50)
+	DECLARE @cliente numeric(18,0)
+	DECLARE @medio_pago int
+	DECLARE @fecha_vto datetime
+	DECLARE @importe numeric(20,2)
+	DECLARE @sucursal int
+
+	DECLARE c_registro_pago CURSOR FOR 
+		SELECT * FROM @list
 	
-
-	--VERIFICO QUE LA EMPRESA ESTE DESHABILITADA Y ARROJA ERROR 
-	IF NOT EXISTS(	SELECT *
-					FROM COCODRILOS_COMEBACK.EMPRESA e
-					WHERE e.cuit = @empresa AND e.habilitado = 1)
-		INSERT INTO #errores VALUES ('La empresa se encuentre inhabilitada.')
-
-	--VERIFICO EXISTENCIA EN EL SISTEMA DE LA FACTURA QUE SE DESEA PAGAR
-	IF NOT EXISTS(	SELECT *
-				FROM COCODRILOS_COMEBACK.FACTURA f 
-				WHERE f.numero = @numeroFactura)
+	OPEN c_registro_pago
+	FETCH NEXT FROM c_registro_pago INTO
+		@fact_numero,
+		@fecha_pago,
+		@fecha_vto,
+		@cliente,
+		@empresa,
+		@importe,
+		@sucursal,
+		@medio_pago
+		
+	WHILE(@@FETCH_STATUS = 0)
 		BEGIN
-			INSERT INTO #errores VALUES ('La factura no se encuentra cargada en sistema. Se deberà cargarla desde Alta de Factura primeramente.')
+
+			--VERIFICO QUE LA EMPRESA ESTE DESHABILITADA Y ARROJA ERROR 
+		IF(	SELECT COUNT(*)
+			FROM COCODRILOS_COMEBACK.EMPRESA e
+			WHERE e.cuit = @empresa AND e.habilitado = 1) = 0
+			BEGIN
+				INSERT INTO #errores VALUES ('La empresa se encuentre inhabilitada.')
+				BREAK
+			END
+
+		--VERIFICO EXISTENCIA EN EL SISTEMA DE LA FACTURA QUE SE DESEA PAGAR
+		IF NOT EXISTS(	SELECT *
+					FROM COCODRILOS_COMEBACK.FACTURA f 
+					WHERE f.numero = @fact_numero)
+			BEGIN
+				INSERT INTO #errores VALUES ('La factura no se encuentra cargada en sistema. Se deberà cargarla desde Alta de Factura primeramente.')
+				BREAK
+				--SELECT errorMessage FROM #errores
+			END
+		 ELSE
+			BEGIN
+
+				IF (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r WHERE r.fact_numero = @fact_numero) > 0
+					INSERT INTO #errores VALUES (CONCAT('La factura numero ', @fact_numero, ' ya se encuentra pagada. Eliminela de la selección.'))
+
+				--IF (SELECT f.fecha_vto FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @fact_numero) <> @fecha_vto
+				--	INSERT INTO #errores VALUES ('La fecha de vencimiento difiere con la cargada en sistema, por favor verifique el valor ingresado.')
+					
+
+				IF(SELECT f.total FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @fact_numero) <> @importe
+					INSERT INTO #errores VALUES ('El importe difiere con el cargado en el sistema, por favor verifique le valor ingresado.')
+		
+				IF (SELECT COUNT(*) FROM #errores) = 1
+					BEGIN
+						INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO(
+							pago_id,
+							fact_numero,
+							fecha_pago,
+							fecha_vto,
+							empresa,
+							cliente,
+							importe_pago,
+							medio_pago_id,
+							sucursal
+						) VALUES (
+							(SELECT TOP 1 r.pago_id FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r ORDER BY r.pago_id DESC) + 1,
+							@fact_numero,
+							@fecha_pago,
+							@fecha_vto,
+							@empresa,
+							@cliente,
+							@importe,
+							@medio_pago,
+							@sucursal
+						)
+
+					END
+				ELSE
+					BREAK
+			END
+
+			FETCH NEXT FROM c_registro_pago INTO
+				@fact_numero,
+				@fecha_pago,
+				@fecha_vto,
+				@cliente,
+				@empresa,
+				@importe,
+				@sucursal,
+				@medio_pago
+		END
+	
+		IF(SELECT COUNT(*) FROM #errores) > 1
 			SELECT errorMessage FROM #errores
-		END
-	 ELSE
-		BEGIN
-
-			IF (SELECT f.fecha_vto FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @numeroFactura) <> @fechaVto
-				INSERT INTO #errores VALUES ('La fecha de vencimiento difiere con la cargada en sistema, por favor verifique el valor ingresado.')
-
-			IF(SELECT f.total FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @numeroFactura) <> @importe
-				INSERT INTO #errores VALUES ('El importe difiere con el cargado en el sistema, por favor verifique le valor ingresado.')
-		
-		
-			IF (SELECT COUNT(*) FROM #errores) = 0
-				BEGIN
-					INSERT INTO COCODRILOS_COMEBACK.REGISTRO_PAGO(
-						pago_id,
-						fact_numero,
-						fecha_pago,
-						fecha_vto,
-						empresa,
-						cliente,
-						importe_pago,
-						medio_pago_id,
-						sucursal
-					) VALUES (
-						(SELECT TOP 1 r.pago_id FROM COCODRILOS_COMEBACK.REGISTRO_PAGO r ORDER BY r.pago_id DESC) + 1,
-						@numeroFactura,
-						@fechaCobro,
-						@fechaVto,
-						@empresa,
-						@cliente,
-						@importe,
-						@medioPago,
-						@sucursal
-					)
-
-					SELECT @@ERROR
-				END
-			ELSE
-				SELECT errorMessage FROM #errores
-		END
-
-END TRY
-BEGIN CATCH
-	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
-END CATCH
+		ELSE
+			SELECT @@ERROR
+	
+	end
+--END TRY
+--BEGIN CATCH
+--	THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
+--END CATCH
 GO
-
-/*
-//TODO
-CREATE TYPE dbo.EmployeeList
-AS TABLE
-(
-  EmployeeID INT
-);
-GO
-
-*/

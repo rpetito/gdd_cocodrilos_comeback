@@ -43,7 +43,8 @@ namespace PagoAgilFrba.RegistroPago
 			this.CancelarButton = new System.Windows.Forms.Button();
 			this.LimpiarButton = new System.Windows.Forms.Button();
 			this.AgregarButton = new System.Windows.Forms.Button();
-			this.agregarFacturaPagoEmpresaCB = new CustomComboBox<String>();
+			this.agregarFacturaEmpresaTB = new CustomComboBox<String>();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// NumFactura
@@ -75,7 +76,6 @@ namespace PagoAgilFrba.RegistroPago
 			// 
 			// Cliente
 			// 
-			this.Cliente.Enabled = true;
 			this.Cliente.AutoSize = true;
 			this.Cliente.Location = new System.Drawing.Point(26, 149);
 			this.Cliente.Name = "Cliente";
@@ -95,7 +95,7 @@ namespace PagoAgilFrba.RegistroPago
 			// Importe
 			// 
 			this.Importe.AutoSize = true;
-			this.Importe.Location = new System.Drawing.Point(26, 229);
+			this.Importe.Location = new System.Drawing.Point(26, 261);
 			this.Importe.Name = "Importe";
 			this.Importe.Size = new System.Drawing.Size(45, 13);
 			this.Importe.TabIndex = 5;
@@ -125,14 +125,13 @@ namespace PagoAgilFrba.RegistroPago
 			// 
 			// ImporteTB
 			// 
-			this.ImporteTB.Location = new System.Drawing.Point(118, 226);
+			this.ImporteTB.Location = new System.Drawing.Point(118, 258);
 			this.ImporteTB.Name = "ImporteTB";
 			this.ImporteTB.Size = new System.Drawing.Size(116, 20);
 			this.ImporteTB.TabIndex = 9;
 			// 
 			// ClienteTB
 			// 
-			this.ClienteTB.Enabled = true;
 			this.ClienteTB.Location = new System.Drawing.Point(118, 146);
 			this.ClienteTB.Name = "ClienteTB";
 			this.ClienteTB.Size = new System.Drawing.Size(116, 20);
@@ -140,7 +139,7 @@ namespace PagoAgilFrba.RegistroPago
 			// 
 			// CancelarButton
 			// 
-			this.CancelarButton.Location = new System.Drawing.Point(12, 290);
+			this.CancelarButton.Location = new System.Drawing.Point(12, 327);
 			this.CancelarButton.Name = "CancelarButton";
 			this.CancelarButton.Size = new System.Drawing.Size(75, 23);
 			this.CancelarButton.TabIndex = 12;
@@ -150,7 +149,7 @@ namespace PagoAgilFrba.RegistroPago
 			// 
 			// LimpiarButton
 			// 
-			this.LimpiarButton.Location = new System.Drawing.Point(118, 290);
+			this.LimpiarButton.Location = new System.Drawing.Point(118, 327);
 			this.LimpiarButton.Name = "LimpiarButton";
 			this.LimpiarButton.Size = new System.Drawing.Size(75, 23);
 			this.LimpiarButton.TabIndex = 13;
@@ -161,7 +160,7 @@ namespace PagoAgilFrba.RegistroPago
 			// AgregarButton
 			// 
 			this.AgregarButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AgregarButton.Location = new System.Drawing.Point(224, 290);
+			this.AgregarButton.Location = new System.Drawing.Point(224, 327);
 			this.AgregarButton.Name = "AgregarButton";
 			this.AgregarButton.Size = new System.Drawing.Size(75, 23);
 			this.AgregarButton.TabIndex = 14;
@@ -169,20 +168,31 @@ namespace PagoAgilFrba.RegistroPago
 			this.AgregarButton.UseVisualStyleBackColor = true;
 			this.AgregarButton.Click += new System.EventHandler(this.AgregarButton_Click);
 			// 
-			// agregarFacturaPagoEmpresaCB
+			// agregarFacturaEmpresaTB
 			// 
-			this.agregarFacturaPagoEmpresaCB.FormattingEnabled = true;
-			this.agregarFacturaPagoEmpresaCB.Location = new System.Drawing.Point(118, 185);
-			this.agregarFacturaPagoEmpresaCB.Name = "agregarFacturaPagoEmpresaCB";
-			this.agregarFacturaPagoEmpresaCB.Size = new System.Drawing.Size(121, 21);
-			this.agregarFacturaPagoEmpresaCB.TabIndex = 15;
+			this.agregarFacturaEmpresaTB.FormattingEnabled = true;
+			this.agregarFacturaEmpresaTB.Location = new System.Drawing.Point(118, 185);
+			this.agregarFacturaEmpresaTB.Name = "agregarFacturaEmpresaTB";
+			this.agregarFacturaEmpresaTB.Size = new System.Drawing.Size(121, 21);
+			this.agregarFacturaEmpresaTB.TabIndex = 15;
+		
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(26, 225);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(82, 13);
+			this.label1.TabIndex = 16;
+			this.label1.Text = "Medio de Pago:";
 			// 
 			// AgregarFacturas
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(311, 325);
-			this.Controls.Add(this.agregarFacturaPagoEmpresaCB);
+			this.ClientSize = new System.Drawing.Size(311, 361);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.agregarFacturaEmpresaTB);
 			this.Controls.Add(this.AgregarButton);
 			this.Controls.Add(this.LimpiarButton);
 			this.Controls.Add(this.CancelarButton);
@@ -220,6 +230,7 @@ namespace PagoAgilFrba.RegistroPago
         private System.Windows.Forms.Button CancelarButton;
         private System.Windows.Forms.Button LimpiarButton;
 		private System.Windows.Forms.Button AgregarButton;
-		private CustomComboBox<String> agregarFacturaPagoEmpresaCB;
+		private CustomComboBox<String> agregarFacturaEmpresaTB;
+		private System.Windows.Forms.Label label1;
     }
 }
