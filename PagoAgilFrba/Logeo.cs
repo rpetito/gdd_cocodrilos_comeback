@@ -16,8 +16,6 @@ namespace PagoAgilFrba {
     
 		public Logeo() {
             InitializeComponent();
-            //SqlConnection Conexion = BaseDeDatos.ObternerConexion();
-            //SqlCommand cmd = new SqlCommand();
             ContraseniaTB.PasswordChar = '*';
         }
 
