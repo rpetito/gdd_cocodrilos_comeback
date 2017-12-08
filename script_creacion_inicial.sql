@@ -1615,34 +1615,42 @@ GO
 
 		INSERT INTO #errores VALUES ('Errores')
 
-		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @newDni) > 0
-			INSERT INTO #errores VALUES (CONCAT('Cliente con DNI ', @newDni, ' ya existente.'))
-
-		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.mail = @mail) > 0
-			INSERT INTO #errores VALUES (CONCAT('Cliente con mail ', @mail, ' ya existente.'))
-
-		IF(SELECT COUNT(*) FROM #errores) = 1
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @oldDni) = 0
 			BEGIN
-				UPDATE COCODRILOS_COMEBACK.CLIENTE
-				SET 
-					dni = @newDni,
-					nombre = @nombre,
-					apellido = @apellido,
-					fecha_nac = @fecha_nac,
-					mail = @mail,
-					direccion = @direccion,
-					telefono = @telefono,
-					piso = @piso,
-					dpto = @dpto,
-					localidad = @localidad,
-					cod_postal = @cod_postal,
-					habilitado = @habilitado
-				WHERE dni = @oldDni
-
-				SELECT @@ROWCOUNT
+				INSERT INTO #errores VALUES (CONCAT('Ciente con DNI ', @oldDni, ' que se desea modificar no existe.'))
+				SELECT * FROM #errores
 			END
-		ELSE
-			SELECT * FROM #errores
+		ELSE 
+			BEGIN
+				IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @newDni) > 0
+					INSERT INTO #errores VALUES (CONCAT('Cliente con DNI ', @newDni, ' ya existente.'))
+
+				IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.mail = @mail) > 0
+					INSERT INTO #errores VALUES (CONCAT('Cliente con mail ', @mail, ' ya existente.'))
+
+				IF(SELECT COUNT(*) FROM #errores) = 1
+					BEGIN
+						UPDATE COCODRILOS_COMEBACK.CLIENTE
+						SET 
+							dni = @newDni,
+							nombre = @nombre,
+							apellido = @apellido,
+							fecha_nac = @fecha_nac,
+							mail = @mail,
+							direccion = @direccion,
+							telefono = @telefono,
+							piso = @piso,
+							dpto = @dpto,
+							localidad = @localidad,
+							cod_postal = @cod_postal,
+							habilitado = @habilitado
+						WHERE dni = @oldDni
+
+						SELECT @@ROWCOUNT
+					END
+				ELSE
+					SELECT * FROM #errores
+			END
 
 	END TRY
 	BEGIN CATCH
@@ -1669,21 +1677,35 @@ GO
 	AS 
 	BEGIN TRY
 
-		INSERT INTO COCODRILOS_COMEBACK.EMPRESA (
-			cuit,
-			nombre,
-			direccion,
-			dia_rendicion,
-			rubro
-		) VALUES (
-			@cuit,
-			@nombre,
-			@direccion,
-			@diaRendicion,
-			@rubro
+		CREATE TABLE #errores (
+			message nvarchar(255)
 		)
 
-		SELECT @@ERROR
+		INSERT INTO #errores VALUES ('Errores')
+
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = @cuit) > 0
+			INSERT INTO #errores VALUES (CONCAT('La empresa con CUIT ', @cuit, ' ya existe.'))
+
+		IF(SELECT COUNT(*) FROM #errores) = 1
+			BEGIN
+				INSERT INTO COCODRILOS_COMEBACK.EMPRESA (
+					cuit,
+					nombre,
+					direccion,
+					dia_rendicion,
+					rubro
+				) VALUES (
+					@cuit,
+					@nombre,
+					@direccion,
+					@diaRendicion,
+					@rubro
+				)
+
+				SELECT @@ERROR
+			END
+		ELSE
+			SELECT * FROM #errores
 
 	END TRY
 	BEGIN CATCH
@@ -1724,18 +1746,43 @@ GO
 	) 
 	AS
 	BEGIN TRY 
-	
-		UPDATE COCODRILOS_COMEBACK.EMPRESA
-		SET 
-			cuit = @newCuit,
-			nombre = @nombre,
-			direccion = @direccion,
-			dia_rendicion = @fecRendicion,
-			rubro = @rubro,
-			habilitado = @habilitado
-		WHERE cuit = @oldCuit
 
-		SELECT @@ROWCOUNT
+		
+		CREATE TABLE #errores (
+			message nvarchar(255)
+		)
+
+		INSERT INTO #errores VALUES ('Errores')
+
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = @oldCuit) = 0
+			BEGIN
+				INSERT INTO #errores VALUES (CONCAT('La empresa con CUIT ', @oldCuit, ' que se desea modificar, no existe.'))
+				SELECT * FROM #errores
+			END
+		ELSE
+			BEGIN
+
+				IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = @newCuit) > 0
+					INSERT INTO #errores VALUES (CONCAT('La empresa con CUIT ', @newCuit, ' ya existe.'))
+
+	
+				IF(SELECT COUNT(*) FROM #errores) = 1
+					BEGIN
+						UPDATE COCODRILOS_COMEBACK.EMPRESA
+						SET 
+							cuit = @newCuit,
+							nombre = @nombre,
+							direccion = @direccion,
+							dia_rendicion = @fecRendicion,
+							rubro = @rubro,
+							habilitado = @habilitado
+						WHERE cuit = @oldCuit
+
+						SELECT @@ROWCOUNT
+					END
+				ELSE 
+					SELECT * FROM #errores
+			END
 
 	END TRY
 	BEGIN CATCH
@@ -1760,17 +1807,31 @@ GO
 	AS 
 	BEGIN TRY
 
-		INSERT INTO COCODRILOS_COMEBACK.SUCURSAL(
-			nombre,
-			direccion,
-			cod_postal
-		) VALUES (
-			@nombre,
-			@direccion,
-			@cod_postal
+		CREATE TABLE #errores (
+			message nvarchar(255)
 		)
 
-		SELECT @@ERROR
+		INSERT INTO #errores VALUES ('Errores')
+
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.SUCURSAL s WHERE s.cod_postal = @cod_postal) > 0
+			INSERT INTO #errores VALUES (CONCAT('La sucursal con código postal ', @cod_postal, ' ya existe.'))
+		
+		IF(SELECT COUNT(*) FROM #errores) = 1
+			BEGIN
+				INSERT INTO COCODRILOS_COMEBACK.SUCURSAL(
+					nombre,
+					direccion,
+					cod_postal
+				) VALUES (
+					@nombre,
+					@direccion,
+					@cod_postal
+				)
+
+				SELECT @@ERROR
+			END
+		ELSE
+			SELECT * FROM #errores
 
 	END TRY
 	BEGIN CATCH
@@ -1809,7 +1870,6 @@ GO
 	-------------------MODIFICACION--------------------
 	---------------------------------------------------
 	CREATE PROCEDURE COCODRILOS_COMEBACK.MODIFICAR_SUCURSAL(
-		
 		@nombre		nvarchar(255),
 		@direccion	nvarchar(255),
 		@COD_POSTAL	numeric(18,0),
@@ -1819,32 +1879,47 @@ GO
 	AS
 	BEGIN TRY 
 
-		UPDATE COCODRILOS_COMEBACK.SUCURSAL
-		SET 
-			nombre = @nombre,
-			direccion = @direccion,
-			cod_postal = @COD_POSTAL,
-			habilitado = @habilitado
-			WHERE id = @ID
+		CREATE TABLE #errores (
+			message nvarchar(255)
+		)
 
-		IF @habilitado = 0
-		BEGIN
-			UPDATE COCODRILOS_COMEBACK.USUARIO
-			SET habilitado = 0
-			WHERE DNI IN (SELECT user_dni 
-						  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
-						  WHERE sucursal_id = @ID)
-		END
-		ELSE 
-		BEGIN
-			UPDATE COCODRILOS_COMEBACK.USUARIO
-			SET habilitado = 1
-			WHERE DNI IN (SELECT user_dni 
-						  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
-						  WHERE sucursal_id = @ID)
-		END
+		INSERT INTO #errores VALUES ('Errores')
 
-		SELECT @@ROWCOUNT
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.SUCURSAL s WHERE s.id = @ID AND s.cod_postal = @COD_POSTAL) > 0
+			INSERT INTO #errores VALUES( CONCAT('La sucursal con código postal ', @COD_POSTAL, ' ya existe.'))
+
+		IF(SELECT COUNT(*) FROM #errores) = 1
+			BEGIN
+				UPDATE COCODRILOS_COMEBACK.SUCURSAL
+				SET 
+					nombre = @nombre,
+					direccion = @direccion,
+					cod_postal = @COD_POSTAL,
+					habilitado = @habilitado
+					WHERE id = @ID
+
+				IF @habilitado = 0
+				BEGIN
+					UPDATE COCODRILOS_COMEBACK.USUARIO
+					SET habilitado = 0
+					WHERE DNI IN (SELECT user_dni 
+								  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
+								  WHERE sucursal_id = @ID)
+				END
+				ELSE 
+				BEGIN
+					UPDATE COCODRILOS_COMEBACK.USUARIO
+					SET habilitado = 1
+					WHERE DNI IN (SELECT user_dni 
+								  FROM COCODRILOS_COMEBACK.USUARIO_SUCURSAL 
+								  WHERE sucursal_id = @ID)
+				END
+
+				SELECT @@ROWCOUNT
+			END
+		ELSE
+			SELECT * FROM #errores
+		
 
 	END TRY
 	BEGIN CATCH
@@ -2043,86 +2118,96 @@ GO
 	)
 	AS
 	BEGIN TRY
-		--DECLARE @errorMessage nvarchar(255)
-
-		--IF NOT EXISTS(SELECT * FROM COCODRILOS_COMEBACK.CLIENTE WHERE dni = @cliente)
-			
-
-		--IF NOT EXISTS(SELECT * FROM COCODRILOS_COMEBACK.EMPRESA WHERE cuit = @empresa)
-			
-
-		INSERT INTO COCODRILOS_COMEBACK.FACTURA (
-			numero,
-			cliente,
-			empresa,
-			fecha_emision,
-			fecha_vto,
-			total
-		) VALUES (
-			@numero,
-			@cliente,
-			@empresa,
-			@fechaEmision,
-			@fechaVto,
-			@total
+		
+		CREATE TABLE #errores (
+			message nvarchar(255)
 		)
 
-		--LA INFORMACION DE LOS ITEMS VENDRA EN FORMATO PRECIO1;CANTIDAD1&PRECIO2;CANTIDAD2&....
-		DECLARE @itemInfo nvarchar(255)
-		DECLARE @itemCant nvarchar(50)
-		DECLARE @itemPrecio nvarchar(50)
+		INSERT INTO #errores VALUES ('Errores')
 
-		DECLARE c_items CURSOR FOR
-			SELECT *
-			FROM STRING_SPLIT(@items, '&')
-
-		OPEN c_items
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = @cliente) = 0
+			INSERT INTO #errores VALUES (CONCAT('El cliente con DNI ', @cliente, ' no existe.'))
 		
-		FETCH NEXT FROM c_items INTO @itemInfo
-
-		WHILE(@@FETCH_STATUS = 0)
+		IF(@fechaVto > @fechaEmision) 
+			INSERT INTO #errores VALUES ('La factura tiene facha de vencimiento posterior a la de emisión.')
+			
+		IF(SELECT COUNT(*) FROM #errores) = 1
 			BEGIN
-
-				--VOY A LEER EL PRECIO Y LA CANTIDAD DEL ITEM ACTUAL
-				DECLARE @precio	nvarchar(50)
-				DECLARE @cant	nvarchar(50)
-
-				DECLARE c_item_info CURSOR FOR
-					SELECT *
-					FROM STRING_SPLIT(@itemInfo, ';')
-				OPEN c_item_info
-				
-				--COMO SIEMPRE VIENEN EN PARES LA INFO (PRECIO Y CANT) SIEMPRE SON DOS ELEMENTOS 
-				--EN EL CURSOR, LEO PRIMERO PRECIO Y DESPUES CANTIDAD
-				FETCH NEXT FROM c_item_info INTO @precio
-				FETCH NEXT FROM c_item_info INTO @cant
-
-				--AGREGO EL ITEM DE LA FACTURA CON SU PRECIO Y CANTIDAD
-				INSERT INTO COCODRILOS_COMEBACK.ITEM_FACTURA (
-					fact_numero,
-					fact_empresa,
-					precio_unitario,
-					cantidad
+				INSERT INTO COCODRILOS_COMEBACK.FACTURA (
+					numero,
+					cliente,
+					empresa,
+					fecha_emision,
+					fecha_vto,
+					total
 				) VALUES (
 					@numero,
+					@cliente,
 					@empresa,
-					CONVERT(numeric(18,5), @precio),
-					CONVERT(numeric(18,0), @cant)
+					@fechaEmision,
+					@fechaVto,
+					@total
 				)
 
-				CLOSE c_item_info
-				DEALLOCATE c_item_info
+				--LA INFORMACION DE LOS ITEMS VENDRA EN FORMATO PRECIO1;CANTIDAD1&PRECIO2;CANTIDAD2&....
+				DECLARE @itemInfo nvarchar(255)
+				DECLARE @itemCant nvarchar(50)
+				DECLARE @itemPrecio nvarchar(50)
 
-				--LEO SIGUIENTE REGISTRO PRECIO;CANTIDAD
+				DECLARE c_items CURSOR FOR
+					SELECT *
+					FROM STRING_SPLIT(@items, '&')
+
+				OPEN c_items
+		
 				FETCH NEXT FROM c_items INTO @itemInfo
+
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+
+						--VOY A LEER EL PRECIO Y LA CANTIDAD DEL ITEM ACTUAL
+						DECLARE @precio	nvarchar(50)
+						DECLARE @cant	nvarchar(50)
+
+						DECLARE c_item_info CURSOR FOR
+							SELECT *
+							FROM STRING_SPLIT(@itemInfo, ';')
+						OPEN c_item_info
 				
+						--COMO SIEMPRE VIENEN EN PARES LA INFO (PRECIO Y CANT) SIEMPRE SON DOS ELEMENTOS 
+						--EN EL CURSOR, LEO PRIMERO PRECIO Y DESPUES CANTIDAD
+						FETCH NEXT FROM c_item_info INTO @precio
+						FETCH NEXT FROM c_item_info INTO @cant
+
+						--AGREGO EL ITEM DE LA FACTURA CON SU PRECIO Y CANTIDAD
+						INSERT INTO COCODRILOS_COMEBACK.ITEM_FACTURA (
+							fact_numero,
+							fact_empresa,
+							precio_unitario,
+							cantidad
+						) VALUES (
+							@numero,
+							@empresa,
+							CONVERT(numeric(18,5), @precio),
+							CONVERT(numeric(18,0), @cant)
+						)
+
+						CLOSE c_item_info
+						DEALLOCATE c_item_info
+
+						--LEO SIGUIENTE REGISTRO PRECIO;CANTIDAD
+						FETCH NEXT FROM c_items INTO @itemInfo
+				
+					END
+
+					CLOSE c_items
+					DEALLOCATE c_items
+
+
+				SELECT @@ERROR
 			END
-
-			CLOSE c_items
-			DEALLOCATE c_items
-
-
-		SELECT @@ERROR
+		ELSE
+			SELECT * FROM #errores
 	END TRY
 	BEGIN CATCH
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
@@ -2174,74 +2259,93 @@ GO
 	)
 	AS
 	BEGIN TRY
-		--MODIFICACION DE FACTURA, LA PK (NUMERO, EMPRESA) NO SE PUEDE MODIFICAR
-		UPDATE COCODRILOS_COMEBACK.FACTURA
-		SET cliente = @cliente,
-			fecha_emision = @fecha_emision,
-			fecha_vto = @fecha_vto,
-			total = @total,
-			pagada = @pagada,
-			rendida = @rendida,
-			habilitada = @habilitada
-		WHERE numero = @numero AND empresa = @empresa
-		
 
-		--MODIFICACION DE ITEMS DE LA FACTURA
-		--LA INFORMACION DE LOS ITEMS VIENE EN FORMATO 
-		--ITEMID1;NUEVOPRECIO1;NUEVACANTIDAD1&ITEMID2;NUEVOPRECIO2;NUEVACANTIDAD3...
-		--LA INFORMACION DE LOS ITEMS VENDRA EN FORMATO PRECIO1;CANTIDAD1&PRECIO2;CANTIDAD2&....
-		DECLARE @itemInfo nvarchar(255)
-		DECLARE @itemCant nvarchar(50)
-		DECLARE @itemPrecio nvarchar(50)
+		CREATE TABLE #errores (
+			message nvarchar(255)
+		)
 
-		DECLARE c_items_mod CURSOR FOR
-			SELECT *
-			FROM STRING_SPLIT(@items, '&')
+		INSERT INTO #errores VALUES ('Errores')
 
-		OPEN c_items_mod
-		
-		FETCH NEXT FROM c_items_mod INTO @itemInfo
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.numero = @numero AND f.empresa = @empresa) = 0
+			INSERT INTO #errores VALUES (CONCAT('La factura número ', @numero, ' para le empresa ', @empresa, ' no existe.')) 
 
-		WHILE(@@FETCH_STATUS = 0)
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @cliente) = 0
+			INSERT INTO #errores VALUES (CONCAT('El cliente seleccionado con DNI ', @cliente, ' no existe.'))
+
+
+		IF(SELECT COUNT(*) FROM #errores) > 1
 			BEGIN
+				--MODIFICACION DE FACTURA, LA PK (NUMERO, EMPRESA) NO SE PUEDE MODIFICAR
+				UPDATE COCODRILOS_COMEBACK.FACTURA
+				SET cliente = @cliente,
+					fecha_emision = @fecha_emision,
+					fecha_vto = @fecha_vto,
+					total = @total,
+					pagada = @pagada,
+					rendida = @rendida,
+					habilitada = @habilitada
+				WHERE numero = @numero AND empresa = @empresa
+		
 
-				--VOY A LEER EL PRECIO Y LA CANTIDAD DEL ITEM ACTUAL
-				DECLARE @id		nvarchar(20)
-				DECLARE @precio	nvarchar(50)
-				DECLARE @cant	nvarchar(50)
+				--MODIFICACION DE ITEMS DE LA FACTURA
+				--LA INFORMACION DE LOS ITEMS VIENE EN FORMATO 
+				--ITEMID1;NUEVOPRECIO1;NUEVACANTIDAD1&ITEMID2;NUEVOPRECIO2;NUEVACANTIDAD3...
+				--LA INFORMACION DE LOS ITEMS VENDRA EN FORMATO PRECIO1;CANTIDAD1&PRECIO2;CANTIDAD2&....
+				DECLARE @itemInfo nvarchar(255)
+				DECLARE @itemCant nvarchar(50)
+				DECLARE @itemPrecio nvarchar(50)
 
-				DECLARE c_item_info_mod CURSOR FOR
+				DECLARE c_items_mod CURSOR FOR
 					SELECT *
-					FROM STRING_SPLIT(@itemInfo, ';')
-				OPEN c_item_info_mod 
-				
-				--COMO SIEMPRE VIENEN EN TUPLAS DE LA FORMA (ID ,PRECIO , CANT) SIEMPRE SON TRES ELEMENTOS 
-				--EN EL CURSOR, LEO PRIMERO ID, PRECIO Y DESPUES CANTIDAD
-				FETCH NEXT FROM c_item_info_mod INTO @id
-				FETCH NEXT FROM c_item_info_mod INTO @precio
-				FETCH NEXT FROM c_item_info_mod INTO @cant
+					FROM STRING_SPLIT(@items, '&')
 
-				--ACTUALIZO EL ITEM DE LA FACTURA CON SU PRECIO Y CANTIDAD
-				UPDATE COCODRILOS_COMEBACK.ITEM_FACTURA
-				SET precio_unitario = CONVERT(numeric(18,5), @precio),
-					cantidad = CONVERT(int, @cant)
-				WHERE	item_id = CONVERT(int, @id) AND 
-						fact_empresa = @empresa AND 
-						fact_numero = @numero
-
-				
-				CLOSE c_item_info_mod 
-				DEALLOCATE c_item_info_mod 
-
-				--LEO SIGUIENTE REGISTRO PRECIO;CANTIDAD
+				OPEN c_items_mod
+		
 				FETCH NEXT FROM c_items_mod INTO @itemInfo
+
+				WHILE(@@FETCH_STATUS = 0)
+					BEGIN
+
+						--VOY A LEER EL PRECIO Y LA CANTIDAD DEL ITEM ACTUAL
+						DECLARE @id		nvarchar(20)
+						DECLARE @precio	nvarchar(50)
+						DECLARE @cant	nvarchar(50)
+
+						DECLARE c_item_info_mod CURSOR FOR
+							SELECT *
+							FROM STRING_SPLIT(@itemInfo, ';')
+						OPEN c_item_info_mod 
 				
+						--COMO SIEMPRE VIENEN EN TUPLAS DE LA FORMA (ID ,PRECIO , CANT) SIEMPRE SON TRES ELEMENTOS 
+						--EN EL CURSOR, LEO PRIMERO ID, PRECIO Y DESPUES CANTIDAD
+						FETCH NEXT FROM c_item_info_mod INTO @id
+						FETCH NEXT FROM c_item_info_mod INTO @precio
+						FETCH NEXT FROM c_item_info_mod INTO @cant
+
+						--ACTUALIZO EL ITEM DE LA FACTURA CON SU PRECIO Y CANTIDAD
+						UPDATE COCODRILOS_COMEBACK.ITEM_FACTURA
+						SET precio_unitario = CONVERT(numeric(18,5), @precio),
+							cantidad = CONVERT(int, @cant)
+						WHERE	item_id = CONVERT(int, @id) AND 
+								fact_empresa = @empresa AND 
+								fact_numero = @numero
+
+				
+						CLOSE c_item_info_mod 
+						DEALLOCATE c_item_info_mod 
+
+						--LEO SIGUIENTE REGISTRO PRECIO;CANTIDAD
+						FETCH NEXT FROM c_items_mod INTO @itemInfo
+				
+					END
+
+				CLOSE c_items_mod 
+				DEALLOCATE c_items_mod 
+
+				SELECT @@ERROR
 			END
-
-		CLOSE c_items_mod 
-		DEALLOCATE c_items_mod 
-
-		SELECT @@ERROR
+		ELSE
+			SELECT * FROM #errores
 
 	END TRY
 	BEGIN CATCH
