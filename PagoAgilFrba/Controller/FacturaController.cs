@@ -14,10 +14,10 @@ namespace PagoAgilFrba.Controller {
 
 	class FacturaController {
 
-		public void altaFactura(SQLResponse<Int32> listener, Factura factura) {
+		public void altaFactura(SQLResponse<SqlDataReader> listener, Factura factura) {
 
 			SQLExecutor sqlExecutor = new SQLExecutor();
-			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
 
 				getProcedureName = () => { return "ALTA_FACTURA"; },
 
@@ -38,12 +38,12 @@ namespace PagoAgilFrba.Controller {
 					command.Parameters["@items"].Value = factura.getItemsAsStream();
 				},
 
-				onReadData = (Int32 result) => {
+				onReadData = (SqlDataReader result) => {
 					listener.onSuccess(result);
 				},
 
 				onDataProcessed = (Boolean withErrores) => {
-
+					listener.onFinish(withErrores);
 				},
 
 				onError = (Error error) => { 
@@ -56,9 +56,9 @@ namespace PagoAgilFrba.Controller {
 
 
 
-		public void modificarFactura(SQLResponse<Int32> listener, Factura factura) {
+		public void modificarFactura(SQLResponse<SqlDataReader> listener, Factura factura) {
 			SQLExecutor sqlExecutor = new SQLExecutor();
-			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
 
 				getProcedureName = () => { return "MODIFICAR_FACTURA"; },
 
@@ -85,12 +85,12 @@ namespace PagoAgilFrba.Controller {
 					command.Parameters["@items"].Value = factura.getItemAsStreamWithId();
 				},
 
-				onReadData = (Int32 result) => {
+				onReadData = (SqlDataReader result) => {
 					listener.onSuccess(result);
 				},
 
 				onDataProcessed = (Boolean withErrores) => {
-
+					listener.onFinish(withErrores);
 				},
 
 				onError = (Error error) => {
@@ -100,10 +100,10 @@ namespace PagoAgilFrba.Controller {
 		}
 
 
-		public void bajaFactura(SQLResponse<Int32> listener, String numeroFactura, String empresa) {
+		public void bajaFactura(SQLResponse<SqlDataReader> listener, String numeroFactura, String empresa) {
 
 			SQLExecutor sqlExecutor = new SQLExecutor();
-			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
 
 				getProcedureName = () => { return "BAJA_FACTURA"; },
 
@@ -114,12 +114,12 @@ namespace PagoAgilFrba.Controller {
 					command.Parameters["@empresa"].Value = empresa;
 				},
 
-				onReadData = (Int32 result) => {
+				onReadData = (SqlDataReader result) => {
 					listener.onSuccess(result);
 				},
 
 				onDataProcessed = (Boolean withErrores) => {
-
+					listener.onFinish(withErrores);
 				},
 
 				onError = (Error error) => { 

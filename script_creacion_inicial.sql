@@ -1835,9 +1835,6 @@ GO
 
 	END TRY
 	BEGIN CATCH
-		IF @@ERROR = 2627 
-		THROW 99999, 'Codigo postal incorrecto. Ya existe una sucursal con el codigo postal ingresado.', 1
-		ELSE	
 		THROW 99999, 'Algo ha ocurrido. Por favor vuelva a intentar', 1
 	END CATCH
 	GO
@@ -2125,7 +2122,7 @@ GO
 
 		INSERT INTO #errores VALUES ('Errores')
 
-		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.FACTURA f WHERE f.cliente = @cliente) = 0
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @cliente) = 0
 			INSERT INTO #errores VALUES (CONCAT('El cliente con DNI ', @cliente, ' no existe.'))
 		
 		IF(@fechaVto > @fechaEmision) 
@@ -2273,7 +2270,7 @@ GO
 			INSERT INTO #errores VALUES (CONCAT('El cliente seleccionado con DNI ', @cliente, ' no existe.'))
 
 
-		IF(SELECT COUNT(*) FROM #errores) > 1
+		IF(SELECT COUNT(*) FROM #errores) = 1
 			BEGIN
 				--MODIFICACION DE FACTURA, LA PK (NUMERO, EMPRESA) NO SE PUEDE MODIFICAR
 				UPDATE COCODRILOS_COMEBACK.FACTURA

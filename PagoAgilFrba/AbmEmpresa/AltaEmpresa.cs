@@ -57,9 +57,9 @@ namespace PagoAgilFrba.AbmEmpresa
         {
             idRubro = dictRubro.FirstOrDefault(x => x.Value == RubroCB.Text).Key;
             EmpresaController empresa = new EmpresaController();
-            empresa.insertNewEmpresa(new Util.SQLResponse<Int32>
+            empresa.insertNewEmpresa(new Util.SQLResponse<SqlDataReader>
             {
-                onSuccess = (Int32 result) =>
+                onSuccess = (SqlDataReader result) =>
                 {
                     Util.Util.showSuccessDialog();
                     this.Close();
@@ -67,7 +67,11 @@ namespace PagoAgilFrba.AbmEmpresa
                 onError = (Error fail) =>
                 {
 
-                }
+                },
+
+				onFinish = (Boolean withErrores) => {
+					Util.Util.showSuccessDialog();
+				}
 
             },
             CuitTB.Text,

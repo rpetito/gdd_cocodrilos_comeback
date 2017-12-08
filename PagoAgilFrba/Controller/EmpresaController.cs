@@ -15,10 +15,10 @@ namespace PagoAgilFrba.Controller
     class EmpresaController
     {
 
-        public void insertNewEmpresa(SQLResponse<Int32> listener, String cuit, String nombre, String direccion, Decimal rubro, Int32 diaRendicion)
+        public void insertNewEmpresa(SQLResponse<SqlDataReader> listener, String cuit, String nombre, String direccion, Decimal rubro, Int32 diaRendicion)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
                 getProcedureName = () => { return "ALTA_EMPRESA"; },
@@ -38,7 +38,7 @@ namespace PagoAgilFrba.Controller
 
 
 
-                onReadData = (Int32 result) => {
+                onReadData = (SqlDataReader result) => {
 
                     listener.onSuccess(result);
 
@@ -48,7 +48,9 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-				onDataProcessed = (Boolean withErrores) => { }
+				onDataProcessed = (Boolean withErrores) => {
+					listener.onFinish(withErrores);
+				}
 
             });
         }
@@ -177,10 +179,10 @@ namespace PagoAgilFrba.Controller
 
         }
 
-        public void removeEmpresa(SQLResponse<Int32> listener, String cuit)
+        public void removeEmpresa(SQLResponse<SqlDataReader> listener, String cuit)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
                 getProcedureName = () => { return "BAJA_EMPRESA"; },
@@ -189,7 +191,7 @@ namespace PagoAgilFrba.Controller
                     sqlCommand.Parameters.AddWithValue("@cuit", cuit);
                 },
 
-                onReadData = (Int32 result) => {
+                onReadData = (SqlDataReader result) => {
 
                     listener.onSuccess(result);
 
@@ -200,17 +202,17 @@ namespace PagoAgilFrba.Controller
                 },
 
 				onDataProcessed = (Boolean withErrores) => {
-
+					listener.onFinish(withErrores);
                 }
             });
 
         }
 
-        public void modifyEmpresa(SQLResponse<Int32> listener, String oldCuit, String newCuit, String nombre, String direccion, Int32 fecRendicion, Decimal rubro, Int32 habilitado)
+        public void modifyEmpresa(SQLResponse<SqlDataReader> listener, String oldCuit, String newCuit, String nombre, String direccion, Int32 fecRendicion, Decimal rubro, Int32 habilitado)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+            sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
                 getProcedureName = () => { return "MODIFICAR_EMPRESA"; },
@@ -234,7 +236,7 @@ namespace PagoAgilFrba.Controller
 
 
 
-                onReadData = (Int32 result) => {
+                onReadData = (SqlDataReader result) => {
 
                     listener.onSuccess(result);
 
@@ -244,7 +246,9 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-				onDataProcessed = (Boolean withErrores) => { }
+				onDataProcessed = (Boolean withErrores) => {
+					listener.onFinish(withErrores);
+				}
 
             });
         }

@@ -182,7 +182,7 @@ namespace PagoAgilFrba.Controller
 
                 addParams = (SqlCommand sqlCommand) => {
 
-                    sqlCommand.Parameters.Add("@id", SqlDbType.NVarChar);
+                    sqlCommand.Parameters.Add("@id", SqlDbType.Int);
                     sqlCommand.Parameters["@id"].Value = id;
                     sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
                     sqlCommand.Parameters["@nombre"].Value = nombre;

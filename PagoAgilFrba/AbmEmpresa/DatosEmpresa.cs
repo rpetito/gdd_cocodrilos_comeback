@@ -75,17 +75,20 @@ namespace PagoAgilFrba.AbmEmpresa
 
 			newRubro = dictRubro.FirstOrDefault(x => x.Value == RubroCB.Text).Key;
 
-            empresaController.modifyEmpresa(new Util.SQLResponse<Int32>
+            empresaController.modifyEmpresa(new Util.SQLResponse<SqlDataReader>
             {
-                onSuccess = (Int32 result) =>
+                onSuccess = (SqlDataReader result) =>
                 {
-                    Util.Util.showSuccessDialog();
-                    this.Close();
+                    
                 },
                 onError = (Error fail) =>
                 {
 
-                }
+                },
+				onFinish = (Boolean withErrores) => {
+					Util.Util.showSuccessDialog();
+					Close();
+				}
 
             },
             oldCuit,

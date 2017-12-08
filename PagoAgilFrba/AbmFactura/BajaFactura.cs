@@ -80,17 +80,21 @@ namespace PagoAgilFrba.AbmFactura
 		private void BajaFactura_GridViewCellEventHandler(object sender, DataGridViewCellEventArgs e) {
 
 			if(e.ColumnIndex == 0) {
-				facturaController.bajaFactura(new SQLResponse<Int32>() {
+				facturaController.bajaFactura(new SQLResponse<SqlDataReader>() {
 
-					onSuccess = (Int32 result) => {
-						if(result == 1) {
-							Util.Util.showSuccessDialog();
-							FiltrarButton.PerformClick();
-						}
+					onSuccess = (SqlDataReader result) => {
+						
 					},
 
 					onError = (Error error) => { 
 					
+					},
+
+					onFinish = (Boolean withError) => {
+						if(!withError) {
+							Util.Util.showSuccessDialog();
+							this.FiltrarButton.PerformClick();
+						}
 					}
 
 				},

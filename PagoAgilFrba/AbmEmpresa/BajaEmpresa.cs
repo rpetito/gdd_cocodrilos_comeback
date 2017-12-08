@@ -76,17 +76,22 @@ namespace PagoAgilFrba.AbmEmpresa
                 foreach (DataGridViewRow row in BajaEmpresaGV.SelectedRows)
                 {
                     String cuit = (String)row.Cells[0].Value;
-                    empresaController.removeEmpresa(new SQLResponse<Int32>()
+                    empresaController.removeEmpresa(new SQLResponse<SqlDataReader>()
                     {
 
-                        onSuccess = (Int32 result) => {
+                        onSuccess = (SqlDataReader result) => {
                             Util.Util.showSuccessDialog();
                             this.FiltrarButton.PerformClick();
                         },
 
                         onError = (Error error) => {
 
-                        }
+                        },
+
+						onFinish = (Boolean withErrores) => {
+							Util.Util.showSuccessDialog();
+							this.FiltrarButton.PerformClick();
+						}
 
                     }, cuit);
                 }

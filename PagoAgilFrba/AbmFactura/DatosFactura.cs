@@ -97,17 +97,21 @@ namespace PagoAgilFrba.AbmFactura
 				Int32 cantidad = Int32.Parse(row.Cells[3].Value.ToString());
 				nuevaFactura.addItem(id, precio, cantidad);
 			}
-			this.facturaController.modificarFactura(new SQLResponse<Int32>() {
+			this.facturaController.modificarFactura(new SQLResponse<SqlDataReader>() {
 
-				onSuccess = (Int32 result) => {
-					if(result == 0) {
-						Util.Util.showSuccessDialog();
-						Close();
-					}
+				onSuccess = (SqlDataReader result) => {
+					
 				},
 
 				onError = (Error erro) => { 
 				
+				},
+
+				onFinish = (Boolean withError) => {
+					if(!withError) {
+						Util.Util.showSuccessDialog();
+						Close();
+					}
 				}
 			},
 			nuevaFactura);

@@ -41,8 +41,8 @@ namespace PagoAgilFrba.AbmFactura
 					altaFacturaEmpresaCB.addItem(result.GetString(0), result.GetString(1));
 				},
 
-				onError = (Error error) => { 
-					
+				onError = (Error error) => {
+
 				}
 
 			}, 1);
@@ -79,16 +79,21 @@ namespace PagoAgilFrba.AbmFactura
 			}
 
 
-			this.facturaController.altaFactura(new SQLResponse<Int32>() {
+			this.facturaController.altaFactura(new SQLResponse<SqlDataReader>() {
 
-				onSuccess = (Int32 result) => {
-					if(result == 0) {
-						Util.Util.showSuccessDialog();
-					}
+				onSuccess = (SqlDataReader result) => {
+					
 				},
 
-				onError = (Error error) => { 
-				
+				onError = (Error error) => {
+
+				},
+
+				onFinish = (Boolean withError) => {
+					if(!withError) {
+						Util.Util.showSuccessDialog();
+						Close();
+					}
 				}
 
 			}, factura);

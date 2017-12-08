@@ -40,12 +40,16 @@ namespace PagoAgilFrba.Controller {
 						if(firstTime) {
 							if(result.GetString(0).Equals("Errores")) {
 								withErrores = true;
+							} else {
+								sqlExecutorHelper.onReadData(result);
 							}
 							firstTime = false;
-						} else if(withErrores) {
-							message += result.GetString(0) + '\n';
 						} else {
-							sqlExecutorHelper.onReadData(result);
+							if(withErrores) {
+								message += result.GetString(0) + '\n';
+							} else {
+								sqlExecutorHelper.onReadData(result);
+							}
 						}
 					} catch(Exception e) {
 						firstTime = false;
