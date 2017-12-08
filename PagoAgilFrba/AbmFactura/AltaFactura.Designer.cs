@@ -147,6 +147,8 @@ namespace PagoAgilFrba.AbmFactura
             this.FacturaTB.Name = "FacturaTB";
             this.FacturaTB.Size = new System.Drawing.Size(108, 20);
             this.FacturaTB.TabIndex = 10;
+            this.FacturaTB.TextChanged += new System.EventHandler(this.FacturaTB_TextChanged);
+            //this.FacturaTB.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FacturaTB_KeyPress);
             // 
             // ClienteTB
             // 
