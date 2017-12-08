@@ -1622,10 +1622,10 @@ GO
 			END
 		ELSE 
 			BEGIN
-				IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @newDni) > 0
+				IF(@newDni <> @oldDni AND (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.dni = @newDni) > 0)
 					INSERT INTO #errores VALUES (CONCAT('Cliente con DNI ', @newDni, ' ya existente.'))
 
-				IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.mail = @mail) > 0
+				IF(@newDni <> @oldDni AND (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.CLIENTE c WHERE c.mail = @mail) > 0)
 					INSERT INTO #errores VALUES (CONCAT('Cliente con mail ', @mail, ' ya existente.'))
 
 				IF(SELECT COUNT(*) FROM #errores) = 1
@@ -1762,7 +1762,7 @@ GO
 		ELSE
 			BEGIN
 
-				IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = @newCuit) > 0
+				IF(@newCuit <> @oldCuit AND  (SELECT COUNT(*) FROM COCODRILOS_COMEBACK.EMPRESA e WHERE e.cuit = @newCuit) > 0)
 					INSERT INTO #errores VALUES (CONCAT('La empresa con CUIT ', @newCuit, ' ya existe.'))
 
 	
@@ -1885,7 +1885,7 @@ GO
 
 		INSERT INTO #errores VALUES ('Errores')
 
-		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.SUCURSAL s WHERE s.id = @ID AND s.cod_postal = @COD_POSTAL) > 0
+		IF(SELECT COUNT(*) FROM COCODRILOS_COMEBACK.SUCURSAL s WHERE s.cod_postal = @COD_POSTAL AND s.id <> @ID) > 0
 			INSERT INTO #errores VALUES( CONCAT('La sucursal con código postal ', @COD_POSTAL, ' ya existe.'))
 
 		IF(SELECT COUNT(*) FROM #errores) = 1
