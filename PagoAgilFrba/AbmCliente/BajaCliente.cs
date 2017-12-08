@@ -22,7 +22,8 @@ namespace PagoAgilFrba.AbmCliente
         public BajaCliente()
         {
             InitializeComponent();
-			
+            Util.Util.addButtonColumnToGridView(BajaClienteGV, "Eliminar", new DataGridViewCellEventHandler(this.BajaCliente_cellEventHandler));
+
         }
 
         private void LimpiarButton_Click(object sender, EventArgs e)
@@ -54,32 +55,35 @@ namespace PagoAgilFrba.AbmCliente
         }
 
 
-		private void eliminarCliente_Click(object sender, EventArgs e) {
-			if(BajaClienteGV.SelectedRows.Count > 0) {
-				foreach(DataGridViewRow row in BajaClienteGV.SelectedRows) {
-					Decimal clienteDNI = (Decimal) row.Cells[0].Value;
-					clienteController.removeClient(new SQLResponse<SqlDataReader>() {
 
-						onSuccess = (SqlDataReader result) => {
-							
-						},
+        private void BajaCliente_cellEventHandler(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 0 && e.RowIndex >= 0)
+            {
+                Decimal clienteDNI = (Decimal)BajaClienteGV.Rows[e.RowIndex].Cells[1].Value;
+                clienteController.removeClient(new SQLResponse<SqlDataReader>()
+                {
 
-						onError = (Error error) => {
+                    onSuccess = (SqlDataReader result) => {
 
-						},
+                    },
+
+
+
 						onFinish = (Boolean withErrores) => {
-							Util.Util.showSuccessDialog();
-							this.FiltrarButton.PerformClick();
-						}
+							if(!withErrores) {
+								Util.Util.showSuccessDialog();
+								this.FiltrarButton.PerformClick();
+							}
+						},
 
-					}, clienteDNI);
-				}
-			} else {
-				MessageBox.Show("Debe seleccionar al menos una fila completa.", "Selección vacía");
-			}
-		}
+                    onError = (Error error) => {
 
-		
+                    }
+
+                }, clienteDNI);
+            }
+        }
 
     }
 }

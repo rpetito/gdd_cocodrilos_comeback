@@ -39,7 +39,6 @@
             this.Rubro = new System.Windows.Forms.Label();
             this.Nombre = new System.Windows.Forms.Label();
             this.CancelarButton = new System.Windows.Forms.Button();
-            this.EliminarButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.BajaEmpresaGV)).BeginInit();
             this.FiltroGB.SuspendLayout();
             this.SuspendLayout();
@@ -152,23 +151,11 @@
             this.CancelarButton.UseVisualStyleBackColor = true;
             this.CancelarButton.Click += new System.EventHandler(this.CancelarButton_Click);
             // 
-            // EliminarButton
-            // 
-            this.EliminarButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.EliminarButton.Location = new System.Drawing.Point(337, 377);
-            this.EliminarButton.Name = "EliminarButton";
-            this.EliminarButton.Size = new System.Drawing.Size(75, 23);
-            this.EliminarButton.TabIndex = 12;
-            this.EliminarButton.Text = "Eliminar";
-            this.EliminarButton.UseVisualStyleBackColor = true;
-            this.EliminarButton.Click += new System.EventHandler(this.EliminarButton_Click);
-            // 
             // BajaEmpresa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(424, 406);
-            this.Controls.Add(this.EliminarButton);
             this.Controls.Add(this.CancelarButton);
             this.Controls.Add(this.FiltrarButton);
             this.Controls.Add(this.LimpiarButton);
@@ -196,6 +183,5 @@
         private System.Windows.Forms.Label Nombre;
         private System.Windows.Forms.ComboBox RubroCB;
         private System.Windows.Forms.Button CancelarButton;
-        private System.Windows.Forms.Button EliminarButton;
     }
 }

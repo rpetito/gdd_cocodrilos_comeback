@@ -23,6 +23,7 @@ namespace PagoAgilFrba.AbmFactura
         public AltaFactura()
         {
             InitializeComponent();
+            CrearButton.Enabled = false;
 			this.facturaController = new FacturaController();
 			this.itemsFacturaDataTable = new DataTable();
 			this.itemsFacturaDataTable.Columns.Add("Precio");
@@ -64,40 +65,50 @@ namespace PagoAgilFrba.AbmFactura
             this.Close();
         }
 
+
 		private void CrearButton_Click(object sender, EventArgs e) {
 
-			Factura factura = new Factura();
-			factura.numero = Int32.Parse(FacturaTB.Text.ToString());
-			factura.cliente = Int32.Parse(ClienteTB.Text.ToString());
-			factura.empresa = altaFacturaEmpresaCB.getSelectedItemID();
-			factura.fechaEmision = AltaDP.Value.Date;
-			factura.fechaVto = VencimientoDP.Value.Date;
-			foreach(DataGridViewRow row in ItemsFacturaGV.Rows) {
-				Decimal precio = Decimal.Parse(row.Cells[1].Value.ToString());
-				Int32 cantidad = Int32.Parse(row.Cells[2].Value.ToString());
-				factura.addItem(precio, cantidad);
-			}
+			if (ItemsFacturaGV.Rows.Count > 0)
+            {
 
-
-			this.facturaController.altaFactura(new SQLResponse<SqlDataReader>() {
-
-				onSuccess = (SqlDataReader result) => {
-					
-				},
-
-				onError = (Error error) => {
-
-				},
-
-				onFinish = (Boolean withError) => {
-					if(!withError) {
-						Util.Util.showSuccessDialog();
-						Close();
-					}
+				Factura factura = new Factura();
+				factura.numero = Int32.Parse(FacturaTB.Text.ToString());
+				factura.cliente = Int32.Parse(ClienteTB.Text.ToString());
+				factura.empresa = altaFacturaEmpresaCB.getSelectedItemID();
+				factura.fechaEmision = AltaDP.Value.Date;
+				factura.fechaVto = VencimientoDP.Value.Date;
+				foreach(DataGridViewRow row in ItemsFacturaGV.Rows) {
+					Decimal precio = Decimal.Parse(row.Cells[1].Value.ToString());
+					Int32 cantidad = Int32.Parse(row.Cells[2].Value.ToString());
+					factura.addItem(precio, cantidad);
 				}
 
-			}, factura);
+
+				this.facturaController.altaFactura(new SQLResponse<SqlDataReader>() {
+
+					onSuccess = (SqlDataReader result) => {
+					
+					},
+
+					onError = (Error error) => {
+
+					},
+
+					onFinish = (Boolean withError) => {
+						if(!withError) {
+							Util.Util.showSuccessDialog();
+							Close();
+						}
+					}
+
+				}, factura);
+			} else {
+				MessageBox.Show("Debe agregar al menos un Item");
+			}
 		}
+
+
+        
 
 
 		private void agregarItemButton_Click(object sender, EventArgs e) {
@@ -144,13 +155,21 @@ namespace PagoAgilFrba.AbmFactura
 			total += (precio * cant);
 			TotalTB.Text = "$ " + total.ToString();
 		}
-		
 
+        private void ClienteTB_TextChanged(object sender, EventArgs e)
+        {
+            CrearButton.Enabled = TBCompletos();
+        }
 
-		
+        private void FacturaTB_TextChanged(object sender, EventArgs e)
+        {
+            CrearButton.Enabled = TBCompletos();
+        }
 
-		
-
-
+        
+        private  Boolean TBCompletos()
+        {
+            return (!string.IsNullOrWhiteSpace(ClienteTB.Text) && !string.IsNullOrWhiteSpace(FacturaTB.Text));
+        }
     }
 }

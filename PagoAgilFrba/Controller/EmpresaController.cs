@@ -103,10 +103,11 @@ namespace PagoAgilFrba.Controller
                         sqlCommand.Parameters.Add("@nombre", SqlDbType.NVarChar);
                         sqlCommand.Parameters["@nombre"].Value = nombre;
                     }
-                    
-                    sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
-                    sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
-
+                    if (rubro != 0)
+                    {
+                        sqlCommand.Parameters.Add("@rubro", SqlDbType.Decimal);
+                        sqlCommand.Parameters["@rubro"].Value = Convert.ToDecimal(rubro);
+                    }
 					sqlCommand.Parameters.Add("@habilitada", SqlDbType.Bit);
 					sqlCommand.Parameters["@habilitada"].Value = 1;
                     
