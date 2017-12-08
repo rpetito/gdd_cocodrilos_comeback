@@ -42,7 +42,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+                onDataProcessed = (Boolean withErrores) => { }
 
             });
         }
@@ -71,7 +71,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+                onDataProcessed = (Boolean withErrores) => {
 
                 }
             });
@@ -116,7 +116,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+                onDataProcessed = (Boolean withErrores) => {
 
                 }
 
@@ -163,19 +163,19 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
-
+                onDataProcessed = (Boolean withErrores) => {
+					
                 }
 
             }, dgv);
 
         }
 
-        public void modifySucursal(SQLResponse<Int32> listener, Int32 id, String nombre, String direccion, Decimal codPostal, Int32 habilitado)
+        public void modifySucursal(SQLResponse<SqlDataReader> listener, Int32 id, String nombre, String direccion, Decimal codPostal, Int32 habilitado)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
                 getProcedureName = () => { return "MODIFICAR_SUCURSAL"; },
@@ -196,7 +196,7 @@ namespace PagoAgilFrba.Controller
 
 
 
-                onReadData = (Int32 result) => {
+				onReadData = (SqlDataReader result) => {
 
                     listener.onSuccess(result);
 
@@ -206,7 +206,9 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+				onDataProcessed = (Boolean withErrores) => {
+					listener.onFinish(withErrores);
+				}
 
             });
         }

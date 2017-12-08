@@ -52,7 +52,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
 
@@ -98,7 +98,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+				onDataProcessed = (Boolean withErrores) => { }
 
             });
         }

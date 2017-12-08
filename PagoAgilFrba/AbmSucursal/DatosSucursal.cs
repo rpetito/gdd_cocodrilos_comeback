@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -45,24 +46,27 @@ namespace PagoAgilFrba.AbmSucursal
         private void ModificarButton_Click(object sender, EventArgs e)
         {
             habilitar();
-            sucursalController.modifySucursal(new Util.SQLResponse<Int32>
-            {
-                onSuccess = (Int32 result) =>
-                {
-                    Util.Util.showSuccessDialog();
-                    this.Close();
-                },
-                onError = (Error fail) =>
-                {
+			sucursalController.modifySucursal(new Util.SQLResponse<SqlDataReader> {
+				onSuccess = (SqlDataReader result) => {
+					
+				},
+				onError = (Error fail) => {
 
-                }
+				},
 
-            },
-            Model.Sucursal.getInstance().getId(),
-            NombreTB.Text,
-            DireccionTB.Text,
-            Convert.ToDecimal(CodigoPostalTB.Text),
-            habilitado);
+				onFinish = (Boolean withErrors) => {
+					if(!withErrors) {
+						Util.Util.showSuccessDialog();
+						this.Close();
+					}
+				}
+
+			},
+			Model.Sucursal.getInstance().getId(),
+			NombreTB.Text,
+			DireccionTB.Text,
+			Convert.ToDecimal(CodigoPostalTB.Text),
+			habilitado);
         }
 
         private void habilitar()

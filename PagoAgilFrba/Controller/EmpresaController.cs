@@ -48,7 +48,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+				onDataProcessed = (Boolean withErrores) => { }
 
             });
         }
@@ -74,7 +74,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
 
@@ -122,7 +122,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
 
@@ -169,7 +169,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
 
@@ -199,7 +199,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
             });
@@ -244,7 +244,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+				onDataProcessed = (Boolean withErrores) => { }
 
             });
         }
@@ -268,7 +268,7 @@ namespace PagoAgilFrba.Controller
 					listener.onSuccess(result);
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				},
 

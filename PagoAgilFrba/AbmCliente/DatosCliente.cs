@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using PagoAgilFrba.Model;
 using PagoAgilFrba.Controller;
 using System.Windows.Forms;
+using System.Data.SqlClient;
 
 namespace PagoAgilFrba.AbmCliente
 {
@@ -66,32 +67,34 @@ namespace PagoAgilFrba.AbmCliente
             habilitar();
 
             ClienteController clienteController = new ClienteController();
-            clienteController.modifyClient(new Util.SQLResponse<Int32>
-            {
-                onSuccess = (Int32 result) =>
-                {
-                    Util.Util.showSuccessDialog();
-                    this.Close();
-                },
-                onError = (Error fail) =>
-                {
+			clienteController.modifyClient(new Util.SQLResponse<SqlDataReader> {
+				onSuccess = (SqlDataReader result) => {
+				
+				},
+				onError = (Error fail) => {
 
-                }
+				},
+				onFinish = (Boolean withErrores) => {
+					if(!withErrores) {
+						Util.Util.showSuccessDialog();
+						this.Close();
+					}
+				}
 
-            },
+			},
 			Convert.ToDecimal(originalDNI),
-            Convert.ToDecimal(DniTB.Text),
-            NombreTB.Text,
-            ApellidoTB.Text,
-            FecNacDP.Value,
-            MailTB.Text,
-            DireccionTB.Text,
-            TelefonoTB.Text,
-            Convert.ToInt32(PisoTB.Text),
-            DepartamentoTB.Text,
-            LocalidadTB.Text,
-            CodigoPostalTB.Text,
-            habilitado);
+			Convert.ToDecimal(DniTB.Text),
+			NombreTB.Text,
+			ApellidoTB.Text,
+			FecNacDP.Value,
+			MailTB.Text,
+			DireccionTB.Text,
+			TelefonoTB.Text,
+			Convert.ToInt32(PisoTB.Text),
+			DepartamentoTB.Text,
+			LocalidadTB.Text,
+			CodigoPostalTB.Text,
+			habilitado);
         }
 
         private void habilitar()

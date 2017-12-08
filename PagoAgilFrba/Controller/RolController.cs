@@ -36,7 +36,7 @@ namespace PagoAgilFrba.Controller {
 				onError = (Error error) => {
 				},
 
-				onDataProcessed = () => {}
+				onDataProcessed = (Boolean withErrores) => { }
 
 			});
 		}
@@ -64,7 +64,7 @@ namespace PagoAgilFrba.Controller {
 				onError = (Error error) => {
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 					
 				}
 
@@ -92,7 +92,7 @@ namespace PagoAgilFrba.Controller {
 				onError = (Error error) => {
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				}
 
@@ -120,7 +120,7 @@ namespace PagoAgilFrba.Controller {
 				onError = (Error error) => {
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				}
 
@@ -147,7 +147,7 @@ namespace PagoAgilFrba.Controller {
 				onError = (Error error) => {
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				}
 
@@ -179,7 +179,7 @@ namespace PagoAgilFrba.Controller {
 				onError = (Error error) => {
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				}
 
@@ -211,7 +211,7 @@ namespace PagoAgilFrba.Controller {
                 onError = (Error error) => {
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
 
@@ -242,7 +242,7 @@ namespace PagoAgilFrba.Controller {
                 {
                 },
 
-                onDataProcessed = () =>
+				onDataProcessed = (Boolean withErrores) =>
                 {
 
                 }
@@ -288,7 +288,7 @@ namespace PagoAgilFrba.Controller {
                 onError = (Error error) => {
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
 

@@ -56,17 +56,23 @@ namespace PagoAgilFrba.AbmCliente
             String codPostal = CodigoPostalTB.Text;
 
             ClienteController clienteController = new ClienteController();
-            clienteController.insertNewClient(new Util.SQLResponse<Int32>
+            clienteController.insertNewClient(new Util.SQLResponse<SqlDataReader>
             {
-                onSuccess = (Int32 result) =>
+				onSuccess = (SqlDataReader result) =>
                 {
-                    Util.Util.showSuccessDialog();
-                    this.Close();
+                    
                 },
                 onError = (Error fail) =>
                 {
 
-                }
+                },
+
+				onFinish = (Boolean withError) => {
+					if(!withError) {
+						Util.Util.showSuccessDialog();
+						this.Close();
+					}
+				}
 
             },
             dni,

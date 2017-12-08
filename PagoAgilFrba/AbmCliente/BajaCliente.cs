@@ -58,15 +58,18 @@ namespace PagoAgilFrba.AbmCliente
 			if(BajaClienteGV.SelectedRows.Count > 0) {
 				foreach(DataGridViewRow row in BajaClienteGV.SelectedRows) {
 					Decimal clienteDNI = (Decimal) row.Cells[0].Value;
-					clienteController.removeClient(new SQLResponse<Int32>() {
+					clienteController.removeClient(new SQLResponse<SqlDataReader>() {
 
-						onSuccess = (Int32 result) => {
-							Util.Util.showSuccessDialog();
-							this.FiltrarButton.PerformClick();
+						onSuccess = (SqlDataReader result) => {
+							
 						},
 
 						onError = (Error error) => {
 
+						},
+						onFinish = (Boolean withErrores) => {
+							Util.Util.showSuccessDialog();
+							this.FiltrarButton.PerformClick();
 						}
 
 					}, clienteDNI);

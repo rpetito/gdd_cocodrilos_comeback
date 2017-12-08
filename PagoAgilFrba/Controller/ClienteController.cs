@@ -15,10 +15,10 @@ namespace PagoAgilFrba.Controller
     class ClienteController
     {
 
-        public void insertNewClient(SQLResponse<Int32> listener, decimal dni, string nombre, string apellido, DateTime fecha_nac, string mail, string direccion, string telefono,  int piso, string dpto, string localidad, string cod_postal)
+        public void insertNewClient(SQLResponse<SqlDataReader> listener, decimal dni, string nombre, string apellido, DateTime fecha_nac, string mail, string direccion, string telefono,  int piso, string dpto, string localidad, string cod_postal)
         {
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
                 getProcedureName = () => { return "ALTA_CLIENTE"; },
@@ -48,9 +48,9 @@ namespace PagoAgilFrba.Controller
                     sqlCommand.Parameters["@cod_postal"].Value = cod_postal;
                 },
 
-  
 
-                onReadData = (Int32 result) => {
+
+				onReadData = (SqlDataReader result) => {
                 
                      listener.onSuccess(result);  
                    
@@ -60,15 +60,17 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+				onDataProcessed = (Boolean withErrores) => {
+					listener.onFinish(withErrores);
+				}
 
             });
         }
 
 
-		public void removeClient(SQLResponse<Int32> listener, Decimal dni) {
+		public void removeClient(SQLResponse<SqlDataReader> listener, Decimal dni) {
 			SQLExecutor sqlExecutor = new SQLExecutor();
-			sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>() {
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
 
 				getProcedureName = () => { return "BAJA_CLIENTE"; },
 
@@ -78,7 +80,7 @@ namespace PagoAgilFrba.Controller
 
 
 
-				onReadData = (Int32 result) => {
+				onReadData = (SqlDataReader result) => {
 
 					listener.onSuccess(result);
 
@@ -88,8 +90,8 @@ namespace PagoAgilFrba.Controller
 
 				},
 
-				onDataProcessed = () => {
-
+				onDataProcessed = (Boolean withErrores) => {
+					listener.onFinish(withErrores);
 				}
 			});
 		
@@ -135,7 +137,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
                     
                 }
 
@@ -143,11 +145,11 @@ namespace PagoAgilFrba.Controller
 
         }
 
-        public void modifyClient(SQLResponse<Int32> listener, decimal oldDNI, decimal newDNI, string nombre, string apellido, DateTime fecha_nac, string mail, string direccion, string telefono, int piso, string dpto, string localidad, string cod_postal, Int32 habilitado)
+		public void modifyClient(SQLResponse<SqlDataReader> listener, decimal oldDNI, decimal newDNI, string nombre, string apellido, DateTime fecha_nac, string mail, string direccion, string telefono, int piso, string dpto, string localidad, string cod_postal, Int32 habilitado)
         {
 
             SQLExecutor sqlExecutor = new SQLExecutor();
-            sqlExecutor.executeScalarRequest(new SQLExecutorHelper<Int32>()
+			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>()
             {
 
                 getProcedureName = () => { return "MODIFICAR_CLIENTE"; },
@@ -183,7 +185,7 @@ namespace PagoAgilFrba.Controller
 
 
 
-                onReadData = (Int32 result) => {
+				onReadData = (SqlDataReader result) => {
 
                     listener.onSuccess(result);
 
@@ -193,7 +195,9 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => { }
+				onDataProcessed = (Boolean withErrores) => { 
+					listener.onFinish(withErrores);
+				}
 
             });
         }
@@ -237,7 +241,7 @@ namespace PagoAgilFrba.Controller
 
                 },
 
-                onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
                 }
 

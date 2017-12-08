@@ -13,10 +13,17 @@ namespace PagoAgilFrba.Controller {
 
 	 class SQLExecutor {
 
+		
+
 
 		public void executeReaderRequest(SQLExecutorHelper<SqlDataReader> sqlExecutorHelper) {
 
 			try {
+
+				bool firstTime = true;
+				bool withErrores = false;
+				String message = "";
+
 				SqlConnection Conexion = BaseDeDatos.ObternerConexion();
 				SqlCommand sqlCommand = new SqlCommand();
 				SqlDataReader result;
@@ -29,15 +36,34 @@ namespace PagoAgilFrba.Controller {
 				result = sqlCommand.ExecuteReader();
 
 				while(result.Read()) {
-					sqlExecutorHelper.onReadData(result);
+					try {
+						if(firstTime) {
+							if(result.GetString(0).Equals("Errores")) {
+								withErrores = true;
+							}
+							firstTime = false;
+						} else if(withErrores) {
+							message += result.GetString(0) + '\n';
+						} else {
+							sqlExecutorHelper.onReadData(result);
+						}
+					} catch(Exception e) {
+						firstTime = false;
+						sqlExecutorHelper.onReadData(result);
+					}
 				}
-				sqlExecutorHelper.onDataProcessed();
+				if(withErrores) {
+					MessageBox.Show(message);
+				}
+				sqlExecutorHelper.onDataProcessed(withErrores);
                 Conexion.Close();
 
 			} catch(Exception ex) {
 				MessageBox.Show(ex.Message, "Error");
 				sqlExecutorHelper.onError(Error.errorWithMessage(ex.Message));
 			}
+
+			
 
 		}
 
@@ -90,7 +116,7 @@ namespace PagoAgilFrba.Controller {
                 {
                     sqlExecutorHelper.onReadData(result);
                 }
-                sqlExecutorHelper.onDataProcessed();
+                sqlExecutorHelper.onDataProcessed(true);
                 Conexion.Close();
                 return dt;
 

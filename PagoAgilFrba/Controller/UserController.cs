@@ -50,7 +50,7 @@ namespace PagoAgilFrba.Controller {
 						}
 					},
 
-					onDataProcessed = () => {
+					onDataProcessed = (Boolean withErrores) => {
 						if(Usuario.getInstance().hasOnlyOneRol()) {
 							Usuario.getInstance().setRolSeleccionado(Usuario.getInstance().getRoles()[0]);
 							listener.onUniqueRol();

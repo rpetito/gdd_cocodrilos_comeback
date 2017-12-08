@@ -12,7 +12,7 @@ namespace PagoAgilFrba.Util {
 		public Func<String> getProcedureName;
 		public Action<SqlCommand> addParams;
 		public Action<T> onReadData;
-		public Action onDataProcessed;
+		public Action<Boolean> onDataProcessed;
 		public Action<Error> onError;
 	}
 

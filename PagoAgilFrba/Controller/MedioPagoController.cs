@@ -26,7 +26,7 @@ namespace PagoAgilFrba.Controller {
 					listener.onSuccess(result);
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				},
 

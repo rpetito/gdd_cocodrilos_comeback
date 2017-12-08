@@ -10,6 +10,7 @@ namespace PagoAgilFrba.Util {
 	class SQLResponse<T> {
 		public Action<T> onSuccess;
 		public Action<Error> onError;
+		public Action<Boolean> onFinish;
 	}
 
 }

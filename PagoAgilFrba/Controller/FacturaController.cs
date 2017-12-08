@@ -42,7 +42,7 @@ namespace PagoAgilFrba.Controller {
 					listener.onSuccess(result);
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				},
 
@@ -89,7 +89,7 @@ namespace PagoAgilFrba.Controller {
 					listener.onSuccess(result);
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				},
 
@@ -118,7 +118,7 @@ namespace PagoAgilFrba.Controller {
 					listener.onSuccess(result);
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 
 				},
 
@@ -168,7 +168,7 @@ namespace PagoAgilFrba.Controller {
 
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 					listener.onSuccess(null);
 				},
 
@@ -201,7 +201,7 @@ namespace PagoAgilFrba.Controller {
 					listener.onSuccess(result);
 				},
 
-				onDataProcessed = () => {
+				onDataProcessed = (Boolean withErrores) => {
 				},
 
 				onError = (Error error) => {
@@ -216,9 +216,9 @@ namespace PagoAgilFrba.Controller {
 
 		public void registrarPago(SQLResponse<SqlDataReader> listener, DataTable listaRegistros) {
 
-			Boolean firstTime = true;
+			/*Boolean firstTime = true;
 			bool withErrores = false;
-			String message = ""; 
+			String message = ""; */
 
 			SQLExecutor sqlExecutor = new SQLExecutor();
 			sqlExecutor.executeReaderRequest(new SQLExecutorHelper<SqlDataReader>() {
@@ -231,7 +231,7 @@ namespace PagoAgilFrba.Controller {
 				},
 
 				onReadData = (SqlDataReader result) => {
-					try {
+					/*try {
 						if(firstTime) {
 							if(result.GetString(0).Equals("Errores")) {
 								withErrores = true;
@@ -242,15 +242,15 @@ namespace PagoAgilFrba.Controller {
 						}
 					} catch(Exception e) {
 						firstTime = false;
-					}
+					}*/
 				},
 
-				onDataProcessed = () => {
-					if(withErrores) {
-						MessageBox.Show(message);
-					} else {
-						listener.onSuccess(null);
-					}
+				onDataProcessed = (Boolean withErrores) => {
+				//	if(withErrores) {
+				//		MessageBox.Show(message);
+				//	} else {
+				//		listener.onSuccess(null);
+				//	}
 				},
 
 				onError = (Error error) => {
